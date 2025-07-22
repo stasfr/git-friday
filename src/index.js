@@ -3,17 +3,18 @@
 const { exec } = require('child_process');
 
 // --- Конфигурация ---
-const GIT_USER = 'stas_fr';
+const GIT_USERS = ['stas_fr', 's.farkash'];
 const GIT_BRANCH = 'dev';
 // --------------------
 
 const main = () => {
   const cwd = process.cwd();
   console.log(`Ищем коммиты в директории: ${cwd}`);
-  console.log(`Автор: ${GIT_USER}, Ветка: ${GIT_BRANCH}`);
+  console.log(`Авторы: ${GIT_USERS.join(', ')}, Ветка: ${GIT_BRANCH}`);
   console.log('---');
 
-  const command = `git log ${GIT_BRANCH} --author="${GIT_USER}" --since="00:00:00" --pretty=format:"- %s"`;
+  const authorArgs = GIT_USERS.map(user => `--author="${user}"`).join(' ');
+  const command = `git log ${GIT_BRANCH} ${authorArgs} --since="00:00:00" --pretty=format:"- %s"`;
 
   exec(command, { cwd }, (error, stdout, stderr) => {
     if (error) {

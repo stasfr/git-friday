@@ -1,12 +1,19 @@
 {
   "name": "git-todays-commits-cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "A CLI tool to view your git commits for the day.",
+  "main": "src/index.js",
+  "bin": {
+    "git-todays-commits": "src/index.js"
   },
-  "keywords": [],
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "keywords": [
+    "git",
+    "cli",
+    "commits"
+  ],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.13.1"

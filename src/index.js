@@ -14,7 +14,7 @@ const main = () => {
   console.log('---');
 
   const authorArgs = GIT_USERS.map(user => `--author="${user}"`).join(' ');
-  const command = `git log ${GIT_BRANCH} ${authorArgs} --since="00:00:00" --pretty=format:"- %s"`;
+  const command = `git log ${GIT_BRANCH} ${authorArgs} --since="00:00:00" --pretty=format:"- %s%n%b"`;
 
   exec(command, { cwd }, (error, stdout, stderr) => {
     if (error) {

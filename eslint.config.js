@@ -2,7 +2,6 @@
 
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import vitest from '@vitest/eslint-plugin';
 import stylistic from '@stylistic/eslint-plugin'
 
 export default tseslint.config(
@@ -164,15 +163,5 @@ export default tseslint.config(
 
       '@typescript-eslint/no-unnecessary-condition': 'off',
     }
-  },
-  {
-    files: ['**/*.test.ts', '**/*.spec.ts'],
-    plugins: {
-      vitest,
-    },
-    rules: {
-      ...vitest.configs.recommended.rules,
-      '@typescript-eslint/unbound-method': 'off',
-    },
-  },
+  }
 );

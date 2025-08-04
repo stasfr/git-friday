@@ -1,20 +1,40 @@
 {
   "name": "git-todays-commits-cli",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A CLI tool to view your git commits for the day.",
   "main": "src/index.js",
   "bin": {
-    "git-todays-commits": "src/index.js"
+    "gtc": "dist/index.js"
   },
   "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1"
+    "dev": "tsx --watch --env-file .env src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "git",
     "cli",
-    "commits"
+    "commits",
+    "reports"
   ],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.13.1"
+  "author": "Farkash Stanislav",
+  "license": "MIT",
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@stylistic/eslint-plugin": "^5.2.2",
+    "@tsconfig/node24": "^24.0.1",
+    "@types/node": "^24.2.0",
+    "eslint": "^9.32.0",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.38.0"
+  }
 }

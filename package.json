@@ -4,7 +4,7 @@
   "description": "A CLI tool to view your git commits for the day.",
   "main": "src/index.js",
   "bin": {
-    "gtc": "dist/index.js"
+    "gtc": "dist/src/index.js"
   },
   "scripts": {
     "dev": "tsx --watch --env-file .env src/index.ts",

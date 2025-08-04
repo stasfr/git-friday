@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { exec } = require('child_process');
+import { exec } from 'child_process'
 
 // --- Конфигурация ---
 const GIT_USERS = ['stas_fr', 's.farkash'];

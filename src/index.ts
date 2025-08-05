@@ -2,7 +2,8 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
-import { getAiComletion } from './ai.js';
+import { OPEN_ROUTER_API_KEY, AI_COMPLETION_MODEL } from './config.js';
+import { AiWorker } from './ai.js';
 
 // --- Конфигурация ---
 const GIT_USERS = ['stas_fr', 's.farkash'];
@@ -12,6 +13,17 @@ const GIT_BRANCH = 'dev';
 const execAsync = promisify(exec);
 
 const main = async () => {
+  // --- env variables ---
+  if (!OPEN_ROUTER_API_KEY || !AI_COMPLETION_MODEL) {
+    console.error('OPEN_ROUTER_API_KEY or AI_COMPLETION_MODEL is not set');
+    process.exit(1);
+  }
+
+  const aiWorker = AiWorker.create({
+    apiKey: OPEN_ROUTER_API_KEY,
+    modelName: AI_COMPLETION_MODEL,
+  });
+
   const cwd = process.cwd();
   console.log(`Ищем коммиты в директории: ${cwd}`);
   console.log(`Авторы: ${GIT_USERS.join(', ')}, Ветка: ${GIT_BRANCH}`);
@@ -31,7 +43,7 @@ const main = async () => {
     }
 
     if (stdout) {
-      const report = await getAiComletion(stdout);
+      const report = await aiWorker.generateReport(stdout);
       console.log(report);
     } else {
       console.log('Коммиты за сегодня не найдены.');

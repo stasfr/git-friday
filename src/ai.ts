@@ -1,29 +1,48 @@
 import OpenAI from 'openai';
 
-import { OPEN_ROUTER_API_KEY, AI_COMPLETION_MODEL } from './config.js';
 import { generateReportPrompt } from './prompts.js';
 
-export async function getAiComletion(commits: string): Promise<string | null> {
-  if (!OPEN_ROUTER_API_KEY || !AI_COMPLETION_MODEL) {
-    throw new Error('OPEN_ROUTER_API_KEY and AI_COMPLETION_MODEL must be set');
+const privateConstructorKey = Symbol('AiWorker.private');
+
+interface AiWorkerProps {
+  apiKey: string;
+  modelName: string;
+}
+
+export class AiWorker {
+  #modelName: string;
+
+  #client: OpenAI;
+
+  private constructor(props: AiWorkerProps, key: symbol) {
+    if (key !== privateConstructorKey) {
+      throw new Error('Private constructor access error');
+    }
+
+    this.#client = new OpenAI({
+      baseURL: 'https://openrouter.ai/api/v1',
+      apiKey: props.apiKey,
+    });
+    this.#modelName = props.modelName;
   }
 
-  const openrouter = new OpenAI({
-    baseURL: 'https://openrouter.ai/api/v1',
-    apiKey: OPEN_ROUTER_API_KEY,
-  });
+  static create(props: AiWorkerProps): AiWorker {
+    return new AiWorker(props, privateConstructorKey);
+  }
 
-  const prompt = generateReportPrompt(commits);
+  async generateReport(commits: string): Promise<string | null> {
+    const prompt = generateReportPrompt(commits);
 
-  const completion = await openrouter.chat.completions.create({
-    messages: [
-      {
-        role: 'system',
-        content: prompt,
-      },
-    ],
-    model: AI_COMPLETION_MODEL,
-  });
+    const completion = await this.#client.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: prompt,
+        },
+      ],
+      model: this.#modelName,
+    });
 
-  return completion.choices[0].message.content;
+    return completion.choices[0].message.content;
+  }
 }

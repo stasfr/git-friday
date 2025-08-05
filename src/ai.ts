@@ -1,16 +1,21 @@
 import OpenAI from 'openai';
 
+import { StatisticsCollector } from './statistics.js';
+
 const privateConstructorKey = Symbol('AiWorker.private');
 
 interface AiWorkerProps {
   apiKey: string;
   modelName: string;
+  statisticsCollector: StatisticsCollector;
 }
 
 export class AiWorker {
   #modelName: string;
 
   #client: OpenAI;
+
+  #statisticsCollector: StatisticsCollector;
 
   private constructor(props: AiWorkerProps, key: symbol) {
     if (key !== privateConstructorKey) {
@@ -22,6 +27,7 @@ export class AiWorker {
       apiKey: props.apiKey,
     });
     this.#modelName = props.modelName;
+    this.#statisticsCollector = props.statisticsCollector;
   }
 
   static create(props: AiWorkerProps): AiWorker {
@@ -77,6 +83,9 @@ export class AiWorker {
       ],
       model: this.#modelName,
     });
+
+    this.#statisticsCollector.incrementPromptTokens(completion.usage?.prompt_tokens ?? 0);
+    this.#statisticsCollector.incrementCompletionTokens(completion.usage?.completion_tokens ?? 0);
 
     return completion.choices[0].message.content;
   }

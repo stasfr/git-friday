@@ -25,8 +25,19 @@
     "developer-tools",
     "productivity"
   ],
-  "author": "Farkash Stanislav",
+  "author": {
+    "name": "Farkash Stanislav",
+    "url": "https://stasfr.ru/"
+  },
   "license": "MIT",
+  "homepage": "https://github.com/stasfr/git-digest#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stasfr/git-digest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stasfr/git-digest/issues"
+  },
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "commander": "^14.0.0",

@@ -1,20 +1,12 @@
 #!/usr/bin/env node
 import 'dotenv/config';
-import { exec } from 'child_process';
-import { promisify } from 'util';
 
 import { OPEN_ROUTER_API_KEY, AI_COMPLETION_MODEL } from './config.js';
+
 import { AiWorker } from './ai.js';
+import { CommitsWorker } from './commits.js';
 
-// --- Конфигурация ---
-const GIT_USERS = ['stas_fr', 's.farkash'];
-const GIT_BRANCH = 'dev';
-// --------------------
-
-const execAsync = promisify(exec);
-
-const main = async () => {
-  // --- env variables ---
+async function main(): Promise<void> {
   if (!OPEN_ROUTER_API_KEY || !AI_COMPLETION_MODEL) {
     console.error('OPEN_ROUTER_API_KEY or AI_COMPLETION_MODEL is not set');
     process.exit(1);
@@ -25,35 +17,28 @@ const main = async () => {
     modelName: AI_COMPLETION_MODEL,
   });
 
-  const cwd = process.cwd();
-  console.log(`Ищем коммиты в директории: ${cwd}`);
-  console.log(`Авторы: ${GIT_USERS.join(', ')}, Ветка: ${GIT_BRANCH}`);
-  console.log('\n---\n');
+  const commitsWorker = CommitsWorker.create({
+    authors: ['stas_fr', 's.farkash'],
+    branch: 'dev',
+  });
 
-  const authorArgs = GIT_USERS.map((user) => `--author="${user}"`)
-    .join(' ');
-  const command = `git log ${GIT_BRANCH} ${authorArgs} --since="00:00:00" --pretty=format:"- %s%n%b"`;
+  const commits = await commitsWorker.getCommits();
 
-  try {
-    const { stdout, stderr } = await execAsync(command, { cwd });
+  if (!commits) {
+    console.log('no commits');
 
-    if (stderr) {
-      console.error(`Git stderr: ${stderr}`);
-
-      return;
-    }
-
-    if (stdout) {
-      const report = await aiWorker.generateReport(stdout);
-      console.log(report);
-    } else {
-      console.log('Коммиты за сегодня не найдены.');
-    }
-  } catch (error: unknown) {
-    console.error('Ошибка выполнения git команды');
-    console.error(error);
-    console.error('Убедитесь, что вы находитесь в git репозитории.');
+    return;
   }
-};
+
+  const report = await aiWorker.generateReport(commits);
+
+  if (!report) {
+    console.log('no report');
+
+    return;
+  }
+
+  console.log(report);
+}
 
 void main();

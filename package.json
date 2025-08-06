@@ -48,7 +48,8 @@
   "dependencies": {
     "commander": "^14.0.0",
     "dotenv": "^17.2.1",
-    "openai": "^5.11.0"
+    "openai": "^5.11.0",
+    "ora": "^8.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

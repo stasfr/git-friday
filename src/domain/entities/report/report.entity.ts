@@ -45,6 +45,18 @@ export class ReportEntity {
 
   private _updatedAt: Date | null;
 
+  get status(): ReportStatus {
+    return this._status;
+  }
+
+  get body(): string | null {
+    return this._body;
+  }
+
+  get error(): string | null {
+    return this._error;
+  }
+
   private constructor(props: ReportEntityProps) {
     this._id = props.id;
     this._statistic = props.statistic;

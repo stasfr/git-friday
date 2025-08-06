@@ -3,13 +3,14 @@
   "version": "0.3.0",
   "description": "An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report.",
   "main": "dist/src/cli/index.js",
+  "type": "module",
   "bin": {
     "gtc": "dist/src/cli/index.js"
   },
   "files": [
     "dist",
     "LICENSE",
-    "docs/README.md"
+    "README.md"
   ],
   "scripts": {
     "dev": "tsx --watch --env-file .env src/cli/index.ts",
@@ -47,7 +48,8 @@
   "dependencies": {
     "commander": "^14.0.0",
     "dotenv": "^17.2.1",
-    "openai": "^5.11.0"
+    "openai": "^5.11.0",
+    "ora": "^8.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

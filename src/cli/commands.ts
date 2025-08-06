@@ -1,6 +1,7 @@
 import { AI_COMPLETION_MODEL } from '@/config.js';
 
 import { Command } from 'commander';
+import ora from 'ora';
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -17,10 +18,16 @@ export function setupCommands(program: Command): void {
       authors?: string[];
       branches?: string[]
     }) => {
+      const spinner = ora();
+
       try {
         if (!options.authors || !options.branches || !AI_COMPLETION_MODEL) {
-          throw new Error('Please provide both authors and branches');
+          spinner.fail('Please provide both authors and branches');
+
+          return;
         }
+
+        spinner.start('Searching for commits...');
 
         const authorArgs = options.authors.map((author) => `--author="${author}"`)
           .join(' ');
@@ -34,6 +41,16 @@ export function setupCommands(program: Command): void {
 
         const { stdout: gitLogOutput } = await execAsync(command, { cwd });
 
+        if (!gitLogOutput.trim()) {
+          spinner.warn('No commits found for the specified criteria.');
+
+          return;
+        }
+
+        spinner.succeed('Commits found');
+
+        spinner.start('Generating report...');
+
         const report = await generateReportUseCase.execute({
           gitLogOutput,
           modelName: AI_COMPLETION_MODEL,
@@ -44,18 +61,21 @@ export function setupCommands(program: Command): void {
         });
 
         if (!report) {
-          throw new Error('Failed to generate report');
+          spinner.fail('Failed to generate report');
+
+          return;
         }
 
         if (report.status === 'COMPLETED') {
-          console.log('Report generated successfully:');
+          spinner.succeed('Report generated successfully\n');
           console.log(report.body);
-          // Здесь можно вывести статистику
         } else {
-          console.error('Failed to generate report:', report.error);
+          spinner.fail(`Failed to generate report: ${report.error ?? 'Unknown error'}`);
         }
       } catch (error) {
-        console.error('An unexpected error occurred:', error);
+        spinner.fail(`An unexpected error occurred: ${error instanceof Error
+          ? error.message
+          : String(error)}`);
       }
     });
 }

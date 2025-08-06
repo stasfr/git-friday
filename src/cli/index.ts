@@ -6,7 +6,7 @@ import { setupCommands } from './commands.js';
 const program = new Command();
 
 program
-  .version('0.2.0')
+  .version('0.3.0')
   .description('A CLI tool to generate reports from git commits using AI');
 
 setupCommands(program);

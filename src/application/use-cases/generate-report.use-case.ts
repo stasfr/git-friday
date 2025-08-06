@@ -1,13 +1,13 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
 import { ReportEntity } from '@/domain/entities/report/report.entity.js';
-import { StatisticId } from '@/domain/entities/statistic/statistic-id';
-import { StatisticEntity } from '@/domain/entities/statistic/statistic.entity';
+import { StatisticId } from '@/domain/entities/statistic/statistic-id.js';
+import { StatisticEntity } from '@/domain/entities/statistic/statistic.entity.js';
 
 import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
-import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params';
+import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
 import type { ILlmProvider } from '@/domain/services/llm-provider.interface.js';
-import type { IdGenerator } from '@/domain/services/id-generator.interface';
+import type { IdGenerator } from '@/domain/services/id-generator.interface.js';
 
 interface GenerateReportCommand {
   gitLogOutput: string;

@@ -1,4 +1,4 @@
-import type { ILlmProvider, ICompletionResult } from '@/domain/services/llm-provider.interface';
+import type { ILlmProvider, ICompletionResult } from '@/domain/services/llm-provider.interface.js';
 
 import OpenAI from 'openai';
 

@@ -1,7 +1,6 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
 import { ReportEntity } from '@/domain/entities/report/report.entity.js';
-import { StatisticId } from '@/domain/entities/statistic/statistic-id.js';
-import { StatisticEntity } from '@/domain/entities/statistic/statistic.entity.js';
+import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
 import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
@@ -48,12 +47,7 @@ export class GenerateReportUseCase {
       });
 
       const reportId = ReportId.create(this.dependencyContainer.idGenerator);
-
-      const statisticId = StatisticId.create(this.dependencyContainer.idGenerator);
-      const statistic = StatisticEntity.create({
-        id: statisticId,
-        reportId,
-      });
+      const statistic = StatisticEntity.create();
 
       const report = ReportEntity.create({
         id: reportId,

@@ -1,5 +1,5 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
-import { StatisticEntity } from '@/domain/entities/statistic/statistic.entity.js';
+import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
 import { StateConflictError } from '@/domain/shared/domain.errors.js';
 

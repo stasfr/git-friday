@@ -2,11 +2,12 @@
 import 'dotenv/config';
 import { Command } from 'commander';
 import { setupCommands } from './commands.js';
+import pkg from '../../package.json' with { type: 'json' };
 
 const program = new Command();
 
 program
-  .version('0.4.0')
+  .version(pkg.version)
   .description('A CLI tool to generate reports from git commits using AI');
 
 setupCommands(program);

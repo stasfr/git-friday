@@ -7,7 +7,7 @@ import { ReportGenerationParams } from '@/domain/shared/value-objects/report-gen
 
 import type { IReportRepository } from '@/domain/repositories/report.repository.interface.js';
 
-import { DomainError, InternalDomainError } from '@/domain/shared/domain.errors.js';
+import { DomainError, InternalDomainError, ExternalServiceError } from '@/domain/shared/domain.errors.js';
 import { ErrorResult, Result, type Either } from '@/lib/either.js';
 
 import type { ILlmProvider } from '@/domain/services/llm-provider.interface.js';
@@ -63,14 +63,17 @@ export class GenerateReportUseCase {
       const completionResult = await this.dependencyContainer.llmProvider.getReportBody(sourceCommits.value, modelName);
 
       if (!completionResult) {
-        report.fail('Some error occured');
-      } else {
-        report.complete(
-          completionResult.content,
-          completionResult.promptTokens,
-          completionResult.completionTokens,
-        );
+        throw new ExternalServiceError({
+          serviceName: 'OpenRouter',
+          data: { message: 'Got empty response from Llm Provider' },
+        });
       }
+
+      report.complete(
+        completionResult.content,
+        completionResult.promptTokens,
+        completionResult.completionTokens,
+      );
 
       await this.dependencyContainer.reportRepository.add(report);
 

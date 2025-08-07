@@ -5,6 +5,8 @@ import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
+import type { IReportRepository } from '@/domain/repositories/report.repository.interface.js';
+
 import { DomainError, InternalDomainError } from '@/domain/shared/domain.errors.js';
 import { ErrorResult, Result, type Either } from '@/lib/either.js';
 
@@ -23,6 +25,7 @@ interface GenerateReportCommand {
 interface GenerateReportUseCaseDependencies {
   llmProvider: ILlmProvider;
   idGenerator: IdGenerator;
+  reportRepository: IReportRepository;
 }
 
 export class GenerateReportUseCase {
@@ -68,6 +71,8 @@ export class GenerateReportUseCase {
           completionResult.completionTokens,
         );
       }
+
+      await this.dependencyContainer.reportRepository.add(report);
 
       return Result.create(report);
     } catch (error: unknown) {

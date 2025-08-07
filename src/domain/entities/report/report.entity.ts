@@ -1,7 +1,7 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
 import { StatisticEntity, type IStatisticValue } from '@/domain/entities/report/statistic.entity.js';
 
-import { StateConflictError } from '@/domain/shared/domain.errors.js';
+import { NotPendingStatusErrors } from '@/domain/errors/report.errors.js';
 
 import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
@@ -99,11 +99,7 @@ export class ReportEntity {
     completionTokens: number,
   ): void {
     if (this._status !== 'PENDING') {
-      throw new StateConflictError({
-        entityName: 'Report',
-        identifier: this._id.value,
-        reason: 'Report is not in PENDING state.',
-      });
+      throw new NotPendingStatusErrors({ reportId: this._id.value });
     }
 
     this._status = 'COMPLETED';
@@ -116,11 +112,7 @@ export class ReportEntity {
 
   public fail(error: string): void {
     if (this._status !== 'PENDING') {
-      throw new StateConflictError({
-        entityName: 'Report',
-        identifier: this._id.value,
-        reason: 'Report is not in PENDING state.',
-      });
+      throw new NotPendingStatusErrors({ reportId: this._id.value });
     }
 
     this._status = 'FAILED';

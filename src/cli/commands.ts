@@ -60,17 +60,17 @@ export function setupCommands(program: Command): void {
           },
         });
 
-        if (!report) {
+        if (report.isError()) {
           spinner.fail('Failed to generate report');
 
           return;
         }
 
-        if (report.status === 'COMPLETED') {
+        if (report.value.status === 'COMPLETED') {
           spinner.succeed('Report generated successfully\n');
-          console.log(report.body);
+          console.log(report.value.body);
         } else {
-          spinner.fail(`Failed to generate report: ${report.error ?? 'Unknown error'}`);
+          spinner.fail(`Failed to generate report: ${report.value.error ?? 'Unknown error'}`);
         }
       } catch (error) {
         spinner.fail(`An unexpected error occurred: ${error instanceof Error

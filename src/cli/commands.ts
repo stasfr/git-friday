@@ -69,6 +69,8 @@ export function setupCommands(program: Command): void {
         if (report.value.status === 'COMPLETED') {
           spinner.succeed('Report generated successfully\n');
           console.log(report.value.body);
+          console.log('\nStatistics:');
+          console.log(report.value.statistics);
         } else {
           spinner.fail(`Failed to generate report: ${report.value.error ?? 'Unknown error'}`);
         }

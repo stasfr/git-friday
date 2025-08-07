@@ -1,5 +1,5 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
-import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
+import { StatisticEntity, type IStatisticValue } from '@/domain/entities/report/statistic.entity.js';
 
 import { StateConflictError } from '@/domain/shared/domain.errors.js';
 
@@ -55,6 +55,10 @@ export class ReportEntity {
 
   get error(): string | null {
     return this._error;
+  }
+
+  get statistics(): IStatisticValue {
+    return this._statistic.statistics;
   }
 
   private constructor(props: ReportEntityProps) {

@@ -3,6 +3,12 @@ interface StatisticEntityProps {
   completionTokens: number;
 }
 
+export interface IStatisticValue {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+}
+
 export class StatisticEntity {
   private _promptTokens: number;
 
@@ -32,11 +38,7 @@ export class StatisticEntity {
     return this._promptTokens + this._completionTokens;
   }
 
-  public get statistics(): {
-    promptTokens: number;
-    completionTokens: number;
-    totalTokens: number;
-  } {
+  public get statistics(): IStatisticValue {
     return {
       promptTokens: this._promptTokens,
       completionTokens: this._completionTokens,

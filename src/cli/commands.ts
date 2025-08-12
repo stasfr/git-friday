@@ -6,7 +6,7 @@ import ora from 'ora';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
-import { generateReportUseCase } from './dependencies.js';
+import { generateReportUseCase, saveReportUseCase } from './dependencies.js';
 
 export function setupCommands(program: Command): void {
   program
@@ -51,7 +51,7 @@ export function setupCommands(program: Command): void {
 
         spinner.start('Generating report...');
 
-        const report = await generateReportUseCase.execute({
+        const generationResult = await generateReportUseCase.execute({
           gitLogOutput,
           gitCommandParams: {
             authors: options.authors,
@@ -61,19 +61,33 @@ export function setupCommands(program: Command): void {
           },
         });
 
-        if (report.isError()) {
-          spinner.fail('Failed to generate report');
+        if (generationResult.isError()) {
+          spinner.fail(`Failed to generate report: ${generationResult.error.message ?? 'Unknown error'}`);
 
           return;
         }
 
-        if (report.value.status === 'COMPLETED') {
-          spinner.succeed('Report generated successfully\n');
-          console.log(report.value.body);
-          console.log('\nStatistics:');
-          console.log(report.value.statistics);
+        const report = generationResult.value;
+
+        if (report.status !== 'COMPLETED' || !report.body) {
+          spinner.fail(`Failed to generate report: ${report.error ?? 'Unknown error'}`);
+
+          return;
+        }
+
+        spinner.succeed('Report generated successfully\n');
+        console.log(report.body);
+        console.log('\nStatistics:');
+        console.log(report.statistics);
+
+        spinner.start('Saving report to database...');
+
+        const saveResult = await saveReportUseCase.execute({ report });
+
+        if (saveResult.isError()) {
+          spinner.warn(`\nWarning: Failed to save the report. ${saveResult.error.message}`);
         } else {
-          spinner.fail(`Failed to generate report: ${report.value.error ?? 'Unknown error'}`);
+          spinner.succeed('Report saved to database.');
         }
       } catch (error) {
         spinner.fail(`An unexpected error occurred: ${error instanceof Error

@@ -31,6 +31,7 @@ Before running, you need to create a `.env` file in the root of your repository.
 
 *   `OPEN_ROUTER_API_KEY`: Your API key for the OpenRouter service.
 *   `AI_COMPLETION_MODEL`: The identifier of the AI model you want to use (e.g., `mistralai/mistral-7b-instruct`).
+*   `JSONDB_PATH`: The path to the directory where the JSON database file (`db.json`) will be stored.
 
 The tool will not work without these variables defined.
 

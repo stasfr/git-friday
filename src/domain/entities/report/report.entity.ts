@@ -4,7 +4,7 @@ import { StatisticEntity, type IStatisticValue } from '@/domain/entities/report/
 import { NotPendingStatusErrors } from '@/domain/errors/report.errors.js';
 
 import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
-import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
+import { ReportGenerationParams, type ReportGenerationParamsProps } from '@/domain/shared/value-objects/report-generation-params.js';
 
 export type ReportStatus = 'PENDING' | 'COMPLETED' | 'FAILED';
 
@@ -43,6 +43,23 @@ export class ReportEntity {
     return this._id.value;
   }
 
+  get generationParams(): ReportGenerationParamsProps {
+    const { authors, branches, since, until, llmModelName, llmProvider } = this._generationParams;
+
+    return {
+      authors,
+      branches,
+      since,
+      until,
+      llmModelName,
+      llmProvider,
+    };
+  }
+
+  get sourceCommits(): readonly string[] {
+    return this._sourceCommits.values;
+  }
+
   get status(): ReportStatus {
     return this._status;
   }
@@ -53,6 +70,14 @@ export class ReportEntity {
 
   get error(): string | null {
     return this._error;
+  }
+
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+
+  get updatedAt(): Date | null {
+    return this._updatedAt;
   }
 
   get statistics(): IStatisticValue {
@@ -85,6 +110,10 @@ export class ReportEntity {
       createdAt: new Date(),
       updatedAt: null,
     });
+  }
+
+  static from(props: ReportEntityProps): ReportEntity {
+    return new ReportEntity(props);
   }
 
   public complete(

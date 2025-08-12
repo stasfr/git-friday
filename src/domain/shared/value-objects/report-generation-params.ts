@@ -1,8 +1,8 @@
 import { ValidationError } from '@/domain/shared/domain.errors.js';
 
-interface ReportGenerationParamsProps {
-  authors: string[];
-  branches: string[];
+export interface ReportGenerationParamsProps {
+  authors: readonly string[];
+  branches: readonly string[];
   since?: Date;
   until?: Date;
   llmModelName: string;

@@ -1,6 +1,6 @@
 {
   "name": "@stas_fr/git-digest",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report.",
   "main": "dist/src/cli/index.js",
   "type": "module",

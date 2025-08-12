@@ -87,6 +87,10 @@ export class ReportEntity {
     });
   }
 
+  static from(props: ReportEntityProps): ReportEntity {
+    return new ReportEntity(props);
+  }
+
   public complete(
     body: string,
     promptTokens: number,

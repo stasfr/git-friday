@@ -46,4 +46,8 @@ export class CommitLog {
 
     return new CommitLog(commits);
   }
+
+  static from(commits: string[]): CommitLog {
+    return new CommitLog(commits);
+  }
 }

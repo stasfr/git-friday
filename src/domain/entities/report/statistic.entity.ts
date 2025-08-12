@@ -26,6 +26,13 @@ export class StatisticEntity {
     });
   }
 
+  public static from(props: Omit<IStatisticValue, 'totalTokens'>): StatisticEntity {
+    return new StatisticEntity({
+      promptTokens: props.promptTokens,
+      completionTokens: props.completionTokens,
+    });
+  }
+
   public incrementPromptTokens(amount: number): void {
     this._promptTokens += amount;
   }

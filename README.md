@@ -50,3 +50,8 @@ gtc generate -a s.farkash stas_fr -b dev main
 ```
 
 This command will search for all commits made today by the authors `s.farkash` and `stas_fr` within the `dev` and `main` branches, and then generate a consolidated report based on them.
+
+## Workflow
+
+- [Release Workflow (EN)](./docs/release-workflow.en.md)
+- [Release Workflow (RU)](./docs/release-workflow.ru.md)

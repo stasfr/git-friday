@@ -53,24 +53,27 @@ export function setupCommands(program: Command): void {
 
         const report = await generateReportUseCase.execute({
           gitLogOutput,
-          modelName: AI_COMPLETION_MODEL,
           gitCommandParams: {
             authors: options.authors,
             branches: options.branches,
+            llmModelName: AI_COMPLETION_MODEL,
+            llmProvider: 'openrouter',
           },
         });
 
-        if (!report) {
+        if (report.isError()) {
           spinner.fail('Failed to generate report');
 
           return;
         }
 
-        if (report.status === 'COMPLETED') {
+        if (report.value.status === 'COMPLETED') {
           spinner.succeed('Report generated successfully\n');
-          console.log(report.body);
+          console.log(report.value.body);
+          console.log('\nStatistics:');
+          console.log(report.value.statistics);
         } else {
-          spinner.fail(`Failed to generate report: ${report.error ?? 'Unknown error'}`);
+          spinner.fail(`Failed to generate report: ${report.value.error ?? 'Unknown error'}`);
         }
       } catch (error) {
         spinner.fail(`An unexpected error occurred: ${error instanceof Error

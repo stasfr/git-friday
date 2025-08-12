@@ -1,7 +1,7 @@
 export class CommitLog {
   public readonly values: readonly string[];
 
-  private constructor(values: string[]) {
+  private constructor(values: readonly string[]) {
     this.values = Object.freeze(values);
   }
 
@@ -47,7 +47,7 @@ export class CommitLog {
     return new CommitLog(commits);
   }
 
-  static from(commits: string[]): CommitLog {
+  static from(commits: readonly string[]): CommitLog {
     return new CommitLog(commits);
   }
 }

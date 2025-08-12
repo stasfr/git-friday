@@ -5,6 +5,8 @@ interface ReportGenerationParamsProps {
   branches: string[];
   since?: Date;
   until?: Date;
+  llmModelName: string;
+  llmProvider: string;
 }
 
 export class ReportGenerationParams {
@@ -16,6 +18,10 @@ export class ReportGenerationParams {
 
   public readonly until?: Date;
 
+  public readonly llmModelName: string;
+
+  public readonly llmProvider: string;
+
   private constructor(props: ReportGenerationParamsProps) {
     this.validate(props);
 
@@ -23,6 +29,8 @@ export class ReportGenerationParams {
     this.branches = Object.freeze(props.branches);
     this.since = props.since;
     this.until = props.until;
+    this.llmModelName = props.llmModelName;
+    this.llmProvider = props.llmProvider;
   }
 
   private validate(props: ReportGenerationParamsProps): void {
@@ -44,6 +52,20 @@ export class ReportGenerationParams {
       throw new ValidationError({
         fieldName: 'since/until',
         reason: 'The start date cannot be later than the end date.',
+      });
+    }
+
+    if (!props.llmModelName) {
+      throw new ValidationError({
+        fieldName: 'llmModelName',
+        reason: 'The LLM model name must be specified.',
+      });
+    }
+
+    if (!props.llmProvider) {
+      throw new ValidationError({
+        fieldName: 'llmProvider',
+        reason: 'The LLM provider must be specified.',
       });
     }
   }

@@ -18,8 +18,9 @@ interface GenerateReportCommand {
   gitCommandParams: {
     authors: string[];
     branches: string[];
+    llmModelName: string;
+    llmProvider: string;
   };
-  modelName: string;
 }
 
 interface GenerateReportUseCaseDependencies {
@@ -40,13 +41,14 @@ export class GenerateReportUseCase {
       const {
         gitLogOutput,
         gitCommandParams,
-        modelName,
       } = command;
 
       const sourceCommits = CommitLog.create(gitLogOutput);
       const generationParams = ReportGenerationParams.create({
         authors: gitCommandParams.authors,
         branches: gitCommandParams.branches,
+        llmModelName: gitCommandParams.llmModelName,
+        llmProvider: gitCommandParams.llmProvider,
       });
 
       const reportId = ReportId.create(this.dependencyContainer.idGenerator);
@@ -54,13 +56,12 @@ export class GenerateReportUseCase {
 
       const report = ReportEntity.create({
         id: reportId,
-        modelName,
         sourceCommits,
         generationParams,
         statistic,
       });
 
-      const completionResult = await this.dependencyContainer.llmProvider.getReportBody(sourceCommits.value, modelName);
+      const completionResult = await this.dependencyContainer.llmProvider.getReportBody(sourceCommits.value, generationParams.llmModelName);
 
       if (!completionResult) {
         throw new ExternalServiceError({

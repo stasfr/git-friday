@@ -13,7 +13,6 @@ interface ReportEntityProps {
   statistic: StatisticEntity;
   generationParams: ReportGenerationParams;
   sourceCommits: CommitLog;
-  modelName: string;
   status: ReportStatus;
   body: string | null;
   error: string | null;
@@ -29,8 +28,6 @@ export class ReportEntity {
   private readonly _generationParams: ReportGenerationParams;
 
   private readonly _sourceCommits: CommitLog;
-
-  private readonly _modelName: string;
 
   private _status: ReportStatus;
 
@@ -63,7 +60,6 @@ export class ReportEntity {
     this._statistic = props.statistic;
     this._generationParams = props.generationParams;
     this._sourceCommits = props.sourceCommits;
-    this._modelName = props.modelName;
     this._status = props.status;
     this._body = props.body;
     this._error = props.error;
@@ -76,7 +72,6 @@ export class ReportEntity {
     statistic: StatisticEntity;
     generationParams: ReportGenerationParams;
     sourceCommits: CommitLog;
-    modelName: string;
   }): ReportEntity {
     return new ReportEntity({
       ...props,

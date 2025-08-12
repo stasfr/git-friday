@@ -53,10 +53,11 @@ export function setupCommands(program: Command): void {
 
         const report = await generateReportUseCase.execute({
           gitLogOutput,
-          modelName: AI_COMPLETION_MODEL,
           gitCommandParams: {
             authors: options.authors,
             branches: options.branches,
+            llmModelName: AI_COMPLETION_MODEL,
+            llmProvider: 'openrouter',
           },
         });
 

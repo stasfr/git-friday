@@ -19,7 +19,6 @@ interface ReportEntityProps {
   error: string | null;
   createdAt: Date;
   updatedAt: Date | null;
-  version: number;
 }
 
 export class ReportEntity {
@@ -38,8 +37,6 @@ export class ReportEntity {
   private _body: string | null;
 
   private _error: string | null;
-
-  private _version: number;
 
   private readonly _createdAt: Date;
 
@@ -72,7 +69,6 @@ export class ReportEntity {
     this._error = props.error;
     this._createdAt = props.createdAt;
     this._updatedAt = props.updatedAt;
-    this._version = props.version;
   }
 
   static create(props: {
@@ -89,7 +85,6 @@ export class ReportEntity {
       error: null,
       createdAt: new Date(),
       updatedAt: null,
-      version: 1,
     });
   }
 
@@ -107,7 +102,6 @@ export class ReportEntity {
     this._statistic.incrementPromptTokens(promptTokens);
     this._statistic.incrementCompletionTokens(completionTokens);
     this._updatedAt = new Date();
-    this._version++;
   }
 
   public fail(error: string): void {
@@ -118,6 +112,5 @@ export class ReportEntity {
     this._status = 'FAILED';
     this._error = error;
     this._updatedAt = new Date();
-    this._version++;
   }
 }

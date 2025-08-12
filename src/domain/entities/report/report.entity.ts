@@ -39,6 +39,10 @@ export class ReportEntity {
 
   private _updatedAt: Date | null;
 
+  get id(): string {
+    return this._id.value;
+  }
+
   get status(): ReportStatus {
     return this._status;
   }

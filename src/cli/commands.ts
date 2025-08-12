@@ -62,7 +62,7 @@ export function setupCommands(program: Command): void {
         });
 
         if (report.isError()) {
-          spinner.fail('Failed to generate report');
+          spinner.fail(`Failed to generate report: ${report.error.message ?? 'Unknown error'}`);
 
           return;
         }

@@ -1,6 +1,7 @@
 import { OPEN_ROUTER_API_KEY, JSONDB_PATH } from '@/config.js';
 
 import { GenerateReportUseCase } from '@/application/use-cases/generate-report.use-case.js';
+import { SaveReportUseCase } from '@/application/use-cases/save-report.use-case.js';
 
 import { LlmProvider } from '@/infrastructure/providers/llm.provider.js';
 import { UuidGenerator } from '@/infrastructure/generators/uuid.generator.js';
@@ -25,5 +26,6 @@ const reportRepository = new JsonReportRepository(dbClient);
 export const generateReportUseCase = new GenerateReportUseCase({
   llmProvider,
   idGenerator,
-  reportRepository,
 });
+
+export const saveReportUseCase = new SaveReportUseCase({ reportRepository });

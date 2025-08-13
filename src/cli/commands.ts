@@ -3,10 +3,7 @@ import { AI_COMPLETION_MODEL } from '@/config.js';
 import { Command } from 'commander';
 import ora from 'ora';
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-import { generateReportUseCase, saveReportUseCase } from './dependencies.js';
+import { generateReportUseCase, saveReportUseCase, gitService } from './dependencies.js';
 
 export function setupCommands(program: Command): void {
   program
@@ -29,17 +26,10 @@ export function setupCommands(program: Command): void {
 
         spinner.start('Searching for commits...');
 
-        const authorArgs = options.authors.map((author) => `--author="${author}"`)
-          .join(' ');
-        const branchArgs = options.branches.join(' ');
-
-        const command = `git log ${branchArgs} ${authorArgs} --since="00:00:00" --pretty=format:"- %s%n%b"`;
-
-        const execAsync = promisify(exec);
-
-        const cwd = process.cwd();
-
-        const { stdout: gitLogOutput } = await execAsync(command, { cwd });
+        const gitLogOutput = await gitService.getCommitLog({
+          authors: options.authors,
+          branches: options.branches,
+        });
 
         if (!gitLogOutput.trim()) {
           spinner.warn('No commits found for the specified criteria.');

@@ -9,6 +9,8 @@ import { UuidGenerator } from '@/infrastructure/generators/uuid.generator.js';
 import { initializeJsonDbClient } from '@/infrastructure/db/lowdb.client.js';
 import { JsonReportRepository } from '@/infrastructure/repositories/report.repository.js';
 
+import { GitService } from '@/cli/services/git.service.js';
+
 if (!OPEN_ROUTER_API_KEY) {
   throw new Error('OPEN_ROUTER_API_KEY is not defined');
 }
@@ -22,6 +24,8 @@ const llmProvider = new LlmProvider(OPEN_ROUTER_API_KEY);
 
 const dbClient = initializeJsonDbClient(JSONDB_PATH);
 const reportRepository = new JsonReportRepository(dbClient);
+
+export const gitService = new GitService();
 
 export const generateReportUseCase = new GenerateReportUseCase({
   llmProvider,

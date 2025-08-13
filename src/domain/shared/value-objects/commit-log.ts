@@ -1,3 +1,5 @@
+import { GotEmptyGitLog, NoPatternMatchFound } from '@/domain/errors/commit-log.errors.js';
+
 export class CommitLog {
   public readonly values: readonly string[];
 
@@ -13,7 +15,7 @@ export class CommitLog {
     const trimmedOutput = gitLogOutput.trim();
 
     if (!trimmedOutput) {
-      return new CommitLog([]);
+      throw new GotEmptyGitLog();
     }
 
     const conventionalCommitHeaderRegex =
@@ -22,7 +24,7 @@ export class CommitLog {
     const matches = [...trimmedOutput.matchAll(conventionalCommitHeaderRegex)];
 
     if (matches.length === 0) {
-      return new CommitLog([]);
+      throw new NoPatternMatchFound();
     }
 
     const commits: string[] = [];

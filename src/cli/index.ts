@@ -8,7 +8,7 @@ const program = new Command();
 
 program
   .version(pkg.version)
-  .description('A CLI tool to generate reports from git commits using AI');
+  .description(pkg.description);
 
 setupCommands(program);
 

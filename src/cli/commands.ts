@@ -73,15 +73,19 @@ export function setupCommands(program: Command): void {
           spinner.warn(`Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`);
         }
 
+        const statisticsData = {
+          'Prompt Tokens': { value: report.statistic.promptTokens },
+          'Completion Tokens': { value: report.statistic.completionTokens },
+          'Total Tokens': { value: report.statistic.totalTokens },
+        };
+
         console.log();
         console.log('Report:');
         console.log(report.body.trim());
 
         console.log();
         console.log('Statistics:');
-        console.log(`  Prompt tokens: ${report.statistic.promptTokens.toString()}`);
-        console.log(`  Completion tokens: ${report.statistic.completionTokens.toString()}`);
-        console.log(`  Total tokens: ${report.statistic.totalTokens.toString()}`);
+        console.table(statisticsData);
       } catch (error) {
         spinner.fail(`An unexpected error occurred: ${error instanceof Error
           ? error.message

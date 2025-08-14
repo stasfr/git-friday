@@ -8,8 +8,11 @@ import { ReportGenerationParams } from '@/domain/shared/value-objects/report-gen
 import { DomainError, InternalDomainError, ExternalServiceError } from '@/domain/shared/domain.errors.js';
 import { ErrorResult, Result, type Either } from '@/lib/either.js';
 
+import type { IReportRepository } from '@/domain/repositories/report.repository.interface.js';
 import type { ILlmProvider } from '@/domain/services/llm-provider.interface.js';
 import type { IdGenerator } from '@/domain/services/id-generator.interface.js';
+
+import type { ReportDto } from '@/application/use-cases/generate-report.dto.js';
 
 interface GenerateReportCommand {
   gitLogOutput: string;
@@ -24,6 +27,7 @@ interface GenerateReportCommand {
 interface GenerateReportUseCaseDependencies {
   llmProvider: ILlmProvider;
   idGenerator: IdGenerator;
+  reportRepository: IReportRepository;
 }
 
 export class GenerateReportUseCase {
@@ -33,7 +37,7 @@ export class GenerateReportUseCase {
     this.dependencyContainer = dependencyContainer;
   }
 
-  public async execute(command: GenerateReportCommand): Promise<Either<DomainError, ReportEntity>> {
+  public async execute(command: GenerateReportCommand): Promise<Either<DomainError, ReportDto>> {
     try {
       const {
         gitLogOutput,
@@ -73,7 +77,31 @@ export class GenerateReportUseCase {
         completionResult.completionTokens,
       );
 
-      return Result.create(report);
+      const reportDto: ReportDto = {
+        body: report.body,
+        statistic: {
+          completionTokens: report.statistic.completionTokens,
+          promptTokens: report.statistic.promptTokens,
+          totalTokens: report.statistic.totalTokens,
+        },
+        error: null,
+        saved: false,
+      };
+
+      try {
+        await this.dependencyContainer.reportRepository.add(report);
+        reportDto.saved = true;
+      } catch (error: unknown) {
+        if (error instanceof DomainError) {
+          reportDto.error = error.message;
+        }
+
+        reportDto.error = error instanceof Error
+          ? error.message
+          : String(error);
+      }
+
+      return Result.create(reportDto);
     } catch (error: unknown) {
       if (error instanceof DomainError) {
         return ErrorResult.create(error);

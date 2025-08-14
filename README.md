@@ -1,24 +1,24 @@
-# Git Digest
+# Git Friday
 
 An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report. It helps team leads and managers quickly understand the progress made by developers without digging through technical commit logs.
 
 ## Installation
 
-You can install Git Digest globally using your preferred package manager:
+You can install Git Friday globally using your preferred package manager:
 
 ### npm
 ```bash
-npm install -g @stas_fr/git-digest
+npm install -g @stas_fr/git-friday
 ```
 
 ### pnpm
 ```bash
-pnpm add -g @stas_fr/git-digest
+pnpm add -g @stas_fr/git-friday
 ```
 
 ### yarn
 ```bash
-yarn global add @stas_fr/git-digest
+yarn global add @stas_fr/git-friday
 ```
 
 ## Usage
@@ -47,7 +47,7 @@ The main command is `generate`. It accepts the following parameters:
 Here is an example of how to run the command:
 
 ```bash
-gtc generate -a s.farkash stas_fr -b dev main
+friday generate -a s.farkash stas_fr -b dev main
 ```
 
 This command will search for all commits made today by the authors `s.farkash` and `stas_fr` within the `dev` and `main` branches, and then generate a consolidated report based on them.

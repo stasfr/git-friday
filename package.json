@@ -1,11 +1,11 @@
 {
-  "name": "@stas_fr/git-digest",
+  "name": "git-friday",
   "version": "0.8.0",
   "description": "An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report.",
   "main": "dist/src/cli/index.js",
   "type": "module",
   "bin": {
-    "gtc": "dist/src/cli/index.js"
+    "friday": "dist/src/cli/index.js"
   },
   "files": [
     "dist",
@@ -40,13 +40,13 @@
     "url": "https://stasfr.ru/"
   },
   "license": "MIT",
-  "homepage": "https://github.com/stasfr/git-digest#readme",
+  "homepage": "https://github.com/stasfr/git-friday#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stasfr/git-digest.git"
+    "url": "git+https://github.com/stasfr/git-friday.git"
   },
   "bugs": {
-    "url": "https://github.com/stasfr/git-digest/issues"
+    "url": "https://github.com/stasfr/git-friday/issues"
   },
   "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748",
   "dependencies": {

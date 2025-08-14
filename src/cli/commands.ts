@@ -65,10 +65,23 @@ export function setupCommands(program: Command): void {
           return;
         }
 
-        spinner.succeed('Report generated successfully\n');
-        console.log(report.body);
-        console.log('\nStatistics:');
-        console.log(report.statistic);
+        spinner.succeed('Report generated successfully');
+
+        if (report.saved) {
+          spinner.succeed('Report saved to database.');
+        } else {
+          spinner.warn(`Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`);
+        }
+
+        console.log();
+        console.log('Report:');
+        console.log(report.body.trim());
+
+        console.log();
+        console.log('Statistics:');
+        console.log(`  Prompt tokens: ${report.statistic.promptTokens.toString()}`);
+        console.log(`  Completion tokens: ${report.statistic.completionTokens.toString()}`);
+        console.log(`  Total tokens: ${report.statistic.totalTokens.toString()}`);
       } catch (error) {
         spinner.fail(`An unexpected error occurred: ${error instanceof Error
           ? error.message

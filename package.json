@@ -53,20 +53,20 @@
     "commander": "^14.0.0",
     "dotenv": "^17.2.1",
     "lowdb": "^7.0.1",
-    "openai": "^5.11.0",
+    "openai": "^5.12.2",
     "ora": "^8.2.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.32.0",
-    "@stylistic/eslint-plugin": "^5.2.2",
+    "@eslint/js": "^9.33.0",
+    "@stylistic/eslint-plugin": "^5.2.3",
     "@tsconfig/node24": "^24.0.1",
-    "@types/node": "^24.2.0",
-    "eslint": "^9.32.0",
+    "@types/node": "^24.2.1",
+    "eslint": "^9.33.0",
     "rimraf": "^6.0.1",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.20.3",
+    "tsx": "^4.20.4",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.38.0"
+    "typescript-eslint": "^8.39.1"
   }
 }

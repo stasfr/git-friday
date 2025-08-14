@@ -1,8 +1,8 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
 import { ReportEntity, type ReportStatus } from '@/domain/entities/report/report.entity.js';
+import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
-import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
 export interface PersistedReport {
   id: string;
@@ -20,14 +20,14 @@ export interface PersistedReport {
     llmProvider: string;
   }
   sourceCommits: readonly string[];
-  statistics: {
+  statistic: {
     promptTokens: number;
     completionTokens: number;
   }
 }
 
 export function toDomain(payload: PersistedReport): ReportEntity {
-  const { id, status, body, error, createdAt, updatedAt, generationParams, sourceCommits, statistics } = payload;
+  const { id, status, body, error, createdAt, updatedAt, generationParams, sourceCommits, statistic } = payload;
 
   const domainReportId = ReportId.from(id);
   const domainGenerationParams = ReportGenerationParams.create({
@@ -40,8 +40,8 @@ export function toDomain(payload: PersistedReport): ReportEntity {
   });
   const domainSourceCommits = CommitLog.from(sourceCommits);
   const domainStatistics = StatisticEntity.from({
-    promptTokens: statistics.promptTokens,
-    completionTokens: statistics.completionTokens,
+    promptTokens: statistic.promptTokens,
+    completionTokens: statistic.completionTokens,
   });
 
   const report = ReportEntity.from({
@@ -62,7 +62,7 @@ export function toDomain(payload: PersistedReport): ReportEntity {
 }
 
 export function toPersistence(report: ReportEntity): PersistedReport {
-  const { id, status, body, error, createdAt, updatedAt, generationParams, sourceCommits, statistics } = report;
+  const { id, status, body, error, createdAt, updatedAt, generationParams, sourceCommits, statistic } = report;
 
   const payload: PersistedReport = {
     id,
@@ -82,7 +82,10 @@ export function toPersistence(report: ReportEntity): PersistedReport {
       llmProvider: generationParams.llmProvider,
     },
     sourceCommits,
-    statistics,
+    statistic: {
+      promptTokens: statistic.promptTokens,
+      completionTokens: statistic.completionTokens,
+    },
   };
 
   return payload;

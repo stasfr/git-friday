@@ -3,7 +3,7 @@ import { AI_COMPLETION_MODEL } from '@/config.js';
 import { Command } from 'commander';
 import ora from 'ora';
 
-import { generateReportUseCase, saveReportUseCase, gitService } from './dependencies.js';
+import { generateReportUseCase, gitService } from './dependencies.js';
 
 export function setupCommands(program: Command): void {
   program
@@ -59,26 +59,29 @@ export function setupCommands(program: Command): void {
 
         const report = generationResult.value;
 
-        if (report.status !== 'COMPLETED' || !report.body) {
+        if (!report.body) {
           spinner.fail(`Failed to generate report: ${report.error ?? 'Unknown error'}`);
 
           return;
         }
 
-        spinner.succeed('Report generated successfully\n');
-        console.log(report.body);
-        console.log('\nStatistics:');
-        console.log(report.statistics);
+        spinner.succeed('Report generated successfully');
 
-        spinner.start('Saving report to database...');
-
-        const saveResult = await saveReportUseCase.execute({ report });
-
-        if (saveResult.isError()) {
-          spinner.warn(`\nWarning: Failed to save the report. ${saveResult.error.message}`);
-        } else {
+        if (report.saved) {
           spinner.succeed('Report saved to database.');
+        } else {
+          spinner.warn(`Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`);
         }
+
+        console.log();
+        console.log('Report:');
+        console.log(report.body.trim());
+
+        console.log();
+        console.log('Statistics:');
+        console.log(`  Prompt tokens: ${report.statistic.promptTokens.toString()}`);
+        console.log(`  Completion tokens: ${report.statistic.completionTokens.toString()}`);
+        console.log(`  Total tokens: ${report.statistic.totalTokens.toString()}`);
       } catch (error) {
         spinner.fail(`An unexpected error occurred: ${error instanceof Error
           ? error.message

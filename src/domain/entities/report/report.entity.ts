@@ -1,10 +1,10 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
-import { StatisticEntity, type IStatisticValue } from '@/domain/entities/report/statistic.entity.js';
+import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
 import { NotPendingStatusErrors } from '@/domain/errors/report.errors.js';
 
 import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
-import { ReportGenerationParams, type ReportGenerationParamsProps } from '@/domain/shared/value-objects/report-generation-params.js';
+import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
 export type ReportStatus = 'PENDING' | 'COMPLETED' | 'FAILED';
 
@@ -43,17 +43,8 @@ export class ReportEntity {
     return this._id.value;
   }
 
-  get generationParams(): ReportGenerationParamsProps {
-    const { authors, branches, since, until, llmModelName, llmProvider } = this._generationParams;
-
-    return {
-      authors,
-      branches,
-      since,
-      until,
-      llmModelName,
-      llmProvider,
-    };
+  get generationParams(): ReportGenerationParams {
+    return this._generationParams;
   }
 
   get sourceCommits(): readonly string[] {
@@ -80,8 +71,8 @@ export class ReportEntity {
     return this._updatedAt;
   }
 
-  get statistics(): IStatisticValue {
-    return this._statistic.statistics;
+  get statistic(): StatisticEntity {
+    return this._statistic;
   }
 
   private constructor(props: ReportEntityProps) {

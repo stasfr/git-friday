@@ -1,14 +1,18 @@
 import { GotEmptyGitLog, NoPatternMatchFound } from '@/domain/errors/commit-log.errors.js';
 
 export class CommitLog {
-  public readonly values: readonly string[];
+  private readonly _values: readonly string[];
 
-  private constructor(values: readonly string[]) {
-    this.values = Object.freeze(values);
+  get values(): readonly string[] {
+    return this._values;
   }
 
   get value(): string {
-    return this.values.join('\n');
+    return this._values.join('\n');
+  }
+
+  private constructor(values: readonly string[]) {
+    this._values = Object.freeze(values);
   }
 
   static create(gitLogOutput: string): CommitLog {

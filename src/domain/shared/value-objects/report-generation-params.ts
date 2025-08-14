@@ -10,27 +10,51 @@ export interface ReportGenerationParamsProps {
 }
 
 export class ReportGenerationParams {
-  public readonly authors: readonly string[];
+  private readonly _authors: readonly string[];
 
-  public readonly branches: readonly string[];
+  private readonly _branches: readonly string[];
 
-  public readonly since?: Date;
+  private readonly _since?: Date;
 
-  public readonly until?: Date;
+  private readonly _until?: Date;
 
-  public readonly llmModelName: string;
+  private readonly _llmModelName: string;
 
-  public readonly llmProvider: string;
+  private readonly _llmProvider: string;
+
+  get authors(): readonly string[] {
+    return this._authors;
+  }
+
+  get branches(): readonly string[] {
+    return this._branches;
+  }
+
+  get since(): Date | undefined {
+    return this._since;
+  }
+
+  get until(): Date | undefined {
+    return this._until;
+  }
+
+  get llmModelName(): string {
+    return this._llmModelName;
+  }
+
+  get llmProvider(): string {
+    return this._llmProvider;
+  }
 
   private constructor(props: ReportGenerationParamsProps) {
     this.validate(props);
 
-    this.authors = Object.freeze(props.authors);
-    this.branches = Object.freeze(props.branches);
-    this.since = props.since;
-    this.until = props.until;
-    this.llmModelName = props.llmModelName;
-    this.llmProvider = props.llmProvider;
+    this._authors = Object.freeze(props.authors);
+    this._branches = Object.freeze(props.branches);
+    this._since = props.since;
+    this._until = props.until;
+    this._llmModelName = props.llmModelName;
+    this._llmProvider = props.llmProvider;
   }
 
   private validate(props: ReportGenerationParamsProps): void {

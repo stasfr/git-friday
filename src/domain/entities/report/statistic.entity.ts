@@ -3,16 +3,22 @@ interface StatisticEntityProps {
   completionTokens: number;
 }
 
-export interface IStatisticValue {
-  promptTokens: number;
-  completionTokens: number;
-  totalTokens: number;
-}
-
 export class StatisticEntity {
   private _promptTokens: number;
 
   private _completionTokens: number;
+
+  get promptTokens(): number {
+    return this._promptTokens;
+  }
+
+  get completionTokens(): number {
+    return this._completionTokens;
+  }
+
+  get totalTokens(): number {
+    return this._promptTokens + this._completionTokens;
+  }
 
   private constructor(props: StatisticEntityProps) {
     this._promptTokens = props.promptTokens;
@@ -26,7 +32,7 @@ export class StatisticEntity {
     });
   }
 
-  public static from(props: Omit<IStatisticValue, 'totalTokens'>): StatisticEntity {
+  public static from(props: StatisticEntityProps): StatisticEntity {
     return new StatisticEntity({
       promptTokens: props.promptTokens,
       completionTokens: props.completionTokens,
@@ -39,17 +45,5 @@ export class StatisticEntity {
 
   public incrementCompletionTokens(amount: number): void {
     this._completionTokens += amount;
-  }
-
-  private calculateTotalTokens(): number {
-    return this._promptTokens + this._completionTokens;
-  }
-
-  public get statistics(): IStatisticValue {
-    return {
-      promptTokens: this._promptTokens,
-      completionTokens: this._completionTokens,
-      totalTokens: this.calculateTotalTokens(),
-    };
   }
 }

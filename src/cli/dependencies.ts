@@ -5,7 +5,7 @@ import { GenerateReportUseCase } from '@/application/use-cases/generate-report.u
 import { LlmProvider } from '@/infrastructure/providers/llm.provider.js';
 import { UuidGenerator } from '@/infrastructure/generators/uuid.generator.js';
 
-import { initializeJsonDbClient } from '@/infrastructure/db/lowdb.client.js';
+import { JsonDbClient } from '@/infrastructure/db/lowdb.client.js';
 import { JsonReportRepository } from '@/infrastructure/repositories/report.repository.js';
 
 import { GitService } from '@/cli/services/git.service.js';
@@ -21,7 +21,7 @@ if (!JSONDB_PATH) {
 const idGenerator = new UuidGenerator();
 const llmProvider = new LlmProvider(OPEN_ROUTER_API_KEY);
 
-const dbClient = initializeJsonDbClient(JSONDB_PATH);
+const dbClient = new JsonDbClient(JSONDB_PATH);
 const reportRepository = new JsonReportRepository(dbClient);
 
 export const gitService = new GitService();

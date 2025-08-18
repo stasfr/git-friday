@@ -2,13 +2,15 @@ import type { ILlmProvider, ICompletionResult } from '@/domain/services/llm-prov
 
 import OpenAI from 'openai';
 
+interface LlmProviderDependencies { openRouterApiKey: string; }
+
 export class LlmProvider implements ILlmProvider {
   private readonly client: OpenAI;
 
-  public constructor(apiKey: string) {
+  public constructor(dependencies: LlmProviderDependencies) {
     this.client = new OpenAI({
       baseURL: 'https://openrouter.ai/api/v1',
-      apiKey,
+      apiKey: dependencies.openRouterApiKey,
     });
   }
 

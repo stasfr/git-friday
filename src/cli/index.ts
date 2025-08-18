@@ -5,16 +5,23 @@ import pkg from '../../package.json' with { type: 'json' };
 
 import { Command } from 'commander';
 
-import { diContainer } from '@/infrastructure/di/container.js';
-
+import { createConfig } from '@/config.js';
+import { createDiContainer } from '@/infrastructure/di/container.js';
 import { report } from '@/cli/commands/report.command.js';
 
-const program = new Command();
+function main(): void {
+  const appConfig = createConfig();
+  const diContainer = createDiContainer(appConfig);
 
-program
-  .version(pkg.version)
-  .description(pkg.description);
+  const program = new Command();
 
-report(program, diContainer);
+  program
+    .version(pkg.version)
+    .description(pkg.description);
 
-program.parse(process.argv);
+  report(program, diContainer);
+
+  program.parse(process.argv);
+}
+
+main();

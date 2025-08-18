@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createContainer, InjectionMode, asValue, asClass, type AwilixContainer } from 'awilix';
+
+import type { AppConfig } from '@/config.js';
 
 import ora, { type Ora } from 'ora';
 
@@ -13,12 +14,12 @@ import { JsonReportRepository } from '@/infrastructure/repositories/report.repos
 
 import { GitService } from '@/cli/services/git.service.js';
 
-export interface Container {
+interface Container {
   spinner: Ora;
 
-  openRouterApiKey: string;
-  aiCompletionModel: string;
-  jsonDbPath: string;
+  openRouterApiKey: AppConfig['aiCompletionModel'];
+  aiCompletionModel: AppConfig['aiCompletionModel'];
+  jsonDbPath: AppConfig['jsonDbPath'];
 
   idGenerator: UuidGenerator;
   llmProvider: LlmProvider;
@@ -33,27 +34,29 @@ export interface Container {
 
 export type DiContainer = AwilixContainer<Container>;
 
-const diContainer = createContainer<Container>({
-  injectionMode: InjectionMode.PROXY,
-  strict: true,
-});
+export function createDiContainer(config: AppConfig) {
+  const diContainer = createContainer<Container>({
+    injectionMode: InjectionMode.PROXY,
+    strict: true,
+  });
 
-diContainer.register({
-  spinner: asValue(ora()),
+  diContainer.register({
+    spinner: asValue(ora()),
 
-  openRouterApiKey: asValue(process.env.OPEN_ROUTER_API_KEY!),
-  aiCompletionModel: asValue(process.env.AI_COMPLETION_MODEL!),
-  jsonDbPath: asValue(process.env.JSONDB_PATH!),
+    openRouterApiKey: asValue(config.openRouterApiKey),
+    aiCompletionModel: asValue(config.aiCompletionModel),
+    jsonDbPath: asValue(config.jsonDbPath),
 
-  idGenerator: asClass(UuidGenerator),
-  llmProvider: asClass(LlmProvider),
+    idGenerator: asClass(UuidGenerator),
+    llmProvider: asClass(LlmProvider),
 
-  dbClient: asClass(JsonDbClient),
-  reportRepository: asClass(JsonReportRepository),
+    dbClient: asClass(JsonDbClient),
+    reportRepository: asClass(JsonReportRepository),
 
-  gitService: asClass(GitService),
+    gitService: asClass(GitService),
 
-  generateReportUseCase: asClass(GenerateReportUseCase),
-});
+    generateReportUseCase: asClass(GenerateReportUseCase),
+  });
 
-export { diContainer };
+  return diContainer;
+}

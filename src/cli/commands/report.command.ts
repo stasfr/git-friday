@@ -25,11 +25,17 @@ export function report(program: Command, diContainer: DiContainer): void {
       try {
         spinner.start('Searching for commits...');
 
-        const gitLogOutput = await gitService.getCommitLog({
-          authors: options.authors,
-          branches: options.branches,
-          currentUser: options.currentUser,
-        });
+        gitService.forBranches(options.branches)
+          .today()
+          .pretty();
+
+        if (options.authors) {
+          gitService.forAuthors(options.authors);
+        } else if (options.currentUser) {
+          await gitService.forCurrentUser();
+        }
+
+        const gitLogOutput = await gitService.getCommitLog();
 
         if (!gitLogOutput.trim()) {
           spinner.warn('No commits found for the specified criteria.');

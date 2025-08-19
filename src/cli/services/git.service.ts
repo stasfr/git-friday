@@ -1,20 +1,23 @@
 import { exec as syncExec, ExecOptions } from 'child_process';
 import { promisify } from 'util';
 
-interface GetCommitLogParams {
-  authors: string[] | null | undefined;
-  branches: string[] | null | undefined;
-  currentUser: boolean;
-}
-
 export class GitService {
   private readonly exec: (command: string, options?: ExecOptions) => Promise<{
     stdout: string;
     stderr: string
   }>;
 
+  private commandParts: string[];
+
   constructor() {
     this.exec = promisify(syncExec);
+    this.commandParts = ['git', 'log'];
+  }
+
+  private reset(): this {
+    this.commandParts = ['git', 'log'];
+
+    return this;
   }
 
   private async getGitUserEmail(): Promise<string> {
@@ -23,35 +26,50 @@ export class GitService {
     return stdout.trim();
   }
 
-  public async getCommitLog(params: GetCommitLogParams): Promise<string> {
-    let authorArgs = '';
-
-    if (params.authors && params.authors.length > 0) {
-      authorArgs = params.authors
-        .map((author) => `--author="${author}"`)
+  public forAuthors(authors: string[] | null | undefined): this {
+    if (authors && authors.length > 0) {
+      const authorArgs = authors.map((author) => `--author="${author}"`)
         .join(' ');
-    } else if (params.currentUser) {
-      const userEmail = await this.getGitUserEmail();
-      authorArgs = `--author="${userEmail}"`;
+      this.commandParts.push(authorArgs);
     }
 
-    const branchArgs =
-      params.branches && params.branches.length > 0
-        ? params.branches.join(' ')
-        : '--all';
+    return this;
+  }
 
-    const commandParts = ['git', 'log', branchArgs];
+  public async forCurrentUser(): Promise<this> {
+    const userEmail = await this.getGitUserEmail();
+    this.commandParts.push(`--author="${userEmail}"`);
 
-    if (authorArgs) {
-      commandParts.push(authorArgs);
-    }
+    return this;
+  }
 
-    commandParts.push('--since="00:00:00"');
-    commandParts.push('--pretty=format:"- %s%n%b"');
+  public forBranches(branches: string[] | null | undefined): this {
+    const branchArgs = branches && branches.length > 0
+      ? branches.join(' ')
+      : '--all';
+    this.commandParts.push(branchArgs);
 
-    const command = commandParts.join(' ');
+    return this;
+  }
 
+  public today(): this {
+    this.commandParts.push('--since="00:00:00"');
+
+    return this;
+  }
+
+  public pretty(): this {
+    this.commandParts.push('--pretty=format:"- %s%n%b"');
+
+    return this;
+  }
+
+  public async getCommitLog(): Promise<string> {
+    const command = this.commandParts.join(' ');
     const cwd = process.cwd();
+
+    // Reset for the next potential command build
+    this.reset();
 
     const { stdout } = await this.exec(command, { cwd });
 

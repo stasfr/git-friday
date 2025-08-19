@@ -7,6 +7,10 @@ interface Database { reports: PersistedReport[]; }
 
 export type LowDatabase = Low<Database>;
 
-export function initializeJsonDbClient(path: string): LowDatabase {
-  return new Low<Database>(new JSONFile(`${path}/db.json`), { reports: [] });
+interface JsonDbClientDependencies { jsonDbPath: string; }
+
+export class JsonDbClient extends Low<Database> {
+  constructor(dependencies: JsonDbClientDependencies) {
+    super(new JSONFile(`${dependencies.jsonDbPath}/db.json`), { reports: [] });
+  }
 }

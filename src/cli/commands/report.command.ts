@@ -1,35 +1,41 @@
-import { AI_COMPLETION_MODEL } from '@/config.js';
-
 import { Command } from 'commander';
-import ora from 'ora';
 
-import { generateReportUseCase, gitService } from './dependencies.js';
+import type { DiContainer } from '@/infrastructure/di/container.js';
 
-export function setupCommands(program: Command): void {
+interface CommandOption {
+  authors?: string[];
+  branches?: string[];
+  currentUser: boolean;
+}
+
+export function report(program: Command, diContainer: DiContainer): void {
   program
-    .command('generate')
+    .command('report')
     .description('Generate a report from git commits')
     .option('-a, --authors <authors...>', 'Git authors')
     .option('-b, --branches <branches...>', 'Git branches')
-    .action(async (options: {
-      authors?: string[];
-      branches?: string[]
-    }) => {
-      const spinner = ora();
+    .option('--current-user', 'Filter commits by your git user.email', false)
+    .action(async (options: CommandOption) => {
+      if (options.authors && options.currentUser) {
+        program.error('error: option \'--authors <authors...>\' cannot be used with option \'--current-user\'');
+      }
+
+      const { gitService, generateReportUseCase, aiCompletionModel, spinner } = diContainer.cradle;
 
       try {
-        if (!options.authors || !options.branches || !AI_COMPLETION_MODEL) {
-          spinner.fail('Please provide both authors and branches');
-
-          return;
-        }
-
         spinner.start('Searching for commits...');
 
-        const gitLogOutput = await gitService.getCommitLog({
-          authors: options.authors,
-          branches: options.branches,
-        });
+        gitService.forBranches(options.branches)
+          .today()
+          .pretty();
+
+        if (options.authors) {
+          gitService.forAuthors(options.authors);
+        } else if (options.currentUser) {
+          await gitService.forCurrentUser();
+        }
+
+        const gitLogOutput = await gitService.getCommitLog();
 
         if (!gitLogOutput.trim()) {
           spinner.warn('No commits found for the specified criteria.');
@@ -38,7 +44,6 @@ export function setupCommands(program: Command): void {
         }
 
         spinner.succeed('Commits found');
-
         spinner.start('Generating report...');
 
         const generationResult = await generateReportUseCase.execute({
@@ -46,7 +51,7 @@ export function setupCommands(program: Command): void {
           gitCommandParams: {
             authors: options.authors,
             branches: options.branches,
-            llmModelName: AI_COMPLETION_MODEL,
+            llmModelName: aiCompletionModel,
             llmProvider: 'openrouter',
           },
         });
@@ -73,15 +78,19 @@ export function setupCommands(program: Command): void {
           spinner.warn(`Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`);
         }
 
+        const statisticsData = {
+          'Prompt Tokens': { value: report.statistic.promptTokens },
+          'Completion Tokens': { value: report.statistic.completionTokens },
+          'Total Tokens': { value: report.statistic.totalTokens },
+        };
+
         console.log();
         console.log('Report:');
         console.log(report.body.trim());
 
         console.log();
         console.log('Statistics:');
-        console.log(`  Prompt tokens: ${report.statistic.promptTokens.toString()}`);
-        console.log(`  Completion tokens: ${report.statistic.completionTokens.toString()}`);
-        console.log(`  Total tokens: ${report.statistic.totalTokens.toString()}`);
+        console.table(statisticsData);
       } catch (error) {
         spinner.fail(`An unexpected error occurred: ${error instanceof Error
           ? error.message

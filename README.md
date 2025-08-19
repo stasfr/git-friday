@@ -8,17 +8,17 @@ You can install Git Friday globally using your preferred package manager:
 
 ### npm
 ```bash
-npm install -g @stas_fr/git-friday
+npm install -g git-friday
 ```
 
 ### pnpm
 ```bash
-pnpm add -g @stas_fr/git-friday
+pnpm add -g git-friday
 ```
 
 ### yarn
 ```bash
-yarn global add @stas_fr/git-friday
+yarn global add git-friday
 ```
 
 ## Usage
@@ -37,20 +37,26 @@ The tool will not work without these variables defined.
 
 ### Generating a Report
 
-The main command is `generate`. It accepts the following parameters:
+The main command is `report`. It accepts the following parameters:
 
-*   `-a, --authors <authors...>`: (Required) A space-separated list of Git authors whose commits you want to analyze.
-*   `-b, --branches <branches...>`: (Required) A space-separated list of branches to include in the analysis.
+*   `-a, --authors <authors...>`: (Optional) A space-separated list of Git authors whose commits you want to analyze. If not provided, commits from all authors will be included.
+*   `-b, --branches <branches...>`: (Optional) A space-separated list of branches to include in the analysis. If not provided, all branches will be analyzed.
+*   `--current-user`: (Optional) A flag to filter commits by your current Git `user.email`. This option cannot be used with `--authors`.
 
 ### Example
 
 Here is an example of how to run the command:
 
 ```bash
-friday generate -a s.farkash stas_fr -b dev main
+friday report -a s.farkash stas_fr -b dev main
 ```
 
 This command will search for all commits made today by the authors `s.farkash` and `stas_fr` within the `dev` and `main` branches, and then generate a consolidated report based on them.
+
+To generate a report for your own commits across all branches:
+```bash
+friday report --current-user
+```
 
 ## Workflow
 

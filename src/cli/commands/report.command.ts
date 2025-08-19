@@ -9,7 +9,7 @@ interface CommandOption {
 
 export function report(program: Command, diContainer: DiContainer): void {
   program
-    .command('generate')
+    .command('report')
     .description('Generate a report from git commits')
     .option('-a, --authors <authors...>', 'Git authors')
     .option('-b, --branches <branches...>', 'Git branches')

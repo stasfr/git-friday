@@ -5,6 +5,7 @@ import type { DiContainer } from '@/infrastructure/di/container.js';
 interface CommandOption {
   authors?: string[];
   branches?: string[];
+  currentUser: boolean;
 }
 
 export function report(program: Command, diContainer: DiContainer): void {
@@ -13,21 +14,21 @@ export function report(program: Command, diContainer: DiContainer): void {
     .description('Generate a report from git commits')
     .option('-a, --authors <authors...>', 'Git authors')
     .option('-b, --branches <branches...>', 'Git branches')
+    .option('--current-user', 'Filter commits by your git user.email', false)
     .action(async (options: CommandOption) => {
+      if (options.authors && options.currentUser) {
+        program.error('error: option \'--authors <authors...>\' cannot be used with option \'--current-user\'');
+      }
+
       const { gitService, generateReportUseCase, aiCompletionModel, spinner } = diContainer.cradle;
 
       try {
-        if (!options.authors || !options.branches || !aiCompletionModel) {
-          spinner.fail('Please provide both authors and branches');
-
-          return;
-        }
-
         spinner.start('Searching for commits...');
 
         const gitLogOutput = await gitService.getCommitLog({
           authors: options.authors,
           branches: options.branches,
+          currentUser: options.currentUser,
         });
 
         if (!gitLogOutput.trim()) {

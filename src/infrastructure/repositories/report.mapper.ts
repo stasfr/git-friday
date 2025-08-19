@@ -12,8 +12,8 @@ export interface PersistedReport {
   createdAt: string;
   updatedAt: string | null;
   generationParams: {
-    authors: readonly string[];
-    branches: readonly string[];
+    authors?: readonly string[];
+    branches?: readonly string[];
     since?: Date;
     until?: Date;
     llmModelName: string;

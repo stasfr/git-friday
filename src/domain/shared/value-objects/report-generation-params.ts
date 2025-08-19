@@ -1,8 +1,8 @@
 import { ValidationError } from '@/domain/shared/domain.errors.js';
 
 export interface ReportGenerationParamsProps {
-  authors: readonly string[];
-  branches: readonly string[];
+  authors?: readonly string[];
+  branches?: readonly string[];
   since?: Date;
   until?: Date;
   llmModelName: string;
@@ -10,9 +10,9 @@ export interface ReportGenerationParamsProps {
 }
 
 export class ReportGenerationParams {
-  private readonly _authors: readonly string[];
+  private readonly _authors?: readonly string[];
 
-  private readonly _branches: readonly string[];
+  private readonly _branches?: readonly string[];
 
   private readonly _since?: Date;
 
@@ -22,11 +22,11 @@ export class ReportGenerationParams {
 
   private readonly _llmProvider: string;
 
-  get authors(): readonly string[] {
+  get authors(): readonly string[] | undefined {
     return this._authors;
   }
 
-  get branches(): readonly string[] {
+  get branches(): readonly string[] | undefined {
     return this._branches;
   }
 
@@ -49,8 +49,12 @@ export class ReportGenerationParams {
   private constructor(props: ReportGenerationParamsProps) {
     this.validate(props);
 
-    this._authors = Object.freeze(props.authors);
-    this._branches = Object.freeze(props.branches);
+    this._authors = props.authors
+      ? Object.freeze(props.authors)
+      : undefined;
+    this._branches = props.branches
+      ? Object.freeze(props.branches)
+      : undefined;
     this._since = props.since;
     this._until = props.until;
     this._llmModelName = props.llmModelName;
@@ -58,20 +62,6 @@ export class ReportGenerationParams {
   }
 
   private validate(props: ReportGenerationParamsProps): void {
-    if (!props.authors || props.authors.length === 0) {
-      throw new ValidationError({
-        fieldName: 'authors',
-        reason: 'At least one author must be specified.',
-      });
-    }
-
-    if (!props.branches || props.branches.length === 0) {
-      throw new ValidationError({
-        fieldName: 'branches',
-        reason: 'At least one branch must be specified.',
-      });
-    }
-
     if (props.since && props.until && props.since > props.until) {
       throw new ValidationError({
         fieldName: 'since/until',

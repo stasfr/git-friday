@@ -17,8 +17,8 @@ import type { ReportDto } from '@/application/use-cases/generate-report.dto.js';
 interface GenerateReportCommand {
   gitLogOutput: string;
   gitCommandParams: {
-    authors: string[];
-    branches: string[];
+    authors?: string[];
+    branches?: string[];
     llmModelName: string;
     llmProvider: string;
   };

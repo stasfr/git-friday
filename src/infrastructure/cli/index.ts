@@ -8,7 +8,9 @@ import { Command } from 'commander';
 
 import { createConfig } from '@/infrastructure/config/config.js';
 import { createDiContainer } from '@/infrastructure/di/container.js';
+
 import { report } from '@/infrastructure/cli/commands/report.command.js';
+import { pr } from '@/infrastructure/cli/commands/pr.command.js';
 
 async function main(): Promise<void> {
   try {
@@ -35,6 +37,7 @@ async function main(): Promise<void> {
     .description(pkg.description);
 
   report(program, diContainer);
+  pr(program, diContainer);
 
   program.parse(process.argv);
 }

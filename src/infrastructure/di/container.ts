@@ -5,6 +5,7 @@ import type { AppConfig } from '@/infrastructure/config/config.js';
 import ora, { type Ora } from 'ora';
 
 import { GenerateReportUseCase } from '@/application/use-cases/generate-report.use-case.js';
+import { GeneratePullRequestUseCase } from '@/application/use-cases/generate-pull-request.use-case.js';
 
 import { LlmProvider } from '@/infrastructure/providers/llm.provider.js';
 import { UuidGenerator } from '@/infrastructure/generators/uuid.generator.js';
@@ -30,6 +31,7 @@ interface Container {
   gitService: GitService;
 
   generateReportUseCase: GenerateReportUseCase;
+  generatePullRequestUseCase: GeneratePullRequestUseCase;
 }
 
 export type DiContainer = AwilixContainer<Container>;
@@ -56,6 +58,7 @@ export function createDiContainer(config: AppConfig) {
     gitService: asClass(GitService),
 
     generateReportUseCase: asClass(GenerateReportUseCase),
+    generatePullRequestUseCase: asClass(GeneratePullRequestUseCase),
   });
 
   return diContainer;

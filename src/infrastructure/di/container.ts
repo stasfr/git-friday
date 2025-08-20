@@ -1,6 +1,6 @@
 import { createContainer, InjectionMode, asValue, asClass, type AwilixContainer } from 'awilix';
 
-import type { AppConfig } from '@/config.js';
+import type { AppConfig } from '@/infrastructure/config/config.js';
 
 import ora, { type Ora } from 'ora';
 
@@ -12,7 +12,7 @@ import { UuidGenerator } from '@/infrastructure/generators/uuid.generator.js';
 import { JsonDbClient } from '@/infrastructure/db/lowdb.client.js';
 import { JsonReportRepository } from '@/infrastructure/repositories/report.repository.js';
 
-import { GitService } from '@/cli/services/git.service.js';
+import { GitService } from '@/infrastructure/cli/services/git.service.js';
 
 interface Container {
   spinner: Ora;

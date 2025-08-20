@@ -14,7 +14,7 @@ export class LlmProvider implements ILlmProvider {
     });
   }
 
-  private generateSystemPrompt(): string {
+  private generateSystemPromptForReport(): string {
     return `
       # Роль:
       Ты — AI-ассистент тимлида, специализирующийся на анализе логов git и составлении отчетов о проделанной работе. Ты преобразуешь технические списки коммитов в понятные для менеджмента отчеты.
@@ -37,7 +37,7 @@ export class LlmProvider implements ILlmProvider {
     `;
   }
 
-  private generateUserPrompt(commits: string): string {
+  private generateUserPromptForReport(commits: string): string {
     return `
       Проанализируй следующие коммиты и сгенерируй отчет, строго следуя правилам и формату, заданным в твоих инструкциях.
 
@@ -47,8 +47,8 @@ export class LlmProvider implements ILlmProvider {
   }
 
   public async getReportBody(commits: string, modelName: string): Promise<ICompletionResult | null> {
-    const systemPrompt = this.generateSystemPrompt();
-    const userPrompt = this.generateUserPrompt(commits);
+    const systemPrompt = this.generateSystemPromptForReport();
+    const userPrompt = this.generateUserPromptForReport(commits);
 
     const completion = await this.client.chat.completions.create({
       messages: [

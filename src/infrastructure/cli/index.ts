@@ -11,6 +11,7 @@ import { createDiContainer } from '@/infrastructure/di/container.js';
 
 import { report } from '@/infrastructure/cli/commands/report.command.js';
 import { pr } from '@/infrastructure/cli/commands/pr.command.js';
+import { changelog } from '@/infrastructure/cli/commands/changelog.command.js';
 
 async function main(): Promise<void> {
   try {
@@ -38,6 +39,7 @@ async function main(): Promise<void> {
 
   report(program, diContainer);
   pr(program, diContainer);
+  changelog(program, diContainer);
 
   program.parse(process.argv);
 }

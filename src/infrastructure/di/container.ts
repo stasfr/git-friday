@@ -6,6 +6,7 @@ import ora, { type Ora } from 'ora';
 
 import { GenerateReportUseCase } from '@/application/use-cases/generate-report.use-case.js';
 import { GeneratePullRequestUseCase } from '@/application/use-cases/generate-pull-request.use-case.js';
+import { GenerateChangeLogUseCase } from '@/application/use-cases/generate-changelog.use-case.js';
 
 import { LlmProvider } from '@/infrastructure/providers/llm.provider.js';
 import { UuidGenerator } from '@/infrastructure/generators/uuid.generator.js';
@@ -32,6 +33,7 @@ interface Container {
 
   generateReportUseCase: GenerateReportUseCase;
   generatePullRequestUseCase: GeneratePullRequestUseCase;
+  generateChangeLogUseCase: GenerateChangeLogUseCase;
 }
 
 export type DiContainer = AwilixContainer<Container>;
@@ -59,6 +61,7 @@ export function createDiContainer(config: AppConfig) {
 
     generateReportUseCase: asClass(GenerateReportUseCase),
     generatePullRequestUseCase: asClass(GeneratePullRequestUseCase),
+    generateChangeLogUseCase: asClass(GenerateChangeLogUseCase),
   });
 
   return diContainer;

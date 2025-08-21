@@ -2,16 +2,22 @@ import { Command } from 'commander';
 
 import type { DiContainer } from '@/infrastructure/di/container.js';
 
-interface CommandOption { branches: string[]; }
+interface CommandOption { branches: string; }
 
 export function pr(program: Command, diContainer: DiContainer): void {
   program
     .command('pr')
     .description('Generate a pull request description from git commits')
-    .option('-b, --branches <branches...>', 'Git branches to compare (e.g., main..develop)')
+    .option('-b, --branches <branches>', 'Git branches to compare in target..source syntax (e.g., main..develop)')
     .action(async (options: CommandOption) => {
-      if (!options.branches || options.branches.length === 0) {
-        program.error('error: required option \'-b, --branches <branches...>\' not specified');
+      if (!options.branches) {
+        program.error('error: required option \'-b, --branches <branches>\' not specified');
+      }
+
+      const branchesPattern = /^[^.\s]+\.\.[^.\s]+$/;
+
+      if (!branchesPattern.test(options.branches)) {
+        program.error('error: invalid format for --branches option. Expected format: "target..source"');
       }
 
       const { gitService, generatePullRequestUseCase, aiCompletionModel, spinner } = diContainer.cradle;
@@ -19,7 +25,7 @@ export function pr(program: Command, diContainer: DiContainer): void {
       try {
         spinner.start('Searching for commits...');
 
-        gitService.forBranches(options.branches)
+        gitService.forRange(options.branches)
           .pretty();
 
         const gitLogOutput = await gitService.getCommitLog();

@@ -52,6 +52,14 @@ export class GitService {
     return this;
   }
 
+  public forRange(range: string | null | undefined): this {
+    if (range) {
+      this.commandParts.push(range);
+    }
+
+    return this;
+  }
+
   public today(): this {
     this.commandParts.push('--since="00:00:00"');
 

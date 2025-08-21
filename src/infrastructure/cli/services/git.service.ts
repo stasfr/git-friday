@@ -60,6 +60,14 @@ export class GitService {
     return this;
   }
 
+  public sinceTag(tag: string | null | undefined): this {
+    if (tag) {
+      this.commandParts.push(`${tag}..`);
+    }
+
+    return this;
+  }
+
   public today(): this {
     this.commandParts.push('--since="00:00:00"');
 

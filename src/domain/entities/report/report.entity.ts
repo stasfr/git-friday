@@ -3,7 +3,6 @@ import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
 import { NotPendingStatusErrors } from '@/domain/errors/report.errors.js';
 
-import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
 export type ReportStatus = 'PENDING' | 'COMPLETED' | 'FAILED';
@@ -12,7 +11,7 @@ interface ReportEntityProps {
   id: ReportId;
   statistic: StatisticEntity;
   generationParams: ReportGenerationParams;
-  sourceCommits: CommitLog;
+  sourceCommits: readonly string[];
   status: ReportStatus;
   body: string | null;
   error: string | null;
@@ -27,7 +26,7 @@ export class ReportEntity {
 
   private readonly _generationParams: ReportGenerationParams;
 
-  private readonly _sourceCommits: CommitLog;
+  private readonly _sourceCommits: readonly string[];
 
   private _status: ReportStatus;
 
@@ -48,7 +47,7 @@ export class ReportEntity {
   }
 
   get sourceCommits(): readonly string[] {
-    return this._sourceCommits.values;
+    return this._sourceCommits;
   }
 
   get status(): ReportStatus {
@@ -91,7 +90,7 @@ export class ReportEntity {
     id: ReportId;
     statistic: StatisticEntity;
     generationParams: ReportGenerationParams;
-    sourceCommits: CommitLog;
+    sourceCommits: readonly string[];
   }): ReportEntity {
     return new ReportEntity({
       ...props,

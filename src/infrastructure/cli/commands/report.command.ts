@@ -35,9 +35,9 @@ export function report(program: Command, diContainer: DiContainer): void {
           await gitService.forCurrentUser();
         }
 
-        const gitLogOutput = await gitService.getCommitLog();
+        const sourceCommits = await gitService.getCommitLog();
 
-        if (!gitLogOutput.trim()) {
+        if (sourceCommits.length === 0) {
           spinner.warn('No commits found for the specified criteria.');
 
           return;
@@ -47,7 +47,7 @@ export function report(program: Command, diContainer: DiContainer): void {
         spinner.start('Generating report...');
 
         const generationResult = await generateReportUseCase.execute({
-          gitLogOutput,
+          sourceCommits,
           gitCommandParams: {
             authors: options.authors,
             branches: options.branches,

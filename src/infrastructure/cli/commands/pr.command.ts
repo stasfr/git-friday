@@ -28,9 +28,9 @@ export function pr(program: Command, diContainer: DiContainer): void {
         gitService.forRange(options.branches)
           .pretty();
 
-        const gitLogOutput = await gitService.getCommitLog();
+        const sourceCommits = await gitService.getCommitLog();
 
-        if (!gitLogOutput.trim()) {
+        if (sourceCommits.length === 0) {
           spinner.warn('No commits found for the specified criteria.');
 
           return;
@@ -40,7 +40,7 @@ export function pr(program: Command, diContainer: DiContainer): void {
         spinner.start('Generating pull request description...');
 
         const generationResult = await generatePullRequestUseCase.execute({
-          gitLogOutput,
+          sourceCommits,
           gitCommandParams: {
             llmModelName: aiCompletionModel,
             llmProvider: 'openrouter',

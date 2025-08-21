@@ -1,3 +1,4 @@
+import path from 'path';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 
@@ -11,6 +12,7 @@ interface JsonDbClientDependencies { jsonDbPath: string; }
 
 export class JsonDbClient extends Low<Database> {
   constructor(dependencies: JsonDbClientDependencies) {
-    super(new JSONFile(`${dependencies.jsonDbPath}/db.json`), { reports: [] });
+    const dbPath = path.join(dependencies.jsonDbPath, 'db.json');
+    super(new JSONFile(dbPath), { reports: [] });
   }
 }

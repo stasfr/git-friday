@@ -2,10 +2,9 @@ import { ReportId } from '@/domain/entities/report/report-id.js';
 import { ReportEntity } from '@/domain/entities/report/report.entity.js';
 import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
-import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
-import { DomainError, InternalDomainError, ExternalServiceError } from '@/domain/shared/domain.errors.js';
+import { DomainError, InternalDomainError, ExternalServiceError, ValidationError } from '@/domain/shared/domain.errors.js';
 import { ErrorResult, Result, type Either } from '@/lib/either.js';
 
 import type { IReportRepository } from '@/domain/repositories/report.repository.interface.js';
@@ -15,7 +14,7 @@ import type { IdGenerator } from '@/domain/services/id-generator.interface.js';
 import type { ReportDto } from '@/application/use-cases/generate-report.dto.js';
 
 interface GenerateReportCommand {
-  gitLogOutput: string;
+  sourceCommits: readonly string[];
   gitCommandParams: {
     authors?: string[];
     branches?: string[];
@@ -40,11 +39,17 @@ export class GenerateReportUseCase {
   public async execute(command: GenerateReportCommand): Promise<Either<DomainError, ReportDto>> {
     try {
       const {
-        gitLogOutput,
+        sourceCommits,
         gitCommandParams,
       } = command;
 
-      const sourceCommits = CommitLog.create(gitLogOutput);
+      if (sourceCommits.length === 0) {
+        throw new ValidationError({
+          fieldName: 'sourceCommits',
+          reason: 'Cannot generate a report from an empty list of commits.',
+        });
+      }
+
       const generationParams = ReportGenerationParams.create({
         authors: gitCommandParams.authors,
         branches: gitCommandParams.branches,
@@ -62,7 +67,7 @@ export class GenerateReportUseCase {
         statistic,
       });
 
-      const completionResult = await this.dependencyContainer.llmProvider.getReportBody(sourceCommits.value, generationParams.llmModelName);
+      const completionResult = await this.dependencyContainer.llmProvider.getReportBody(sourceCommits.join('\n'), generationParams.llmModelName);
 
       if (!completionResult) {
         throw new ExternalServiceError({

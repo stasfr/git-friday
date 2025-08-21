@@ -80,7 +80,7 @@ export class GitService {
     return this;
   }
 
-  public async getCommitLog(): Promise<string> {
+  public async getCommitLog(): Promise<string[]> {
     const command = this.commandParts.join(' ');
     const cwd = process.cwd();
 
@@ -88,7 +88,40 @@ export class GitService {
     this.reset();
 
     const { stdout } = await this.exec(command, { cwd });
+    const trimmedOutput = stdout.trim();
 
-    return stdout;
+    if (!trimmedOutput) {
+      return [];
+    }
+
+    const conventionalCommitHeaderRegex =
+      /^- (feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)(\(.*\))?:/gim;
+
+    const matches = [...trimmedOutput.matchAll(conventionalCommitHeaderRegex)];
+
+    if (matches.length === 0) {
+      return [];
+    }
+
+    const commits: string[] = [];
+
+    for (let i = 0; i < matches.length; i++) {
+      const currentMatch = matches[i];
+      const startIndex = currentMatch.index;
+
+      const nextMatch = matches[i + 1];
+      const endIndex = nextMatch
+        ? nextMatch.index
+        : trimmedOutput.length;
+
+      const commitMessage = trimmedOutput.substring(startIndex, endIndex)
+        .trim();
+
+      if (commitMessage) {
+        commits.push(commitMessage);
+      }
+    }
+
+    return commits;
   }
 }

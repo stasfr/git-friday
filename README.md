@@ -35,27 +35,60 @@ Before running, you need to create a `.env` file in the root of your repository.
 
 The tool will not work without these variables defined.
 
-### Generating a Report
+### Available Commands
 
-The main command is `report`. It accepts the following parameters:
+Git Friday provides several commands to generate different types of content based on your git history.
+
+#### `report`
+
+Generates a daily activity report based on today's commits.
+
+**Options:**
 
 *   `-a, --authors <authors...>`: (Optional) A space-separated list of Git authors whose commits you want to analyze. If not provided, commits from all authors will be included.
 *   `-b, --branches <branches...>`: (Optional) A space-separated list of branches to include in the analysis. If not provided, all branches will be analyzed.
 *   `--current-user`: (Optional) A flag to filter commits by your current Git `user.email`. This option cannot be used with `--authors`.
 
-### Example
+**Examples:**
 
-Here is an example of how to run the command:
-
+To generate a report for commits made by `s.farkash` and `stas_fr` in the `dev` and `main` branches:
 ```bash
 friday report -a s.farkash stas_fr -b dev main
 ```
 
-This command will search for all commits made today by the authors `s.farkash` and `stas_fr` within the `dev` and `main` branches, and then generate a consolidated report based on them.
-
 To generate a report for your own commits across all branches:
 ```bash
 friday report --current-user
+```
+
+#### `changelog`
+
+Generates a changelog from git commits since a specific tag.
+
+**Options:**
+
+*   `--since-tag <tag>`: (Required) The git tag to generate the changelog from.
+
+**Example:**
+
+To generate a changelog for all commits since version `v1.0.0`:
+```bash
+friday changelog --since-tag v1.0.0
+```
+
+#### `pr`
+
+Generates a pull request description by comparing two branches.
+
+**Options:**
+
+*   `-b, --branches <branches>`: (Required) The branches to compare, in `target..source` format (e.g., `main..develop`).
+
+**Example:**
+
+To generate a pull request description for changes from the `develop` branch to be merged into `main`:
+```bash
+friday pr -b main..develop
 ```
 
 ## Workflow

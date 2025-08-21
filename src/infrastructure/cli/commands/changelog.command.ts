@@ -24,9 +24,9 @@ export function changelog(program: Command, diContainer: DiContainer): void {
           .pretty()
           .sinceTag(options.sinceTag);
 
-        const gitLogOutput = await gitService.getCommitLog();
+        const sourceCommits = await gitService.getCommitLog();
 
-        if (!gitLogOutput.trim()) {
+        if (sourceCommits.length === 0) {
           spinner.warn('No new commits found since the specified tag.');
 
           return;
@@ -36,7 +36,7 @@ export function changelog(program: Command, diContainer: DiContainer): void {
         spinner.start('Generating changelog...');
 
         const generationResult = await generateChangeLogUseCase.execute({
-          gitLogOutput,
+          sourceCommits,
           gitCommandParams: {
             llmModelName: aiCompletionModel,
             llmProvider: 'openrouter',

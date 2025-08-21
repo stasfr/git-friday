@@ -52,10 +52,13 @@ export function createDiContainer(config: AppConfig) {
     jsonDbPath: asValue(config.jsonDbPath),
 
     idGenerator: asClass(UuidGenerator),
-    llmProvider: asClass(LlmProvider),
+    llmProvider: asClass(LlmProvider)
+      .singleton(),
 
-    dbClient: asClass(JsonDbClient),
-    reportRepository: asClass(JsonReportRepository),
+    dbClient: asClass(JsonDbClient)
+      .singleton(),
+    reportRepository: asClass(JsonReportRepository)
+      .singleton(),
 
     gitService: asClass(GitService),
 

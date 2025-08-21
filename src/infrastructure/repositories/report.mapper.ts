@@ -2,7 +2,6 @@ import { ReportId } from '@/domain/entities/report/report-id.js';
 import { ReportEntity, type ReportStatus } from '@/domain/entities/report/report.entity.js';
 import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
-import { CommitLog } from '@/domain/shared/value-objects/commit-log.js';
 
 export interface PersistedReport {
   id: string;
@@ -38,7 +37,6 @@ export function toDomain(payload: PersistedReport): ReportEntity {
     llmModelName: generationParams.llmModelName,
     llmProvider: generationParams.llmProvider,
   });
-  const domainSourceCommits = CommitLog.from(sourceCommits);
   const domainStatistics = StatisticEntity.from({
     promptTokens: statistic.promptTokens,
     completionTokens: statistic.completionTokens,
@@ -49,12 +47,12 @@ export function toDomain(payload: PersistedReport): ReportEntity {
     status,
     body,
     error,
+    sourceCommits,
     createdAt: new Date(createdAt),
     updatedAt: updatedAt
       ? new Date(updatedAt)
       : null,
     generationParams: domainGenerationParams,
-    sourceCommits: domainSourceCommits,
     statistic: domainStatistics,
   });
 

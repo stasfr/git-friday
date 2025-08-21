@@ -4,4 +4,8 @@ export interface ICompletionResult {
   completionTokens: number;
 }
 
-export interface ILlmProvider { getReportBody(commits: string, modelName: string): Promise<ICompletionResult | null> }
+export interface ILlmProvider {
+  getReportBody(commits: string, modelName: string): Promise<ICompletionResult | null>
+  getPullRequestCompletion(commits: string, modelName: string): Promise<ICompletionResult | null>
+  getChangeLog(commits: string, modelName: string): Promise<ICompletionResult | null>
+}

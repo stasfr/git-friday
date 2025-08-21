@@ -1,6 +1,6 @@
 {
   "name": "git-friday",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "description": "An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report.",
   "main": "dist/src/infrastructure/cli/index.js",
   "type": "module",

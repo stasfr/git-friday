@@ -62,6 +62,16 @@ export class GitService {
     return this;
   }
 
+  public since(date: string) {
+    this.commandParts.push(`--since="${date}"`);
+    return this;
+  }
+
+  public until(date: string) {
+    this.commandParts.push(`--until="${date}"`);
+    return this;
+  }
+
   public async getCommitLog() {
     const command = this.commandParts.join(' ');
     const cwd = process.cwd();

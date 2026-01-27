@@ -10,6 +10,8 @@ export function report(program: Command, appConfig: AppConfig) {
     .description('Generate a report from git commits')
     .option('-a, --authors <authors...>', 'Git authors')
     .option('-b, --branches <branches...>', 'Git branches')
+    .option('--since <date>', 'Filter commits since a specific date')
+    .option('--until <date>', 'Filter commits until a specific date')
     .option('--current-user', 'Filter commits by your git user.email', false)
     .action(
       async (options: CommandOption) => await reportAction(options, appConfig),

@@ -1,6 +1,8 @@
 export type CommandOption = {
   authors?: string[];
   branches?: string[];
+  since?: string;
+  until?: string;
   currentUser: boolean;
 };
 

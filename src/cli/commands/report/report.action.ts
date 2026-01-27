@@ -40,7 +40,19 @@ export async function reportAction(
       await gitService.forCurrentUser();
     }
 
-    gitService.today().pretty();
+    if (options.since) {
+      gitService.since(options.since);
+    }
+
+    if (options.until) {
+      gitService.until(options.until);
+    }
+
+    if (!options.since && !options.until) {
+      gitService.today();
+    }
+
+    gitService.pretty();
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {

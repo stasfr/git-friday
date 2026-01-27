@@ -46,9 +46,9 @@
     "fmt:check": "oxfmt --check",
     "type-check": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
-    "release:patch": "pnpm version patch -m \"chore(release): publish v%s\" && git push --follow-tags && pnpm publish --access public",
-    "release:minor": "pnpm version minor -m \"chore(release): publish v%s\" && git push --follow-tags && pnpm publish --access public",
-    "release:major": "pnpm version major -m \"chore(release): publish v%s\" && git push --follow-tags && pnpm publish --access public"
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch"
   },
   "dependencies": {
     "commander": "^14.0.0",
@@ -64,6 +64,7 @@
     "oxfmt": "^0.27.0",
     "oxlint": "^1.42.0",
     "rimraf": "^6.0.1",
+    "standard-version": "^9.5.0",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.4",

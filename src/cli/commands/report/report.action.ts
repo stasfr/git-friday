@@ -59,7 +59,7 @@ export async function reportAction(
       throw new Error(notifications.noCommitsFoundError);
     }
 
-    spinner.succeed(notifications.commitsFound);
+    spinner.succeed(`${notifications.commitsFound}: ${sourceCommits.length}`);
     spinner.start(notifications.generateReport);
 
     const reportLlmService = new ReportLlmService(appConfig);

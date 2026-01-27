@@ -4,7 +4,12 @@ import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
-import { DomainError, InternalDomainError, ExternalServiceError, ValidationError } from '@/domain/shared/domain.errors.js';
+import {
+  DomainError,
+  InternalDomainError,
+  ExternalServiceError,
+  ValidationError,
+} from '@/domain/shared/domain.errors.js';
 import { ErrorResult, Result, type Either } from '@/lib/either.js';
 
 import type { IReportRepository } from '@/domain/repositories/report.repository.interface.js';
@@ -34,17 +39,17 @@ export class GeneratePullRequestUseCase {
     this.dependencyContainer = dependencyContainer;
   }
 
-  public async execute(command: GeneratePullRequestCommand): Promise<Either<DomainError, ReportDto>> {
+  public async execute(
+    command: GeneratePullRequestCommand,
+  ): Promise<Either<DomainError, ReportDto>> {
     try {
-      const {
-        sourceCommits,
-        gitCommandParams,
-      } = command;
+      const { sourceCommits, gitCommandParams } = command;
 
       if (sourceCommits.length === 0) {
         throw new ValidationError({
           fieldName: 'sourceCommits',
-          reason: 'Cannot generate a pull request from an empty list of commits.',
+          reason:
+            'Cannot generate a pull request from an empty list of commits.',
         });
       }
 
@@ -63,7 +68,11 @@ export class GeneratePullRequestUseCase {
         statistic,
       });
 
-      const completionResult = await this.dependencyContainer.llmProvider.getPullRequestCompletion(sourceCommits.join('\n'), generationParams.llmModelName);
+      const completionResult =
+        await this.dependencyContainer.llmProvider.getPullRequestCompletion(
+          sourceCommits.join('\n'),
+          generationParams.llmModelName,
+        );
 
       if (!completionResult) {
         throw new ExternalServiceError({
@@ -97,9 +106,8 @@ export class GeneratePullRequestUseCase {
           reportDto.error = error.message;
         }
 
-        reportDto.error = error instanceof Error
-          ? error.message
-          : String(error);
+        reportDto.error =
+          error instanceof Error ? error.message : String(error);
       }
 
       return Result.create(reportDto);
@@ -108,7 +116,9 @@ export class GeneratePullRequestUseCase {
         return ErrorResult.create(error);
       }
 
-      return ErrorResult.create(new InternalDomainError({ message: `Unknown error: ${String(error)}` }));
+      return ErrorResult.create(
+        new InternalDomainError({ message: `Unknown error: ${String(error)}` }),
+      );
     }
   }
 }

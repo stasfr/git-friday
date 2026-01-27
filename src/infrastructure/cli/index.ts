@@ -23,9 +23,10 @@ async function main(): Promise<void> {
       console.log(`Run 'npm i -g ${update.name}' to install it\n`);
     }
   } catch (error: unknown) {
-    console.log('Could not check for updates. Error:', error instanceof Error
-      ? error.message
-      : error);
+    console.log(
+      'Could not check for updates. Error:',
+      error instanceof Error ? error.message : error,
+    );
   }
 
   const appConfig = createConfig();
@@ -33,9 +34,7 @@ async function main(): Promise<void> {
 
   const program = new Command();
 
-  program
-    .version(pkg.version)
-    .description(pkg.description);
+  program.version(pkg.version).description(pkg.description);
 
   report(program, diContainer);
   pr(program, diContainer);

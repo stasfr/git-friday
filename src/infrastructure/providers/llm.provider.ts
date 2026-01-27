@@ -1,8 +1,13 @@
-import type { ILlmProvider, ICompletionResult } from '@/domain/services/llm-provider.interface.js';
+import type {
+  ILlmProvider,
+  ICompletionResult,
+} from '@/domain/services/llm-provider.interface.js';
 
 import OpenAI from 'openai';
 
-interface LlmProviderDependencies { openRouterApiKey: string; }
+interface LlmProviderDependencies {
+  openRouterApiKey: string;
+}
 
 export class LlmProvider implements ILlmProvider {
   private readonly client: OpenAI;
@@ -46,7 +51,10 @@ export class LlmProvider implements ILlmProvider {
     `;
   }
 
-  public async getReportBody(commits: string, modelName: string): Promise<ICompletionResult | null> {
+  public async getReportBody(
+    commits: string,
+    modelName: string,
+  ): Promise<ICompletionResult | null> {
     const systemPrompt = this.generateSystemPromptForReport();
     const userPrompt = this.generateUserPromptForReport(commits);
 
@@ -126,7 +134,10 @@ export class LlmProvider implements ILlmProvider {
     `;
   }
 
-  public async getPullRequestCompletion(commits: string, modelName: string): Promise<ICompletionResult | null> {
+  public async getPullRequestCompletion(
+    commits: string,
+    modelName: string,
+  ): Promise<ICompletionResult | null> {
     const systemPrompt = this.generateSystemPromptForPullRequest();
     const userPrompt = this.generateUserPromptForPullRequest(commits);
 
@@ -205,7 +216,10 @@ export class LlmProvider implements ILlmProvider {
     `;
   }
 
-  public async getChangeLog(commits: string, modelName: string): Promise<ICompletionResult | null> {
+  public async getChangeLog(
+    commits: string,
+    modelName: string,
+  ): Promise<ICompletionResult | null> {
     const systemPrompt = this.generateSystemPromptForChangeLog();
     const userPrompt = this.generateUserPromptForChangeLog(commits);
 

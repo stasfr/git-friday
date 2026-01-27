@@ -49,12 +49,8 @@ export class ReportGenerationParams {
   private constructor(props: ReportGenerationParamsProps) {
     this.validate(props);
 
-    this._authors = props.authors
-      ? Object.freeze(props.authors)
-      : undefined;
-    this._branches = props.branches
-      ? Object.freeze(props.branches)
-      : undefined;
+    this._authors = props.authors ? Object.freeze(props.authors) : undefined;
+    this._branches = props.branches ? Object.freeze(props.branches) : undefined;
     this._since = props.since;
     this._until = props.until;
     this._llmModelName = props.llmModelName;
@@ -84,7 +80,9 @@ export class ReportGenerationParams {
     }
   }
 
-  public static create(props: ReportGenerationParamsProps): ReportGenerationParams {
+  public static create(
+    props: ReportGenerationParamsProps,
+  ): ReportGenerationParams {
     return new ReportGenerationParams(props);
   }
 }

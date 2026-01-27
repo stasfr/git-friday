@@ -2,31 +2,44 @@ import { Command } from 'commander';
 
 import type { DiContainer } from '@/infrastructure/di/container.js';
 
-interface CommandOption { branches: string; }
+interface CommandOption {
+  branches: string;
+}
 
 export function pr(program: Command, diContainer: DiContainer): void {
   program
     .command('pr')
     .description('Generate a pull request description from git commits')
-    .option('-b, --branches <branches>', 'Git branches to compare in target..source syntax (e.g., main..develop)')
+    .option(
+      '-b, --branches <branches>',
+      'Git branches to compare in target..source syntax (e.g., main..develop)',
+    )
     .action(async (options: CommandOption) => {
       if (!options.branches) {
-        program.error('error: required option \'-b, --branches <branches>\' not specified');
+        program.error(
+          "error: required option '-b, --branches <branches>' not specified",
+        );
       }
 
       const branchesPattern = /^[^.\s]+\.\.[^.\s]+$/;
 
       if (!branchesPattern.test(options.branches)) {
-        program.error('error: invalid format for --branches option. Expected format: "target..source"');
+        program.error(
+          'error: invalid format for --branches option. Expected format: "target..source"',
+        );
       }
 
-      const { gitService, generatePullRequestUseCase, aiCompletionModel, spinner } = diContainer.cradle;
+      const {
+        gitService,
+        generatePullRequestUseCase,
+        aiCompletionModel,
+        spinner,
+      } = diContainer.cradle;
 
       try {
         spinner.start('Searching for commits...');
 
-        gitService.forRange(options.branches)
-          .pretty();
+        gitService.forRange(options.branches).pretty();
 
         const sourceCommits = await gitService.getCommitLog();
 
@@ -48,7 +61,9 @@ export function pr(program: Command, diContainer: DiContainer): void {
         });
 
         if (generationResult.isError()) {
-          spinner.fail(`Failed to generate pull request description: ${generationResult.error.message ?? 'Unknown error'}`);
+          spinner.fail(
+            `Failed to generate pull request description: ${generationResult.error.message ?? 'Unknown error'}`,
+          );
 
           return;
         }
@@ -56,7 +71,9 @@ export function pr(program: Command, diContainer: DiContainer): void {
         const report = generationResult.value;
 
         if (!report.body) {
-          spinner.fail(`Failed to generate pull request description: ${report.error ?? 'Unknown error'}`);
+          spinner.fail(
+            `Failed to generate pull request description: ${report.error ?? 'Unknown error'}`,
+          );
 
           return;
         }
@@ -66,7 +83,9 @@ export function pr(program: Command, diContainer: DiContainer): void {
         if (report.saved) {
           spinner.succeed('Report saved to database.');
         } else {
-          spinner.warn(`Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`);
+          spinner.warn(
+            `Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`,
+          );
         }
 
         const statisticsData = {
@@ -83,9 +102,11 @@ export function pr(program: Command, diContainer: DiContainer): void {
         console.log('Statistics:');
         console.table(statisticsData);
       } catch (error) {
-        spinner.fail(`An unexpected error occurred: ${error instanceof Error
-          ? error.message
-          : String(error)}`);
+        spinner.fail(
+          `An unexpected error occurred: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
       }
     });
 }

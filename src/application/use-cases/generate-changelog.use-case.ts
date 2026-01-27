@@ -4,7 +4,12 @@ import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
-import { DomainError, InternalDomainError, ExternalServiceError, ValidationError } from '@/domain/shared/domain.errors.js';
+import {
+  DomainError,
+  InternalDomainError,
+  ExternalServiceError,
+  ValidationError,
+} from '@/domain/shared/domain.errors.js';
 import { ErrorResult, Result, type Either } from '@/lib/either.js';
 
 import type { IReportRepository } from '@/domain/repositories/report.repository.interface.js';
@@ -34,12 +39,11 @@ export class GenerateChangeLogUseCase {
     this.dependencyContainer = dependencyContainer;
   }
 
-  public async execute(command: GenerateChangeLogCommand): Promise<Either<DomainError, ReportDto>> {
+  public async execute(
+    command: GenerateChangeLogCommand,
+  ): Promise<Either<DomainError, ReportDto>> {
     try {
-      const {
-        sourceCommits,
-        gitCommandParams,
-      } = command;
+      const { sourceCommits, gitCommandParams } = command;
 
       if (sourceCommits.length === 0) {
         throw new ValidationError({
@@ -63,7 +67,11 @@ export class GenerateChangeLogUseCase {
         statistic,
       });
 
-      const completionResult = await this.dependencyContainer.llmProvider.getChangeLog(sourceCommits.join('\n'), generationParams.llmModelName);
+      const completionResult =
+        await this.dependencyContainer.llmProvider.getChangeLog(
+          sourceCommits.join('\n'),
+          generationParams.llmModelName,
+        );
 
       if (!completionResult) {
         throw new ExternalServiceError({
@@ -97,9 +105,8 @@ export class GenerateChangeLogUseCase {
           reportDto.error = error.message;
         }
 
-        reportDto.error = error instanceof Error
-          ? error.message
-          : String(error);
+        reportDto.error =
+          error instanceof Error ? error.message : String(error);
       }
 
       return Result.create(reportDto);
@@ -108,7 +115,9 @@ export class GenerateChangeLogUseCase {
         return ErrorResult.create(error);
       }
 
-      return ErrorResult.create(new InternalDomainError({ message: `Unknown error: ${String(error)}` }));
+      return ErrorResult.create(
+        new InternalDomainError({ message: `Unknown error: ${String(error)}` }),
+      );
     }
   }
 }

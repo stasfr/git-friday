@@ -2,7 +2,9 @@ import { Command } from 'commander';
 
 import type { DiContainer } from '@/infrastructure/di/container.js';
 
-interface CommandOption { sinceTag: string; }
+interface CommandOption {
+  sinceTag: string;
+}
 
 export function changelog(program: Command, diContainer: DiContainer): void {
   program
@@ -11,18 +13,22 @@ export function changelog(program: Command, diContainer: DiContainer): void {
     .option('--since-tag <tag>', 'The git tag to generate the changelog from.')
     .action(async (options: CommandOption) => {
       if (!options.sinceTag) {
-        program.error('error: required option \'--since-tag <tag>\' not specified');
+        program.error(
+          "error: required option '--since-tag <tag>' not specified",
+        );
       }
 
-      const { gitService, generateChangeLogUseCase, aiCompletionModel, spinner } = diContainer.cradle;
+      const {
+        gitService,
+        generateChangeLogUseCase,
+        aiCompletionModel,
+        spinner,
+      } = diContainer.cradle;
 
       try {
         spinner.start(`Searching for commits since tag ${options.sinceTag}...`);
 
-        gitService
-          .forBranches(null)
-          .pretty()
-          .sinceTag(options.sinceTag);
+        gitService.forBranches(null).pretty().sinceTag(options.sinceTag);
 
         const sourceCommits = await gitService.getCommitLog();
 
@@ -44,7 +50,9 @@ export function changelog(program: Command, diContainer: DiContainer): void {
         });
 
         if (generationResult.isError()) {
-          spinner.fail(`Failed to generate changelog: ${generationResult.error.message ?? 'Unknown error'}`);
+          spinner.fail(
+            `Failed to generate changelog: ${generationResult.error.message ?? 'Unknown error'}`,
+          );
 
           return;
         }
@@ -52,7 +60,9 @@ export function changelog(program: Command, diContainer: DiContainer): void {
         const report = generationResult.value;
 
         if (!report.body) {
-          spinner.fail(`Failed to generate changelog: ${report.error ?? 'Unknown error'}`);
+          spinner.fail(
+            `Failed to generate changelog: ${report.error ?? 'Unknown error'}`,
+          );
 
           return;
         }
@@ -62,7 +72,9 @@ export function changelog(program: Command, diContainer: DiContainer): void {
         if (report.saved) {
           spinner.succeed('Report saved to database.');
         } else {
-          spinner.warn(`Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`);
+          spinner.warn(
+            `Warning: Report was generated, but failed to save: ${report.error ?? 'Unknown error'}`,
+          );
         }
 
         const statisticsData = {
@@ -79,9 +91,11 @@ export function changelog(program: Command, diContainer: DiContainer): void {
         console.log('Statistics:');
         console.table(statisticsData);
       } catch (error) {
-        spinner.fail(`An unexpected error occurred: ${error instanceof Error
-          ? error.message
-          : String(error)}`);
+        spinner.fail(
+          `An unexpected error occurred: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
       }
     });
 }

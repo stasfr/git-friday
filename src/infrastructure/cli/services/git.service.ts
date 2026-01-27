@@ -2,9 +2,12 @@ import { exec as syncExec, ExecOptions } from 'child_process';
 import { promisify } from 'util';
 
 export class GitService {
-  private readonly exec: (command: string, options?: ExecOptions) => Promise<{
+  private readonly exec: (
+    command: string,
+    options?: ExecOptions,
+  ) => Promise<{
     stdout: string;
-    stderr: string
+    stderr: string;
   }>;
 
   private commandParts: string[];
@@ -28,7 +31,8 @@ export class GitService {
 
   public forAuthors(authors: string[] | null | undefined): this {
     if (authors && authors.length > 0) {
-      const authorArgs = authors.map((author) => `--author="${author}"`)
+      const authorArgs = authors
+        .map((author) => `--author="${author}"`)
         .join(' ');
       this.commandParts.push(authorArgs);
     }
@@ -44,9 +48,8 @@ export class GitService {
   }
 
   public forBranches(branches: string[] | null | undefined): this {
-    const branchArgs = branches && branches.length > 0
-      ? branches.join(' ')
-      : '--all';
+    const branchArgs =
+      branches && branches.length > 0 ? branches.join(' ') : '--all';
     this.commandParts.push(branchArgs);
 
     return this;
@@ -110,11 +113,10 @@ export class GitService {
       const startIndex = currentMatch.index;
 
       const nextMatch = matches[i + 1];
-      const endIndex = nextMatch
-        ? nextMatch.index
-        : trimmedOutput.length;
+      const endIndex = nextMatch ? nextMatch.index : trimmedOutput.length;
 
-      const commitMessage = trimmedOutput.substring(startIndex, endIndex)
+      const commitMessage = trimmedOutput
+        .substring(startIndex, endIndex)
         .trim();
 
       if (commitMessage) {

@@ -2,9 +2,9 @@ import { StateConflictError } from '@/domain/shared/domain.errors.js';
 
 export class NotPendingStatusErrors extends StateConflictError {
   constructor(payload: {
-    reportId: string,
-    data?: Record<string, unknown>,
-    cause?: Error
+    reportId: string;
+    data?: Record<string, unknown>;
+    cause?: Error;
   }) {
     super({
       entityName: 'Report',

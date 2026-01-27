@@ -1,4 +1,10 @@
-import { createContainer, InjectionMode, asValue, asClass, type AwilixContainer } from 'awilix';
+import {
+  createContainer,
+  InjectionMode,
+  asValue,
+  asClass,
+  type AwilixContainer,
+} from 'awilix';
 
 import type { AppConfig } from '@/infrastructure/config/config.js';
 
@@ -52,13 +58,10 @@ export function createDiContainer(config: AppConfig) {
     jsonDbPath: asValue(config.jsonDbPath),
 
     idGenerator: asClass(UuidGenerator),
-    llmProvider: asClass(LlmProvider)
-      .singleton(),
+    llmProvider: asClass(LlmProvider).singleton(),
 
-    dbClient: asClass(JsonDbClient)
-      .singleton(),
-    reportRepository: asClass(JsonReportRepository)
-      .singleton(),
+    dbClient: asClass(JsonDbClient).singleton(),
+    reportRepository: asClass(JsonReportRepository).singleton(),
 
     gitService: asClass(GitService),
 

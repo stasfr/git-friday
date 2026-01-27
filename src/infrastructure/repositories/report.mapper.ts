@@ -1,5 +1,8 @@
 import { ReportId } from '@/domain/entities/report/report-id.js';
-import { ReportEntity, type ReportStatus } from '@/domain/entities/report/report.entity.js';
+import {
+  ReportEntity,
+  type ReportStatus,
+} from '@/domain/entities/report/report.entity.js';
 import { StatisticEntity } from '@/domain/entities/report/statistic.entity.js';
 import { ReportGenerationParams } from '@/domain/shared/value-objects/report-generation-params.js';
 
@@ -17,16 +20,26 @@ export interface PersistedReport {
     until?: Date;
     llmModelName: string;
     llmProvider: string;
-  }
+  };
   sourceCommits: readonly string[];
   statistic: {
     promptTokens: number;
     completionTokens: number;
-  }
+  };
 }
 
 export function toDomain(payload: PersistedReport): ReportEntity {
-  const { id, status, body, error, createdAt, updatedAt, generationParams, sourceCommits, statistic } = payload;
+  const {
+    id,
+    status,
+    body,
+    error,
+    createdAt,
+    updatedAt,
+    generationParams,
+    sourceCommits,
+    statistic,
+  } = payload;
 
   const domainReportId = ReportId.from(id);
   const domainGenerationParams = ReportGenerationParams.create({
@@ -49,9 +62,7 @@ export function toDomain(payload: PersistedReport): ReportEntity {
     error,
     sourceCommits,
     createdAt: new Date(createdAt),
-    updatedAt: updatedAt
-      ? new Date(updatedAt)
-      : null,
+    updatedAt: updatedAt ? new Date(updatedAt) : null,
     generationParams: domainGenerationParams,
     statistic: domainStatistics,
   });
@@ -60,7 +71,17 @@ export function toDomain(payload: PersistedReport): ReportEntity {
 }
 
 export function toPersistence(report: ReportEntity): PersistedReport {
-  const { id, status, body, error, createdAt, updatedAt, generationParams, sourceCommits, statistic } = report;
+  const {
+    id,
+    status,
+    body,
+    error,
+    createdAt,
+    updatedAt,
+    generationParams,
+    sourceCommits,
+    statistic,
+  } = report;
 
   const payload: PersistedReport = {
     id,
@@ -68,9 +89,7 @@ export function toPersistence(report: ReportEntity): PersistedReport {
     body,
     error,
     createdAt: createdAt.toISOString(),
-    updatedAt: updatedAt
-      ? updatedAt.toISOString()
-      : null,
+    updatedAt: updatedAt ? updatedAt.toISOString() : null,
     generationParams: {
       authors: generationParams.authors,
       branches: generationParams.branches,

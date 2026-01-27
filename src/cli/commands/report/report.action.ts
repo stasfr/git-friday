@@ -2,6 +2,7 @@ import ora from 'ora';
 
 import { GitService } from '@/services/git.service.js';
 import { ReportLlmService } from '@/cli/commands/report/report.llm.js';
+import { ReportNotifications } from '@/cli/commands/report/report.notifications.js';
 
 import type { AppConfig } from '@/config/config.types.js';
 import type {
@@ -15,14 +16,14 @@ export async function reportAction(
 ) {
   const spinner = ora();
   const gitService = new GitService();
+  const notificationsService = new ReportNotifications(appConfig);
+  const notifications = notificationsService.getNotification();
 
-  spinner.start('Searching for commits...');
+  spinner.start(notifications.searchCommits);
 
   try {
     if (options.authors && options.currentUser) {
-      throw new Error(
-        "error: option '--authors <authors...>' cannot be used with option '--current-user'",
-      );
+      throw new Error(notifications.optionsAuthorsCurrentUserError);
     }
 
     gitService.forBranches(options.branches).today().pretty();
@@ -36,11 +37,11 @@ export async function reportAction(
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {
-      throw new Error('No commits found for the specified criteria.');
+      throw new Error(notifications.noCommitsFoundError);
     }
 
-    spinner.succeed('Commits found');
-    spinner.start('Generating report...');
+    spinner.succeed(notifications.commitsFound);
+    spinner.start(notifications.generateReport);
 
     const reportLlmService = new ReportLlmService(appConfig);
 
@@ -49,7 +50,7 @@ export async function reportAction(
     );
 
     if (!completionResult) {
-      throw new Error('Got empty response from Llm Provider');
+      throw new Error(notifications.llmEmptyResponse);
     }
 
     const report = {
@@ -62,24 +63,26 @@ export async function reportAction(
       },
     } satisfies IReport;
 
-    spinner.succeed('Report generated successfully');
+    spinner.succeed(notifications.reportGenerateSuccess);
 
     const statisticsData = {
-      'Prompt Tokens': { value: report.statistic.promptTokens },
-      'Completion Tokens': { value: report.statistic.completionTokens },
-      'Total Tokens': { value: report.statistic.totalTokens },
+      [notifications.promptTokens]: { value: report.statistic.promptTokens },
+      [notifications.completionTokens]: {
+        value: report.statistic.completionTokens,
+      },
+      [notifications.totalTokens]: { value: report.statistic.totalTokens },
     };
 
     console.log();
-    console.log('Report:');
+    console.log(notifications.report);
     console.log(report.body.trim());
 
     console.log();
-    console.log('Statistics:');
+    console.log(notifications.statistics);
     console.table(statisticsData);
   } catch (error: unknown) {
     spinner.fail(
-      `An unexpected error occurred: ${
+      `${notifications.errorOccured}: ${
         error instanceof Error ? error.message : String(error)
       }`,
     );

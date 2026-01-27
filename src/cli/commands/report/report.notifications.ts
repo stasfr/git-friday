@@ -10,11 +10,11 @@ const EnNotifications = {
   generateReport: 'Generating report...',
   llmEmptyResponse: 'Got empty response from Llm Provider',
   reportGenerateSuccess: 'Report generated successfully',
-  promptTokens: 'Prompt Tokens',
-  completionTokens: 'Completion Tokens',
-  totalTokens: 'Total Tokens',
+  promptTokens: 'Prompt',
+  completionTokens: 'Completion',
+  totalTokens: 'Total',
   report: 'Report:',
-  statistics: 'Statistics:',
+  statistics: 'Tokens Usage Statistics:',
   errorOccured: 'An error occurred',
 } as const;
 
@@ -27,11 +27,11 @@ const RuNotifications = {
   generateReport: 'Создание отчета...',
   llmEmptyResponse: 'Получен пустой ответ от LLM',
   reportGenerateSuccess: 'Отчет успешно создан',
-  promptTokens: 'Токены на промпт',
-  completionTokens: 'Токены на ответ',
-  totalTokens: 'Всего токенов',
+  promptTokens: 'Промпт',
+  completionTokens: 'Ответ',
+  totalTokens: 'Всего',
   report: 'Отчет:',
-  statistics: 'Статистика:',
+  statistics: 'Статистика использования токенов:',
   errorOccured: 'Произошла ошибка',
 } as const;
 

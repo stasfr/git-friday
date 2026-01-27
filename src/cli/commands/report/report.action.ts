@@ -42,12 +42,6 @@ export async function reportAction(
     spinner.succeed('Commits found');
     spinner.start('Generating report...');
 
-    if (sourceCommits.length === 0) {
-      throw new Error(
-        'Cannot generate a report from an empty list of commits.',
-      );
-    }
-
     const reportLlmService = new ReportLlmService(appConfig);
 
     const completionResult = await reportLlmService.getReportBody(

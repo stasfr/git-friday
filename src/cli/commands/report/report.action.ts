@@ -16,8 +16,7 @@ export async function reportAction(
 ) {
   const spinner = ora();
   const gitService = new GitService();
-  const notificationsService = new ReportNotifications(appConfig);
-  const notifications = notificationsService.getNotification();
+  const notifications = new ReportNotifications(appConfig).getNotification();
 
   spinner.start(notifications.searchCommits);
 

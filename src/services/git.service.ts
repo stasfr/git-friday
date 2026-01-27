@@ -29,13 +29,11 @@ export class GitService {
     return stdout.trim();
   }
 
-  public forAuthors(authors: string[] | null | undefined) {
-    if (authors && authors.length > 0) {
-      const authorArgs = authors
-        .map((author) => `--author="${author}"`)
-        .join(' ');
-      this.commandParts.push(authorArgs);
-    }
+  public forAuthors(authors: string[]) {
+    const authorArgs = authors
+      .map((author) => `--author="${author}"`)
+      .join(' ');
+    this.commandParts.push(authorArgs);
 
     return this;
   }
@@ -47,10 +45,15 @@ export class GitService {
     return this;
   }
 
-  public forBranches(branches: string[] | null | undefined) {
-    const branchArgs =
-      branches && branches.length > 0 ? branches.join(' ') : '--all';
+  public forBranches(branches: string[]) {
+    const branchArgs = branches.join(' ');
     this.commandParts.push(branchArgs);
+
+    return this;
+  }
+
+  public forAllBranches() {
+    this.commandParts.push('--all');
 
     return this;
   }

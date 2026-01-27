@@ -22,11 +22,17 @@ export async function reportAction(
   spinner.start(notifications.searchCommits);
 
   try {
+    // TODO: Implement more validation logic to options
+    // e.g. pnpm run dev report -a -b dev
     if (options.authors && options.currentUser) {
       throw new Error(notifications.optionsAuthorsCurrentUserError);
     }
 
-    gitService.forBranches(options.branches).today().pretty();
+    if (options.branches === null || options.branches === undefined) {
+      gitService.forAllBranches();
+    } else {
+      gitService.forBranches(options.branches);
+    }
 
     if (options.authors) {
       gitService.forAuthors(options.authors);
@@ -34,6 +40,7 @@ export async function reportAction(
       await gitService.forCurrentUser();
     }
 
+    gitService.today().pretty();
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {

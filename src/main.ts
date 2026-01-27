@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 import 'dotenv/config';
-import pkg from '../../../package.json' with { type: 'json' };
+import pkg from '../package.json' with { type: 'json' };
 import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
 
-import { report } from '@/infrastructure/cli/commands/report/report.command.js';
+import { report } from '@/cli/commands/report/report.command.js';
 
-async function main(): Promise<void> {
+async function main() {
   try {
     const notifier = updateNotifier({ pkg });
     const update = await notifier.fetchInfo();

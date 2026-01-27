@@ -27,7 +27,7 @@
     "url": "git+https://github.com/stasfr/git-friday.git"
   },
   "bin": {
-    "friday": "dist/src/infrastructure/cli/index.js"
+    "friday": "dist/src/main.js"
   },
   "files": [
     "dist",
@@ -35,10 +35,10 @@
     "README.md"
   ],
   "type": "module",
-  "main": "dist/src/infrastructure/cli/index.js",
+  "main": "dist/src/main.js",
   "scripts": {
-    "dev": "tsx --env-file .env src/infrastructure/cli/index.ts",
-    "start": "node dist/index.js",
+    "dev": "tsx --env-file .env src/main.ts",
+    "start": "node dist/src/main.js",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",

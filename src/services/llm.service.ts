@@ -10,7 +10,7 @@ type LlmProviderDependencies = {
   openRouterApiKey: string;
 };
 
-export class LlmProvider {
+export class LlmService {
   private readonly client: OpenAI;
 
   public constructor(dependencies: LlmProviderDependencies) {
@@ -20,7 +20,7 @@ export class LlmProvider {
     });
   }
 
-  private generateSystemPromptForReport(): string {
+  private generateSystemPromptForReport() {
     return `
       # Роль:
       Ты — AI-ассистент тимлида, специализирующийся на анализе логов git и составлении отчетов о проделанной работе. Ты преобразуешь технические списки коммитов в понятные для менеджмента отчеты.
@@ -43,7 +43,7 @@ export class LlmProvider {
     `;
   }
 
-  private generateUserPromptForReport(commits: string): string {
+  private generateUserPromptForReport(commits: string) {
     return `
       Проанализируй следующие коммиты и сгенерируй отчет, строго следуя правилам и формату, заданным в твоих инструкциях.
 
@@ -52,10 +52,7 @@ export class LlmProvider {
     `;
   }
 
-  public async getReportBody(
-    commits: string,
-    modelName: string,
-  ): Promise<ICompletionResult | null> {
+  public async getReportBody(commits: string, modelName: string) {
     const systemPrompt = this.generateSystemPromptForReport();
     const userPrompt = this.generateUserPromptForReport(commits);
 

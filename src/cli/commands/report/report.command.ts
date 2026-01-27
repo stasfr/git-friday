@@ -1,9 +1,9 @@
 import ora from 'ora';
 import { Command } from 'commander';
-import { appConfig } from '@/infrastructure/config/config.js';
+import { appConfig } from '@/config/config.js';
 
-import { GitService } from '@/infrastructure/cli/services/git.service.js';
-import { generateReport } from '@/infrastructure/cli/commands/report/generateReport.js';
+import { GitService } from '@/services/git.service.js';
+import { generateReport } from '@/cli/commands/report/generateReport.js';
 
 export type CommandOption = {
   authors?: string[];

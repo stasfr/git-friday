@@ -1,4 +1,5 @@
-import { LlmProvider } from '@/infrastructure/providers/llm.provider.js';
+import { LlmService } from '@/services/llm.service.js';
+import { appConfig } from '@/config/config.js';
 
 export type IReport = {
   body: string;
@@ -19,20 +20,18 @@ export type GenerateReportCommand = {
   };
 };
 
-export async function generateReport(
-  command: GenerateReportCommand,
-): Promise<IReport> {
+export async function generateReport(command: GenerateReportCommand) {
   const { sourceCommits, gitCommandParams } = command;
 
   if (sourceCommits.length === 0) {
     throw new Error('Cannot generate a report from an empty list of commits.');
   }
 
-  const llmProvider = new LlmProvider({
-    openRouterApiKey: process.env.OPEN_ROUTER_API_KEY!,
+  const llmService = new LlmService({
+    openRouterApiKey: appConfig.openRouterApiKey,
   });
 
-  const completionResult = await llmProvider.getReportBody(
+  const completionResult = await llmService.getReportBody(
     sourceCommits.join('\n'),
     gitCommandParams.llmModelName,
   );

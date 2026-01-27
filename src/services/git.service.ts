@@ -17,19 +17,19 @@ export class GitService {
     this.commandParts = ['git', 'log'];
   }
 
-  private reset(): this {
+  private reset() {
     this.commandParts = ['git', 'log'];
 
     return this;
   }
 
-  private async getGitUserEmail(): Promise<string> {
+  private async getGitUserEmail() {
     const { stdout } = await this.exec('git config user.email');
 
     return stdout.trim();
   }
 
-  public forAuthors(authors: string[] | null | undefined): this {
+  public forAuthors(authors: string[] | null | undefined) {
     if (authors && authors.length > 0) {
       const authorArgs = authors
         .map((author) => `--author="${author}"`)
@@ -40,14 +40,14 @@ export class GitService {
     return this;
   }
 
-  public async forCurrentUser(): Promise<this> {
+  public async forCurrentUser() {
     const userEmail = await this.getGitUserEmail();
     this.commandParts.push(`--author="${userEmail}"`);
 
     return this;
   }
 
-  public forBranches(branches: string[] | null | undefined): this {
+  public forBranches(branches: string[] | null | undefined) {
     const branchArgs =
       branches && branches.length > 0 ? branches.join(' ') : '--all';
     this.commandParts.push(branchArgs);
@@ -55,7 +55,7 @@ export class GitService {
     return this;
   }
 
-  public forRange(range: string | null | undefined): this {
+  public forRange(range: string | null | undefined) {
     if (range) {
       this.commandParts.push(range);
     }
@@ -63,7 +63,7 @@ export class GitService {
     return this;
   }
 
-  public sinceTag(tag: string | null | undefined): this {
+  public sinceTag(tag: string | null | undefined) {
     if (tag) {
       this.commandParts.push(`${tag}..`);
     }
@@ -71,19 +71,19 @@ export class GitService {
     return this;
   }
 
-  public today(): this {
+  public today() {
     this.commandParts.push('--since="00:00:00"');
 
     return this;
   }
 
-  public pretty(): this {
+  public pretty() {
     this.commandParts.push('--pretty=format:"- %s%n%b"');
 
     return this;
   }
 
-  public async getCommitLog(): Promise<string[]> {
+  public async getCommitLog() {
     const command = this.commandParts.join(' ');
     const cwd = process.cwd();
 

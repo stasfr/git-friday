@@ -1,21 +1,24 @@
-export type AppConfig = {
-  openRouterApiKey: string;
-  aiCompletionModel: string;
-};
+import type { AppConfig } from '@/config/config.types.js';
 
-const openRouterApiKey = process.env.OPEN_ROUTER_API_KEY;
+export function loadAppConfig() {
+  const openRouterApiKey = process.env.OPEN_ROUTER_API_KEY;
 
-if (!openRouterApiKey) {
-  throw new Error('Missing required environment variable: OPEN_ROUTER_API_KEY');
+  if (!openRouterApiKey) {
+    throw new Error(
+      'Missing required environment variable: OPEN_ROUTER_API_KEY',
+    );
+  }
+
+  const aiCompletionModel = process.env.AI_COMPLETION_MODEL;
+
+  if (!aiCompletionModel) {
+    throw new Error(
+      'Missing required environment variable: AI_COMPLETION_MODEL',
+    );
+  }
+
+  return {
+    openRouterApiKey,
+    aiCompletionModel,
+  } satisfies AppConfig;
 }
-
-const aiCompletionModel = process.env.AI_COMPLETION_MODEL;
-
-if (!aiCompletionModel) {
-  throw new Error('Missing required environment variable: AI_COMPLETION_MODEL');
-}
-
-export const appConfig: AppConfig = {
-  openRouterApiKey,
-  aiCompletionModel,
-};

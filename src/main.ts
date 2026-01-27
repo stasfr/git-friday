@@ -5,6 +5,7 @@ import pkg from '../package.json' with { type: 'json' };
 import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
+import { loadAppConfig } from '@/config/config.js';
 
 import { report } from '@/cli/commands/report/report.command.js';
 
@@ -24,11 +25,13 @@ async function main() {
     );
   }
 
+  const appConfig = loadAppConfig();
+
   const program = new Command();
 
   program.version(pkg.version).description(pkg.description);
 
-  report(program);
+  report(program, appConfig);
 
   program.parse(process.argv);
 }

@@ -1,84 +1,17 @@
-import ora from 'ora';
 import { Command } from 'commander';
-import { appConfig } from '@/config/config.js';
+import { reportAction } from '@/cli/commands/report/report.action.js';
 
-import { GitService } from '@/services/git.service.js';
-import { generateReport } from '@/cli/commands/report/generateReport.js';
+import type { AppConfig } from '@/config/config.types.js';
+import type { CommandOption } from '@/cli/commands/report/report.types.js';
 
-export type CommandOption = {
-  authors?: string[];
-  branches?: string[];
-  currentUser: boolean;
-};
-
-export function report(program: Command) {
+export function report(program: Command, appConfig: AppConfig) {
   program
     .command('report')
     .description('Generate a report from git commits')
     .option('-a, --authors <authors...>', 'Git authors')
     .option('-b, --branches <branches...>', 'Git branches')
     .option('--current-user', 'Filter commits by your git user.email', false)
-    .action(async (options: CommandOption) => {
-      const spinner = ora();
-      const gitService = new GitService();
-
-      spinner.start('Searching for commits...');
-
-      try {
-        if (options.authors && options.currentUser) {
-          throw new Error(
-            "error: option '--authors <authors...>' cannot be used with option '--current-user'",
-          );
-        }
-
-        gitService.forBranches(options.branches).today().pretty();
-
-        if (options.authors) {
-          gitService.forAuthors(options.authors);
-        } else if (options.currentUser) {
-          await gitService.forCurrentUser();
-        }
-
-        const sourceCommits = await gitService.getCommitLog();
-
-        if (sourceCommits.length === 0) {
-          throw new Error('No commits found for the specified criteria.');
-        }
-
-        spinner.succeed('Commits found');
-        spinner.start('Generating report...');
-
-        const report = await generateReport({
-          sourceCommits,
-          gitCommandParams: {
-            authors: options.authors,
-            branches: options.branches,
-            llmModelName: appConfig.aiCompletionModel,
-            llmProvider: 'openrouter',
-          },
-        });
-
-        spinner.succeed('Report generated successfully');
-
-        const statisticsData = {
-          'Prompt Tokens': { value: report.statistic.promptTokens },
-          'Completion Tokens': { value: report.statistic.completionTokens },
-          'Total Tokens': { value: report.statistic.totalTokens },
-        };
-
-        console.log();
-        console.log('Report:');
-        console.log(report.body.trim());
-
-        console.log();
-        console.log('Statistics:');
-        console.table(statisticsData);
-      } catch (error) {
-        spinner.fail(
-          `An unexpected error occurred: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-        );
-      }
-    });
+    .action(
+      async (options: CommandOption) => await reportAction(options, appConfig),
+    );
 }

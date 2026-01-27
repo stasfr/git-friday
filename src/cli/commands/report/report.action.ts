@@ -52,7 +52,6 @@ export async function reportAction(
 
     const completionResult = await reportLlmService.getReportBody(
       sourceCommits.join('\n'),
-      appConfig.aiCompletionModel,
     );
 
     if (!completionResult) {

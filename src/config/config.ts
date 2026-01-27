@@ -17,8 +17,21 @@ export function loadAppConfig() {
     );
   }
 
+  const appLocalization = process.env.APP_LOCALIZATION ?? 'ru';
+
+  if (
+    typeof appLocalization === 'string' &&
+    appLocalization !== ('en' as const) &&
+    appLocalization !== ('ru' as const)
+  ) {
+    throw new Error(
+      'Invalid value for APP_LOCALIZATION. It must be either "en" or "ru".',
+    );
+  }
+
   return {
     openRouterApiKey,
     aiCompletionModel,
+    appLocalization,
   } satisfies AppConfig;
 }

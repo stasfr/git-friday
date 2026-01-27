@@ -51,10 +51,8 @@
     "release:major": "pnpm version major -m \"chore(release): publish v%s\" && git push --follow-tags && pnpm publish --access public"
   },
   "dependencies": {
-    "awilix": "^12.0.5",
     "commander": "^14.0.0",
     "dotenv": "^17.2.1",
-    "lowdb": "^7.0.1",
     "openai": "^5.12.2",
     "ora": "^8.2.0",
     "update-notifier": "^7.3.1"

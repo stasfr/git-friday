@@ -19,13 +19,11 @@ export class GitService {
 
   private reset() {
     this.commandParts = ['git', 'log'];
-
     return this;
   }
 
   private async getGitUserEmail() {
     const { stdout } = await this.exec('git config user.email');
-
     return stdout.trim();
   }
 
@@ -34,55 +32,33 @@ export class GitService {
       .map((author) => `--author="${author}"`)
       .join(' ');
     this.commandParts.push(authorArgs);
-
     return this;
   }
 
   public async forCurrentUser() {
     const userEmail = await this.getGitUserEmail();
     this.commandParts.push(`--author="${userEmail}"`);
-
     return this;
   }
 
   public forBranches(branches: string[]) {
     const branchArgs = branches.join(' ');
     this.commandParts.push(branchArgs);
-
     return this;
   }
 
   public forAllBranches() {
     this.commandParts.push('--all');
-
-    return this;
-  }
-
-  public forRange(range: string | null | undefined) {
-    if (range) {
-      this.commandParts.push(range);
-    }
-
-    return this;
-  }
-
-  public sinceTag(tag: string | null | undefined) {
-    if (tag) {
-      this.commandParts.push(`${tag}..`);
-    }
-
     return this;
   }
 
   public today() {
     this.commandParts.push('--since="00:00:00"');
-
     return this;
   }
 
   public pretty() {
     this.commandParts.push('--pretty=format:"- %s%n%b"');
-
     return this;
   }
 

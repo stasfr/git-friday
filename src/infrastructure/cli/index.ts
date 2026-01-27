@@ -6,12 +6,7 @@ import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
 
-import { createConfig } from '@/infrastructure/config/config.js';
-import { createDiContainer } from '@/infrastructure/di/container.js';
-
-import { report } from '@/infrastructure/cli/commands/report.command.js';
-import { pr } from '@/infrastructure/cli/commands/pr.command.js';
-import { changelog } from '@/infrastructure/cli/commands/changelog.command.js';
+import { report } from '@/infrastructure/cli/commands/report/report.command.js';
 
 async function main(): Promise<void> {
   try {
@@ -29,16 +24,11 @@ async function main(): Promise<void> {
     );
   }
 
-  const appConfig = createConfig();
-  const diContainer = createDiContainer(appConfig);
-
   const program = new Command();
 
   program.version(pkg.version).description(pkg.description);
 
-  report(program, diContainer);
-  pr(program, diContainer);
-  changelog(program, diContainer);
+  report(program);
 
   program.parse(process.argv);
 }

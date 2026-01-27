@@ -34,7 +34,6 @@ Before running, you need to create a `.env` file in the root of your repository.
 
 - `OPEN_ROUTER_API_KEY`: Your API key for the OpenRouter service.
 - `AI_COMPLETION_MODEL`: The identifier of the AI model you want to use (e.g., `mistralai/mistral-7b-instruct`).
-- `JSONDB_PATH`: The path to the directory where the JSON database file (`db.json`) will be stored.
 
 The tool will not work without these variables defined.
 
@@ -64,38 +63,6 @@ To generate a report for your own commits across all branches:
 
 ```bash
 friday report --current-user
-```
-
-#### `changelog`
-
-Generates a changelog from git commits since a specific tag.
-
-**Options:**
-
-- `--since-tag <tag>`: (Required) The git tag to generate the changelog from.
-
-**Example:**
-
-To generate a changelog for all commits since version `v1.0.0`:
-
-```bash
-friday changelog --since-tag v1.0.0
-```
-
-#### `pr`
-
-Generates a pull request description by comparing two branches.
-
-**Options:**
-
-- `-b, --branches <branches>`: (Required) The branches to compare, in `target..source` format (e.g., `main..develop`).
-
-**Example:**
-
-To generate a pull request description for changes from the `develop` branch to be merged into `main`:
-
-```bash
-friday pr -b main..develop
 ```
 
 ## Workflow

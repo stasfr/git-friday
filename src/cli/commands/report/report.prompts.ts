@@ -1,26 +1,5 @@
-import OpenAI from 'openai';
-
-type ICompletionResult = {
-  content: string;
-  promptTokens: number;
-  completionTokens: number;
-};
-
-type LlmProviderDependencies = {
-  openRouterApiKey: string;
-};
-
-export class LlmService {
-  private readonly client: OpenAI;
-
-  public constructor(dependencies: LlmProviderDependencies) {
-    this.client = new OpenAI({
-      baseURL: 'https://openrouter.ai/api/v1',
-      apiKey: dependencies.openRouterApiKey,
-    });
-  }
-
-  private generateSystemPromptForReport() {
+export const reportPrompts = {
+  getSystemPrompts: function () {
     return `
       # Роль:
       Ты — AI-ассистент тимлида, специализирующийся на анализе логов git и составлении отчетов о проделанной работе. Ты преобразуешь технические списки коммитов в понятные для менеджмента отчеты.
@@ -41,45 +20,14 @@ export class LlmService {
       добавлены анимации наведения для кнопок для улучшения визуального отклика и пользовательского опыта;
       проведен рефакторинг системы управления правами доступа для повышения ее надежности и упрощения дальнейшей поддержки;
     `;
-  }
+  },
 
-  private generateUserPromptForReport(commits: string) {
+  getUserPrompt: function (commits: string) {
     return `
       Проанализируй следующие коммиты и сгенерируй отчет, строго следуя правилам и формату, заданным в твоих инструкциях.
 
       Коммиты для анализа:
       ${commits}
     `;
-  }
-
-  public async getReportBody(commits: string, modelName: string) {
-    const systemPrompt = this.generateSystemPromptForReport();
-    const userPrompt = this.generateUserPromptForReport(commits);
-
-    const completion = await this.client.chat.completions.create({
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        {
-          role: 'user',
-          content: userPrompt,
-        },
-      ],
-      model: modelName,
-    });
-
-    if (!completion.choices[0].message.content) {
-      return null;
-    }
-
-    const completionResult: ICompletionResult = {
-      content: completion.choices[0].message.content,
-      promptTokens: completion.usage?.prompt_tokens ?? 0,
-      completionTokens: completion.usage?.completion_tokens ?? 0,
-    };
-
-    return completionResult;
-  }
-}
+  },
+};

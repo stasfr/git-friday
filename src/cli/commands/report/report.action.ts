@@ -1,7 +1,7 @@
 import ora from 'ora';
 
 import { GitService } from '@/services/git.service.js';
-import { LlmService } from '@/services/llm.service.js';
+import { ReportLlmService } from '@/cli/commands/report/report.llm.js';
 
 import type { AppConfig } from '@/config/config.types.js';
 import type {
@@ -48,11 +48,9 @@ export async function reportAction(
       );
     }
 
-    const llmService = new LlmService({
-      openRouterApiKey: appConfig.openRouterApiKey,
-    });
+    const reportLlmService = new ReportLlmService(appConfig);
 
-    const completionResult = await llmService.getReportBody(
+    const completionResult = await reportLlmService.getReportBody(
       sourceCommits.join('\n'),
       appConfig.aiCompletionModel,
     );
@@ -86,7 +84,7 @@ export async function reportAction(
     console.log();
     console.log('Statistics:');
     console.table(statisticsData);
-  } catch (error) {
+  } catch (error: unknown) {
     spinner.fail(
       `An unexpected error occurred: ${
         error instanceof Error ? error.message : String(error)

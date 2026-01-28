@@ -2,74 +2,73 @@
   "name": "git-friday",
   "version": "0.13.0",
   "description": "An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report.",
-  "main": "dist/src/infrastructure/cli/index.js",
-  "type": "module",
+  "keywords": [
+    "ai",
+    "cli",
+    "commits",
+    "developer-tools",
+    "git",
+    "llm",
+    "productivity",
+    "reports",
+    "summary"
+  ],
+  "homepage": "https://github.com/stasfr/git-friday#readme",
+  "bugs": {
+    "url": "https://github.com/stasfr/git-friday/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Farkash Stanislav",
+    "url": "https://stasfr.ru/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stasfr/git-friday.git"
+  },
   "bin": {
-    "friday": "dist/src/infrastructure/cli/index.js"
+    "friday": "dist/src/main.js"
   },
   "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
+  "type": "module",
+  "main": "dist/src/main.js",
   "scripts": {
-    "dev": "tsx --env-file .env src/infrastructure/cli/index.ts",
-    "start": "node dist/index.js",
+    "dev": "tsx --env-file .env src/main.ts",
+    "start": "node dist/src/main.js",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "type-check": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
-    "release:patch": "pnpm version patch -m \"chore(release): publish v%s\" && git push --follow-tags && pnpm publish --access public",
-    "release:minor": "pnpm version minor -m \"chore(release): publish v%s\" && git push --follow-tags && pnpm publish --access public",
-    "release:major": "pnpm version major -m \"chore(release): publish v%s\" && git push --follow-tags && pnpm publish --access public"
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch"
   },
-  "keywords": [
-    "git",
-    "cli",
-    "commits",
-    "reports",
-    "ai",
-    "summary",
-    "llm",
-    "developer-tools",
-    "productivity"
-  ],
-  "author": {
-    "name": "Farkash Stanislav",
-    "url": "https://stasfr.ru/"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/stasfr/git-friday#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/stasfr/git-friday.git"
-  },
-  "bugs": {
-    "url": "https://github.com/stasfr/git-friday/issues"
-  },
-  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748",
   "dependencies": {
-    "awilix": "^12.0.5",
     "commander": "^14.0.0",
     "dotenv": "^17.2.1",
-    "lowdb": "^7.0.1",
     "openai": "^5.12.2",
     "ora": "^8.2.0",
     "update-notifier": "^7.3.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@stylistic/eslint-plugin": "^5.2.3",
     "@tsconfig/node24": "^24.0.1",
     "@types/node": "^24.2.1",
     "@types/update-notifier": "^6.0.8",
-    "eslint": "^9.33.0",
+    "oxfmt": "^0.27.0",
+    "oxlint": "^1.42.0",
     "rimraf": "^6.0.1",
+    "standard-version": "^9.5.0",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.4",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.39.1"
-  }
+    "typescript": "^5.9.2"
+  },
+  "packageManager": "pnpm@10.28.2"
 }

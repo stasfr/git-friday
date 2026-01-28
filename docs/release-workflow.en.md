@@ -16,6 +16,7 @@ This document describes the process for releasing a new version of the package.
 ## 3. Release
 
 1.  **Switch to the `main` branch:**
+
     ```bash
     git checkout main
     git pull origin main
@@ -23,7 +24,6 @@ This document describes the process for releasing a new version of the package.
 
 2.  **Run the release script:**
     Depending on the type of changes (patch, minor, or major), run one of the following commands:
-
     - **Patch release (bug fixes):**
       ```bash
       pnpm run release:patch
@@ -36,7 +36,7 @@ This document describes the process for releasing a new version of the package.
       ```bash
       pnpm run release:major
       ```
-    This command automatically:
+      This command automatically:
     - Updates the version in `package.json`.
     - Creates a commit with the message `chore(release): publish vX.X.X`.
     - Creates a Git tag with the new version.

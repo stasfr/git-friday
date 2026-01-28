@@ -2,6 +2,8 @@
 
 An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report. It helps team leads and managers quickly understand the progress made by developers without digging through technical commit logs.
 
+[TODO](./TODO.md) - list of current tasks and plans for project development.
+
 ## Installation
 
 You can install Git Friday globally using your preferred package manager:

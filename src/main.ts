@@ -16,7 +16,7 @@ async function main() {
 
     if (update && update.latest !== update.current) {
       console.log(`Update available ${update.current} -> ${update.latest}`);
-      console.log(`Run 'npm i -g ${update.name}' to install it\n`);
+      console.log(`Run 'pnpm add -g ${update.name}' to install it\n`);
     }
   } catch (error: unknown) {
     console.log(

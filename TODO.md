@@ -31,6 +31,7 @@ This file serves as a technical roadmap outlining planned features and enhanceme
 
 ## Miscellaneous
 
+- [ ] **Logging**: Implement logging system with support for different log levels and output formats in local machine
 - [ ] **Documentation**: Enhance documentation with detailed guides and tutorials for advanced usage
 - [ ] **Testing**: Expand test suite to cover edge cases and ensure robustness of core functionalities
 - [ ] **Make statistics optional**: Add an option to disable statistics collection and reporting

@@ -4,6 +4,8 @@ export type CommandOption = {
   since?: string;
   until?: string;
   currentUser: boolean;
+  range?: string;
+  sinceRef?: string;
 };
 
 export type IReport = {

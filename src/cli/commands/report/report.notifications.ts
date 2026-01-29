@@ -3,8 +3,6 @@ import type { ILocalization } from '@/types/localization.js';
 
 const EnNotifications = {
   searchCommits: 'Searching for commits...',
-  optionsAuthorsCurrentUserError:
-    "option '--authors <authors...>' cannot be used with option '--current-user'",
   noCommitsFoundError: 'No commits found for the specified criteria',
   commitsFound: 'Commits found',
   generateReport: 'Generating report...',
@@ -20,8 +18,6 @@ const EnNotifications = {
 
 const RuNotifications = {
   searchCommits: 'Получение списка коммитов...',
-  optionsAuthorsCurrentUserError:
-    "опция '--authors <authors...>' не может быть использована с опцией '--current-user'",
   noCommitsFoundError: 'Нет коммитов для указанных критерий',
   commitsFound: 'Коммиты получены',
   generateReport: 'Создание отчета...',

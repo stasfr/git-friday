@@ -21,12 +21,6 @@ export async function reportAction(
   spinner.start(notifications.searchCommits);
 
   try {
-    // TODO: Implement more validation logic to options
-    // e.g. pnpm run dev report -a -b dev
-    if (options.authors && options.currentUser) {
-      throw new Error(notifications.optionsAuthorsCurrentUserError);
-    }
-
     if (options.branches === null || options.branches === undefined) {
       gitService.forAllBranches();
     } else {

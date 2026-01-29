@@ -29,7 +29,7 @@ async function main() {
 
   const program = new Command();
 
-  program.version(pkg.version).description(pkg.description);
+  program.name('friday').version(pkg.version).description(pkg.description);
 
   report(program, appConfig);
 

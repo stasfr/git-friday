@@ -43,8 +43,7 @@ export async function reportAction(
       gitService.until(options.until);
     }
 
-    // TODO: add today flag
-    if (!options.since && !options.until) {
+    if (options.today === true) {
       gitService.today();
     }
 

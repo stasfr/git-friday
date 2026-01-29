@@ -15,8 +15,23 @@ export function report(program: Command, appConfig: AppConfig) {
     )
     .option('-b, --branches <branches...>', 'Git branches')
     .option('--all', 'Include all branches', false)
-    .option('--since <date>', 'Filter commits since a specific date')
-    .option('--until <date>', 'Filter commits until a specific date')
+    .addOption(
+      new Option('--today', 'Filter commits by today')
+        .conflicts('since')
+        .conflicts('until'),
+    )
+    .addOption(
+      new Option(
+        '--since <date>',
+        'Filter commits since a specific date',
+      ).conflicts('today'),
+    )
+    .addOption(
+      new Option(
+        '--until <date>',
+        'Filter commits until a specific date',
+      ).conflicts('today'),
+    )
     .addOption(
       new Option('--current-user', 'Filter commits by your git user.email')
         .conflicts('authors')

@@ -7,6 +7,7 @@ export type CommandOption = {
   currentUser: boolean;
   range?: string;
   sinceRef?: string;
+  today?: boolean;
 };
 
 export type IReport = {

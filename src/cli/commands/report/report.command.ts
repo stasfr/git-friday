@@ -14,6 +14,7 @@ export function report(program: Command, appConfig: AppConfig) {
       ),
     )
     .option('-b, --branches <branches...>', 'Git branches')
+    .option('--all', 'Include all branches', false)
     .option('--since <date>', 'Filter commits since a specific date')
     .option('--until <date>', 'Filter commits until a specific date')
     .addOption(

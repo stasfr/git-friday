@@ -21,9 +21,11 @@ export async function reportAction(
   spinner.start(notifications.searchCommits);
 
   try {
-    if (options.branches === null || options.branches === undefined) {
+    if (options.all === true) {
       gitService.forAllBranches();
-    } else {
+    }
+
+    if (options.branches && options.branches.length > 0) {
       gitService.forBranches(options.branches);
     }
 
@@ -41,6 +43,7 @@ export async function reportAction(
       gitService.until(options.until);
     }
 
+    // TODO: add today flag
     if (!options.since && !options.until) {
       gitService.today();
     }

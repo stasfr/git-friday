@@ -13,11 +13,6 @@ export function report(program: Command, appConfig: AppConfig) {
         'current-user',
       ),
     )
-    .addOption(
-      new Option('-a, --authors <authors...>', 'Git authors').conflicts(
-        'current-user',
-      ),
-    )
     .option('-b, --branches <branches...>', 'Git branches')
     .option('--since <date>', 'Filter commits since a specific date')
     .option('--until <date>', 'Filter commits until a specific date')

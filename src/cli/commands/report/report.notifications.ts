@@ -2,6 +2,8 @@ import type { AppConfig } from '@/config/config.types.js';
 import type { ILocalization } from '@/types/localization.js';
 
 const EnNotifications = {
+  gitLogCommandCreation: 'Creating git log command...',
+  gitLogCommandCreated: 'Git log command created',
   searchCommits: 'Searching for commits...',
   noCommitsFoundError: 'No commits found for the specified criteria',
   commitsFound: 'Commits found',
@@ -17,6 +19,8 @@ const EnNotifications = {
 } as const;
 
 const RuNotifications = {
+  gitLogCommandCreation: 'Создание git log команды...',
+  gitLogCommandCreated: 'Git log команда',
   searchCommits: 'Получение списка коммитов...',
   noCommitsFoundError: 'Нет коммитов для указанных критерий',
   commitsFound: 'Коммиты получены',

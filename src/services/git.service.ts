@@ -17,6 +17,10 @@ export class GitService {
     this.commandParts = ['git', 'log'];
   }
 
+  get command() {
+    return this.commandParts.join(' ');
+  }
+
   private reset() {
     this.commandParts = ['git', 'log'];
     return this;
@@ -83,7 +87,7 @@ export class GitService {
   }
 
   public async getCommitLog() {
-    const command = this.commandParts.join(' ');
+    const command = this.command;
     const cwd = process.cwd();
 
     // Reset for the next potential command build

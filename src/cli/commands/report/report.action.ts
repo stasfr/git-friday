@@ -18,9 +18,9 @@ export async function reportAction(
   const gitService = new GitService();
   const notifications = new ReportNotifications(appConfig).getNotification();
 
-  spinner.start(notifications.searchCommits);
-
   try {
+    spinner.start(notifications.gitLogCommandCreation);
+
     if (options.all === true) {
       gitService.forAllBranches();
     }
@@ -48,6 +48,11 @@ export async function reportAction(
     }
 
     gitService.pretty();
+    spinner.succeed(
+      `${notifications.gitLogCommandCreated}: ${gitService.command}`,
+    );
+
+    spinner.start(notifications.searchCommits);
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {

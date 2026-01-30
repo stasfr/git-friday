@@ -86,6 +86,7 @@ export const changelogPrompts = {
       case 'ru':
         return `
           Проанализируй следующие коммиты и сгенерируй changelog в формате Markdown, строго следуя правилам и формату, указанным в твоих инструкциях.
+          Давай ответ исключительно на русском языке.
 
           Коммиты для анализа:
           ${commits}
@@ -94,6 +95,7 @@ export const changelogPrompts = {
       case 'en':
         return `
           Analyze the following commits and generate a changelog in Markdown format, strictly following the rules and format specified in your instructions.
+          Give the answer in English.
 
           Commits for analysis:
           ${commits}

@@ -88,6 +88,7 @@ export const prPrompts = {
       case 'ru':
         return `
           Проанализируйте следующие коммиты и сгенерируйте заголовок и тело pull request'а в формате Markdown, строго следуя правилам и формату, указанным в ваших инструкциях.
+          Давай ответ исключительно на русском языке.
 
           Коммиты для анализа:
           ${commits}
@@ -96,6 +97,7 @@ export const prPrompts = {
       case 'en':
         return `
           Analyze the following commits and generate a pull request title and body in Markdown format, strictly following the rules and format specified in your instructions.
+          Give the answer in English.
 
           Commits for analysis:
           ${commits}

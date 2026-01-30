@@ -54,6 +54,7 @@ export const reportPrompts = {
       case 'ru':
         return `
           Проанализируй следующие коммиты и сгенерируй отчет, строго следуя правилам и формату, заданным в твоих инструкциях.
+          Давай ответ исключительно на русском языке.
 
           Коммиты для анализа:
           ${commits}
@@ -62,6 +63,7 @@ export const reportPrompts = {
       case 'en':
         return `
           Analyze the following commits and generate a report, strictly following the rules and format defined in your instructions.
+          Give the answer in English.
 
           Commits for analysis:
           ${commits}

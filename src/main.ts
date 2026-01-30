@@ -7,6 +7,7 @@ import updateNotifier from 'update-notifier';
 import { Command } from 'commander';
 import { loadAppConfig } from '@/config/config.js';
 
+import { pr } from '@/cli/commands/pr/pr.command.js';
 import { report } from '@/cli/commands/report/report.command.js';
 
 async function main() {
@@ -31,6 +32,7 @@ async function main() {
 
   program.name('friday').version(pkg.version).description(pkg.description);
 
+  pr(program, appConfig);
   report(program, appConfig);
 
   program.parse(process.argv);

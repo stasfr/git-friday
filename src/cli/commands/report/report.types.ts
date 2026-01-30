@@ -1,9 +1,13 @@
 export type CommandOption = {
   authors?: string[];
   branches?: string[];
+  all: boolean;
   since?: string;
   until?: string;
   currentUser: boolean;
+  range?: string;
+  sinceRef?: string;
+  today?: boolean;
 };
 
 export type IReport = {

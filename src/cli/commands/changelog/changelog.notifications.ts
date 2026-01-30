@@ -7,13 +7,13 @@ const EnNotifications = {
   searchCommits: 'Searching for commits...',
   noCommitsFoundError: 'No commits found for the specified criteria',
   commitsFound: 'Commits found',
-  generateReport: 'Generating report...',
+  generateChangelog: 'Generating changelog...',
   llmEmptyResponse: 'Got empty response from Llm Provider',
-  reportGenerateSuccess: 'Report generated successfully',
+  changelogGenerateSuccess: 'Changelog generated successfully',
   promptTokens: 'Prompt',
   completionTokens: 'Completion',
   totalTokens: 'Total',
-  report: 'Report:',
+  changelog: 'Changelog:',
   statistics: 'Tokens Usage Statistics:',
   errorOccured: 'An error occurred',
 } as const;
@@ -24,18 +24,18 @@ const RuNotifications = {
   searchCommits: 'Получение списка коммитов...',
   noCommitsFoundError: 'Нет коммитов для указанных критерий',
   commitsFound: 'Коммиты получены',
-  generateReport: 'Создание отчета...',
+  generateChangelog: 'Создание changelog...',
   llmEmptyResponse: 'Получен пустой ответ от LLM',
-  reportGenerateSuccess: 'Отчет успешно создан',
+  changelogGenerateSuccess: 'Changelog успешно создан',
   promptTokens: 'Промпт',
   completionTokens: 'Ответ',
   totalTokens: 'Всего',
-  report: 'Отчет:',
+  changelog: 'Changelog:',
   statistics: 'Статистика использования токенов:',
   errorOccured: 'Произошла ошибка',
 } as const;
 
-export class ReportNotifications {
+export class ChangelogNotifications {
   private readonly localization: ILocalization;
 
   constructor(appConfig: AppConfig) {

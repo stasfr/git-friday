@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import { reportAction } from '@/cli/commands/report/report.action.js';
 
 import type { AppConfig } from '@/config/config.types.js';
@@ -8,11 +8,43 @@ export function report(program: Command, appConfig: AppConfig) {
   program
     .command('report')
     .description('Generate a report from git commits')
-    .option('-a, --authors <authors...>', 'Git authors')
+    .addOption(
+      new Option('-a, --authors <authors...>', 'Git authors').conflicts(
+        'current-user',
+      ),
+    )
     .option('-b, --branches <branches...>', 'Git branches')
-    .option('--since <date>', 'Filter commits since a specific date')
-    .option('--until <date>', 'Filter commits until a specific date')
-    .option('--current-user', 'Filter commits by your git user.email', false)
+    .option('--all', 'Include all branches', false)
+    .addOption(
+      new Option('--today', 'Filter commits by today')
+        .conflicts('since')
+        .conflicts('until'),
+    )
+    .addOption(
+      new Option(
+        '--since <date>',
+        'Filter commits since a specific date',
+      ).conflicts('today'),
+    )
+    .addOption(
+      new Option(
+        '--until <date>',
+        'Filter commits until a specific date',
+      ).conflicts('today'),
+    )
+    .addOption(
+      new Option('--current-user', 'Filter commits by your git user.email')
+        .conflicts('authors')
+        .default(false),
+    )
+    .option(
+      '-r, --range <range>',
+      'Revision range for commits (e.g., main..dev, HEAD~5..HEAD)',
+    )
+    .option(
+      '--since-ref <ref>',
+      'Get commits after a specific tag or ref (e.g., v0.13.0)',
+    )
     .action(
       async (options: CommandOption) => await reportAction(options, appConfig),
     );

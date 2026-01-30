@@ -1,51 +1,27 @@
 import ora from 'ora';
 
 import { GitService } from '@/services/git.service.js';
-import { ReportLlmService } from '@/cli/commands/report/report.llm.js';
-import { ReportNotifications } from '@/cli/commands/report/report.notifications.js';
+import { ChangelogLlmService } from '@/cli/commands/changelog/changelog.llm.js';
+import { ChangelogNotifications } from '@/cli/commands/changelog/changelog.notifications.js';
 
 import type { AppConfig } from '@/config/config.types.js';
 import type {
-  CommandOption,
-  IReport,
-} from '@/cli/commands/report/report.types.js';
+  ChangelogCommandOption,
+  IChangelog,
+} from '@/cli/commands/changelog/changelog.types.js';
 
-export async function reportAction(
-  options: CommandOption,
+export async function changelogAction(
+  options: ChangelogCommandOption,
   appConfig: AppConfig,
 ) {
   const spinner = ora();
   const gitService = new GitService();
-  const notifications = new ReportNotifications(appConfig).getNotification();
+  const notifications = new ChangelogNotifications(appConfig).getNotification();
 
   try {
     spinner.start(notifications.gitLogCommandCreation);
 
-    if (options.all === true) {
-      gitService.forAllBranches();
-    }
-
-    if (options.branches && options.branches.length > 0) {
-      gitService.forBranches(options.branches);
-    }
-
-    if (options.authors) {
-      gitService.forAuthors(options.authors);
-    } else if (options.currentUser) {
-      await gitService.forCurrentUser();
-    }
-
-    if (options.since) {
-      gitService.since(options.since);
-    }
-
-    if (options.until) {
-      gitService.until(options.until);
-    }
-
-    if (options.today === true) {
-      gitService.today();
-    }
+    gitService.sinceTag(options.sinceRef);
 
     gitService.pretty();
     spinner.succeed(
@@ -60,11 +36,11 @@ export async function reportAction(
     }
 
     spinner.succeed(`${notifications.commitsFound}: ${sourceCommits.length}`);
-    spinner.start(notifications.generateReport);
+    spinner.start(notifications.generateChangelog);
 
-    const reportLlmService = new ReportLlmService(appConfig);
+    const changelogLlmService = new ChangelogLlmService(appConfig);
 
-    const completionResult = await reportLlmService.getReportBody(
+    const completionResult = await changelogLlmService.getChangelogBody(
       sourceCommits.join('\n'),
     );
 
@@ -72,7 +48,7 @@ export async function reportAction(
       throw new Error(notifications.llmEmptyResponse);
     }
 
-    const report = {
+    const changelog = {
       body: completionResult.content,
       statistic: {
         promptTokens: completionResult.promptTokens,
@@ -80,21 +56,21 @@ export async function reportAction(
         totalTokens:
           completionResult.promptTokens + completionResult.completionTokens,
       },
-    } satisfies IReport;
+    } satisfies IChangelog;
 
-    spinner.succeed(notifications.reportGenerateSuccess);
+    spinner.succeed(notifications.changelogGenerateSuccess);
 
     const statisticsData = {
-      [notifications.promptTokens]: { value: report.statistic.promptTokens },
+      [notifications.promptTokens]: { value: changelog.statistic.promptTokens },
       [notifications.completionTokens]: {
-        value: report.statistic.completionTokens,
+        value: changelog.statistic.completionTokens,
       },
-      [notifications.totalTokens]: { value: report.statistic.totalTokens },
+      [notifications.totalTokens]: { value: changelog.statistic.totalTokens },
     };
 
     console.log();
-    console.log(notifications.report);
-    console.log(report.body.trim());
+    console.log(notifications.changelog);
+    console.log(changelog.body.trim());
 
     console.log();
     console.log(notifications.statistics);

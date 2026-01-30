@@ -7,6 +7,8 @@ import updateNotifier from 'update-notifier';
 import { Command } from 'commander';
 import { loadAppConfig } from '@/config/config.js';
 
+import { changelog } from '@/cli/commands/changelog/changelog.command.js';
+import { pr } from '@/cli/commands/pr/pr.command.js';
 import { report } from '@/cli/commands/report/report.command.js';
 
 async function main() {
@@ -16,7 +18,7 @@ async function main() {
 
     if (update && update.latest !== update.current) {
       console.log(`Update available ${update.current} -> ${update.latest}`);
-      console.log(`Run 'npm i -g ${update.name}' to install it\n`);
+      console.log(`Run 'pnpm add -g ${update.name}' to install it\n`);
     }
   } catch (error: unknown) {
     console.log(
@@ -29,8 +31,10 @@ async function main() {
 
   const program = new Command();
 
-  program.version(pkg.version).description(pkg.description);
+  program.name('friday').version(pkg.version).description(pkg.description);
 
+  changelog(program, appConfig);
+  pr(program, appConfig);
   report(program, appConfig);
 
   program.parse(process.argv);

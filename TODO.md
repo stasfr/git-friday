@@ -4,9 +4,9 @@ This file serves as a technical roadmap outlining planned features and enhanceme
 
 ## Milestone 1
 
-- [ ] **Advanced Filtering**: Extend GitService with additional filtering capabilities including `since-tag` and Git revision range (`branch..branch`) support
-- [ ] **Pull Request Reports**: Implement PR-based reporting functionality that generates reports based on commit history within pull requests
-- [ ] **Changelog Generation**: Develop automated changelog creation from commit history with semantic versioning support
+- [x] **Advanced Filtering**: Extend GitService with additional filtering capabilities including `since-tag` and Git revision range (`branch..branch`) support
+- [x] **Pull Request Reports**: Implement PR-based reporting functionality that generates reports based on commit history within pull requests
+- [x] **Changelog Generation**: Develop automated changelog creation from commit history with semantic versioning support
 
 ## Milestone 2
 

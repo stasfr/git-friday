@@ -5,7 +5,7 @@ import pkg from '../package.json' with { type: 'json' };
 import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
-import { loadAppConfig } from '@/config/config.js';
+import { ConfigService } from '@/services/config/config.service.js';
 
 import { changelog } from '@/cli/commands/changelog/changelog.command.js';
 import { pr } from '@/cli/commands/pr/pr.command.js';
@@ -27,7 +27,8 @@ async function main() {
     );
   }
 
-  const appConfig = loadAppConfig();
+  const configService = new ConfigService();
+  const appConfig = configService.getAppConfig();
 
   const program = new Command();
 

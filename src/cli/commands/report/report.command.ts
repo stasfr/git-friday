@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
 import { reportAction } from '@/cli/commands/report/report.action.js';
 
-import type { AppConfig } from '@/config/config.types.js';
+import type { AppConfig } from '@/services/config/config.types.js';
 import type { CommandOption } from '@/cli/commands/report/report.types.js';
 
 export function report(program: Command, appConfig: AppConfig) {

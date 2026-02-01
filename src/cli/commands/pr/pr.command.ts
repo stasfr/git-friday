@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { prAction } from '@/cli/commands/pr/pr.action.js';
 
-import type { AppConfig } from '@/config/config.types.js';
+import type { AppConfig } from '@/services/config/config.types.js';
 import type { PrCommandOption } from '@/cli/commands/pr/pr.types.js';
 
 export function pr(program: Command, appConfig: AppConfig) {

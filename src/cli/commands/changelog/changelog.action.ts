@@ -4,7 +4,7 @@ import { GitService } from '@/services/git.service.js';
 import { ChangelogLlmService } from '@/cli/commands/changelog/changelog.llm.js';
 import { ChangelogNotifications } from '@/cli/commands/changelog/changelog.notifications.js';
 
-import type { AppConfig } from '@/config/config.types.js';
+import type { AppConfig } from '@/services/config/config.types.js';
 import type {
   ChangelogCommandOption,
   IChangelog,

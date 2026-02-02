@@ -28,7 +28,7 @@ async function main() {
   }
 
   const configService = new ConfigService();
-  const appConfig = configService.getAppConfig();
+  const appConfig = await configService.getAppConfig();
 
   const program = new Command();
 

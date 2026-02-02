@@ -1,9 +1,29 @@
 import process from 'node:process';
 import path from 'node:path';
+import fs from 'node:fs/promises';
+import { LlmProviderKeyNames } from '@/services/config/config.types.js';
 
-import type { AppConfig } from '@/services/config/config.types.js';
+import type {
+  AppConfig,
+  ILlmProviders,
+  IOsPaths,
+  IFileBasedConfig,
+} from '@/services/config/config.types.js';
 
 export class ConfigService {
+  private validateLlmProviderName(provider: string): provider is ILlmProviders {
+    return typeof provider === 'string' && provider === 'openrouter';
+  }
+
+  private validateFileBasedConfig(config: any): config is IFileBasedConfig {
+    return (
+      typeof config === 'object' &&
+      typeof config.llmProvider === 'string' &&
+      typeof config.aiCompletionModel === 'string' &&
+      typeof config.appLocalization === 'object'
+    );
+  }
+
   private getOsPaths() {
     const os = process.platform;
 
@@ -21,51 +41,53 @@ export class ConfigService {
         cache: path.join(localAppData, '.git-friday', 'cache'),
         log: path.join(localAppData, '.git-friday', 'log'),
         temp: path.join(localAppData, 'Temp', '.git-friday'),
-      };
+      } satisfies IOsPaths;
     }
+
+    return null;
+  }
+
+  private async loadConfigFile(osPaths: IOsPaths) {
+    const configPath = path.join(osPaths.config, 'config.json');
+    const configFile = await fs.readFile(configPath, 'utf-8');
+    const config = JSON.parse(configFile);
+
+    if (!this.validateFileBasedConfig(config)) {
+      throw new Error('Invalid config file structure');
+    }
+
+    return config;
   }
 
   // TODO: add localization to messages in config service
-  public getAppConfig() {
+  public async getAppConfig() {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
       throw new Error('Unsupported operating system');
     }
 
-    const openRouterApiKey = process.env.OPEN_ROUTER_API_KEY;
+    const configFile = await this.loadConfigFile(osPaths);
 
-    if (!openRouterApiKey) {
+    const apiKeyName = LlmProviderKeyNames.get(configFile.llmProvider);
+
+    if (!apiKeyName) {
       throw new Error(
-        'Missing required environment variable: OPEN_ROUTER_API_KEY',
+        'Invalid LLM provider. Could not find API key name in LlmProviderKeyNames',
       );
     }
 
-    const aiCompletionModel = process.env.AI_COMPLETION_MODEL;
+    const apiKey = process.env[apiKeyName];
 
-    if (!aiCompletionModel) {
-      throw new Error(
-        'Missing required environment variable: AI_COMPLETION_MODEL',
-      );
-    }
-
-    const appLocalization = process.env.APP_LOCALIZATION ?? 'ru';
-
-    if (
-      typeof appLocalization === 'string' &&
-      appLocalization !== ('en' as const) &&
-      appLocalization !== ('ru' as const)
-    ) {
-      throw new Error(
-        'Invalid value for APP_LOCALIZATION. It must be either "en" or "ru".',
-      );
+    if (!apiKey) {
+      throw new Error(`Missing required environment variable: ${apiKeyName}`);
     }
 
     return {
-      paths: osPaths,
-      openRouterApiKey,
-      aiCompletionModel,
-      appLocalization,
+      llmProvider: configFile.llmProvider,
+      apiKeyName,
+      aiCompletionModel: configFile.aiCompletionModel,
+      appLocalization: configFile.appLocalization,
     } satisfies AppConfig;
   }
 }

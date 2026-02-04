@@ -42,7 +42,7 @@ async function main() {
   pr(program, appConfig);
   report(program, appConfig);
 
-  program.parse(process.argv);
+  program.parseAsync(process.argv);
 }
 
 void main();

@@ -1,4 +1,4 @@
-import type { AppConfig } from '@/services/config/config.types.js';
+import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type { ILocalization } from '@/types/localization.js';
 
 const EnNotifications = {

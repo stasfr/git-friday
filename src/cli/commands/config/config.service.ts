@@ -1,7 +1,7 @@
 import process from 'node:process';
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import { LlmProviderKeyNames } from '@/services/config/config.types.js';
+import { LlmProviderKeyNames } from '@/cli/commands/config/config.types.js';
 
 import type { ILocalization } from '@/types/localization.js';
 import type {
@@ -9,7 +9,7 @@ import type {
   ILlmProviders,
   IOsPaths,
   IFileBasedConfig,
-} from '@/services/config/config.types.js';
+} from '@/cli/commands/config/config.types.js';
 
 export class ConfigService {
   private validateLlmProviderName(

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { changelogAction } from '@/cli/commands/changelog/changelog.action.js';
 
-import type { AppConfig } from '@/services/config/config.types.js';
+import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type { ChangelogCommandOption } from '@/cli/commands/changelog/changelog.types.js';
 
 export function changelog(program: Command, appConfig: AppConfig) {

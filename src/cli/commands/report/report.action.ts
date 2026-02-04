@@ -4,7 +4,7 @@ import { GitService } from '@/services/git.service.js';
 import { ReportLlmService } from '@/cli/commands/report/report.llm.js';
 import { ReportNotifications } from '@/cli/commands/report/report.notifications.js';
 
-import type { AppConfig } from '@/services/config/config.types.js';
+import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type {
   CommandOption,
   IReport,

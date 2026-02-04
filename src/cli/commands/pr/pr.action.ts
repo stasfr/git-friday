@@ -4,7 +4,7 @@ import { GitService } from '@/services/git.service.js';
 import { PrLlmService } from '@/cli/commands/pr/pr.llm.js';
 import { PrNotifications } from '@/cli/commands/pr/pr.notifications.js';
 
-import type { AppConfig } from '@/services/config/config.types.js';
+import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type {
   PrCommandOption,
   IPullRequestBody,

@@ -5,7 +5,7 @@ import pkg from '../package.json' with { type: 'json' };
 import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
-import { ConfigService } from '@/services/config/config.service.js';
+import { ConfigService } from '@/cli/commands/config/config.service.js';
 
 import { changelog } from '@/cli/commands/changelog/changelog.command.js';
 import { pr } from '@/cli/commands/pr/pr.command.js';

@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { prPrompts } from '@/cli/commands/pr/pr.prompts.js';
 
-import type { AppConfig } from '@/services/config/config.types.js';
+import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type { ILocalization } from '@/types/localization.js';
 
 export class PrLlmService {

@@ -7,6 +7,8 @@ import updateNotifier from 'update-notifier';
 import { Command } from 'commander';
 import { ConfigService } from '@/cli/commands/config/config.service.js';
 
+import { config } from '@/cli/commands/config/config.command.js';
+
 import { changelog } from '@/cli/commands/changelog/changelog.command.js';
 import { pr } from '@/cli/commands/pr/pr.command.js';
 import { report } from '@/cli/commands/report/report.command.js';
@@ -33,6 +35,8 @@ async function main() {
   const program = new Command();
 
   program.name('friday').version(pkg.version).description(pkg.description);
+
+  config(program);
 
   changelog(program, appConfig);
   pr(program, appConfig);

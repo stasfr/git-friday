@@ -77,6 +77,25 @@ export class ConfigService {
     return config;
   }
 
+  public async initConfig() {
+    const osPaths = this.getOsPaths();
+
+    if (!osPaths) {
+      throw new Error('Unsupported operating system');
+    }
+
+    const emptyConfig = {
+      llmProvider: null,
+      aiCompletionModel: null,
+      appLocalization: null,
+    };
+
+    const jsonEmptyConfig = JSON.stringify(emptyConfig, null, 2);
+    const configFilePath = path.join(osPaths.config, 'config.json');
+
+    await fs.writeFile(configFilePath, jsonEmptyConfig, 'utf-8');
+  }
+
   // TODO: add localization to messages in config service
   public async getAppConfig() {
     const osPaths = this.getOsPaths();

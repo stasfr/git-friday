@@ -3,6 +3,7 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { LlmProviderKeyNames } from '@/services/config/config.types.js';
 
+import type { ILocalization } from '@/types/localization.js';
 import type {
   AppConfig,
   ILlmProviders,
@@ -11,16 +12,33 @@ import type {
 } from '@/services/config/config.types.js';
 
 export class ConfigService {
-  private validateLlmProviderName(provider: string): provider is ILlmProviders {
+  private validateLlmProviderName(
+    provider: unknown,
+  ): provider is ILlmProviders {
     return typeof provider === 'string' && provider === 'openrouter';
   }
 
-  private validateFileBasedConfig(config: any): config is IFileBasedConfig {
+  private validateAppLocalization(
+    localization: unknown,
+  ): localization is ILocalization {
+    return (
+      typeof localization === 'string' &&
+      (localization === 'en' || localization === 'ru')
+    );
+  }
+
+  private validateFileBasedConfig(config: unknown): config is IFileBasedConfig {
     return (
       typeof config === 'object' &&
+      config !== null &&
+      'llmProvider' in config &&
       typeof config.llmProvider === 'string' &&
+      this.validateLlmProviderName(config.llmProvider) === true &&
+      'aiCompletionModel' in config &&
       typeof config.aiCompletionModel === 'string' &&
-      typeof config.appLocalization === 'object'
+      'appLocalization' in config &&
+      typeof config.appLocalization === 'string' &&
+      this.validateAppLocalization(config.appLocalization) === true
     );
   }
 

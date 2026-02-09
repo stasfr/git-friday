@@ -1,6 +1,7 @@
 import process from 'node:process';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { LlmProviderKeyNames } from '@/cli/commands/config/config.types.js';
 
 import type { ILocalization } from '@/types/localization.js';
@@ -75,6 +76,17 @@ export class ConfigService {
     }
 
     return config;
+  }
+
+  public async checkIfConfigExists() {
+    const osPaths = this.getOsPaths();
+
+    if (!osPaths) {
+      throw new Error('Unsupported operating system');
+    }
+
+    const configFilePath = path.join(osPaths.config, 'config.json');
+    await fs.access(configFilePath, constants.F_OK);
   }
 
   public async initConfig() {

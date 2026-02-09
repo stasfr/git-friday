@@ -22,7 +22,7 @@ export type IFileBasedConfig = {
 
 export type AppConfig = {
   llmProvider: ILlmProviders;
-  apiKeyName: string;
+  apiKey: string;
   aiCompletionModel: string;
   appLocalization: ILocalization;
 };

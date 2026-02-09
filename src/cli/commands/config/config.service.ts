@@ -182,7 +182,7 @@ export class ConfigService {
 
     return {
       llmProvider: configFile.llmProvider,
-      apiKeyName,
+      apiKey,
       aiCompletionModel: configFile.aiCompletionModel,
       appLocalization: configFile.appLocalization,
     } satisfies AppConfig;

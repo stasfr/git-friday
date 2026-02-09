@@ -1,10 +1,11 @@
 import { Command } from 'commander';
+import { ConfigService } from '@/cli/commands/config/config.service.js';
+import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
 import { prAction } from '@/cli/commands/pr/pr.action.js';
 
-import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type { PrCommandOption } from '@/cli/commands/pr/pr.types.js';
 
-export function pr(program: Command, appConfig: AppConfig) {
+export function pr(program: Command) {
   program
     .command('pr')
     .description(
@@ -14,7 +15,10 @@ export function pr(program: Command, appConfig: AppConfig) {
       '-r, --range <range>',
       'Revision range for commits (e.g., main..dev, HEAD~5..HEAD)',
     )
-    .action(
-      async (options: PrCommandOption) => await prAction(options, appConfig),
-    );
+    .hook('preAction', configExistCheckHook)
+    .action(async (options: PrCommandOption) => {
+      const configService = new ConfigService();
+      const appConfig = await configService.getAppConfig();
+      await prAction(options, appConfig);
+    });
 }

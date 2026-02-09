@@ -1,10 +1,11 @@
 import { Command, Option } from 'commander';
+import { ConfigService } from '@/cli/commands/config/config.service.js';
+import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
 import { reportAction } from '@/cli/commands/report/report.action.js';
 
-import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type { CommandOption } from '@/cli/commands/report/report.types.js';
 
-export function report(program: Command, appConfig: AppConfig) {
+export function report(program: Command) {
   program
     .command('report')
     .description('Generate a report from git commits')
@@ -45,7 +46,10 @@ export function report(program: Command, appConfig: AppConfig) {
       '--since-ref <ref>',
       'Get commits after a specific tag or ref (e.g., v0.13.0)',
     )
-    .action(
-      async (options: CommandOption) => await reportAction(options, appConfig),
-    );
+    .hook('preAction', configExistCheckHook)
+    .action(async (options: CommandOption) => {
+      const configService = new ConfigService();
+      const appConfig = await configService.getAppConfig();
+      await reportAction(options, appConfig);
+    });
 }

@@ -5,7 +5,6 @@ import pkg from '../package.json' with { type: 'json' };
 import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
-import { ConfigService } from '@/cli/commands/config/config.service.js';
 
 import { config } from '@/cli/commands/config/config.command.js';
 
@@ -29,18 +28,15 @@ async function main() {
     );
   }
 
-  const configService = new ConfigService();
-  const appConfig = await configService.getAppConfig();
-
   const program = new Command();
 
   program.name('friday').version(pkg.version).description(pkg.description);
 
   config(program);
 
-  changelog(program, appConfig);
-  pr(program, appConfig);
-  report(program, appConfig);
+  changelog(program);
+  pr(program);
+  report(program);
 
   program.parseAsync(process.argv);
 }

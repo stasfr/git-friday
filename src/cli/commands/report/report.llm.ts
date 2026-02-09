@@ -2,11 +2,11 @@ import OpenAI from 'openai';
 import { reportPrompts } from '@/cli/commands/report/report.prompts.js';
 
 import type { AppConfig } from '@/cli/commands/config/config.types.js';
-import type { ILocalization } from '@/types/localization.js';
+import type { ILocalizationTypes } from '@/localization/localization.types.js';
 
 export class ReportLlmService {
   private readonly client: OpenAI;
-  private readonly localization: ILocalization;
+  private readonly localization: ILocalizationTypes;
   private readonly modelName: string;
 
   public constructor(appConfig: AppConfig) {

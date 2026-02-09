@@ -1,4 +1,4 @@
-import type { ILocalization } from '@/types/localization.js';
+import type { ILocalizationTypes } from '@/localization/localization.types.js';
 
 export type ILlmProviders = 'openrouter';
 
@@ -17,12 +17,12 @@ export type IOsPaths = {
 export type IFileBasedConfig = {
   llmProvider: ILlmProviders;
   aiCompletionModel: string;
-  appLocalization: ILocalization;
+  appLocalization: ILocalizationTypes;
 };
 
 export type AppConfig = {
   llmProvider: ILlmProviders;
   apiKey: string;
   aiCompletionModel: string;
-  appLocalization: ILocalization;
+  appLocalization: ILocalizationTypes;
 };

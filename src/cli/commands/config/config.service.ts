@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { LlmProviderKeyNames } from '@/cli/commands/config/config.types.js';
 
-import type { ILocalization } from '@/types/localization.js';
+import type { ILocalizationTypes } from '@/localization/localization.types.js';
 import type {
   AppConfig,
   ILlmProviders,
@@ -21,7 +21,7 @@ export class ConfigService {
 
   private validateAppLocalization(
     localization: unknown,
-  ): localization is ILocalization {
+  ): localization is ILocalizationTypes {
     return (
       typeof localization === 'string' &&
       (localization === 'en' || localization === 'ru')

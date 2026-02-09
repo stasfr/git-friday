@@ -1,8 +1,8 @@
 import ora from 'ora';
 
+import { setupLocalization, $l } from '@/localization/localization.js';
 import { GitService } from '@/services/git.service.js';
 import { ChangelogLlmService } from '@/cli/commands/changelog/changelog.llm.js';
-import { ChangelogNotifications } from '@/cli/commands/changelog/changelog.notifications.js';
 
 import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type {
@@ -15,28 +15,26 @@ export async function changelogAction(
   appConfig: AppConfig,
 ) {
   const spinner = ora();
+  setupLocalization(appConfig.appLocalization);
   const gitService = new GitService();
-  const notifications = new ChangelogNotifications(appConfig).getNotification();
 
   try {
-    spinner.start(notifications.gitLogCommandCreation);
+    spinner.start($l('creatingGitLogCommand'));
 
     gitService.sinceTag(options.sinceRef);
 
     gitService.pretty();
-    spinner.succeed(
-      `${notifications.gitLogCommandCreated}: ${gitService.command}`,
-    );
+    spinner.succeed(`${$l('gitLogCommandCreated')}: ${gitService.command}`);
 
-    spinner.start(notifications.searchCommits);
+    spinner.start($l('searchingForCommits'));
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {
-      throw new Error(notifications.noCommitsFoundError);
+      throw new Error($l('noCommitsFound'));
     }
 
-    spinner.succeed(`${notifications.commitsFound}: ${sourceCommits.length}`);
-    spinner.start(notifications.generateChangelog);
+    spinner.succeed(`${$l('commitsFounded')}: ${sourceCommits.length}`);
+    spinner.start($l('generatingChangelog'));
 
     const changelogLlmService = new ChangelogLlmService(appConfig);
 
@@ -45,7 +43,7 @@ export async function changelogAction(
     );
 
     if (!completionResult) {
-      throw new Error(notifications.llmEmptyResponse);
+      throw new Error($l('gotEmptyResponseFromLlm'));
     }
 
     const changelog = {
@@ -58,26 +56,26 @@ export async function changelogAction(
       },
     } satisfies IChangelog;
 
-    spinner.succeed(notifications.changelogGenerateSuccess);
+    spinner.succeed($l('changelogGeneratedSuccessfully'));
 
     const statisticsData = {
-      [notifications.promptTokens]: { value: changelog.statistic.promptTokens },
-      [notifications.completionTokens]: {
+      [$l('promptWord')]: { value: changelog.statistic.promptTokens },
+      [$l('completionWord')]: {
         value: changelog.statistic.completionTokens,
       },
-      [notifications.totalTokens]: { value: changelog.statistic.totalTokens },
+      [$l('totalWord')]: { value: changelog.statistic.totalTokens },
     };
 
     console.log();
-    console.log(notifications.changelog);
+    console.log($l('changelogWord'));
     console.log(changelog.body.trim());
 
     console.log();
-    console.log(notifications.statistics);
+    console.log($l('tokenUsageStatisticsTitle'));
     console.table(statisticsData);
   } catch (error: unknown) {
     spinner.fail(
-      `${notifications.errorOccured}: ${
+      `${$l('errorOccured')}: ${
         error instanceof Error ? error.message : String(error)
       }`,
     );

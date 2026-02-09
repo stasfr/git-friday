@@ -1,8 +1,8 @@
 import ora from 'ora';
 
+import { setupLocalization, $l } from '@/localization/localization.js';
 import { GitService } from '@/services/git.service.js';
 import { PrLlmService } from '@/cli/commands/pr/pr.llm.js';
-import { PrNotifications } from '@/cli/commands/pr/pr.notifications.js';
 
 import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type {
@@ -12,28 +12,26 @@ import type {
 
 export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
   const spinner = ora();
+  setupLocalization(appConfig.appLocalization);
   const gitService = new GitService();
-  const notifications = new PrNotifications(appConfig).getNotification();
 
   try {
-    spinner.start(notifications.gitLogCommandCreation);
+    spinner.start($l('creatingGitLogCommand'));
 
     gitService.forRange(options.range);
 
     gitService.pretty();
-    spinner.succeed(
-      `${notifications.gitLogCommandCreated}: ${gitService.command}`,
-    );
+    spinner.succeed(`${$l('gitLogCommandCreated')}: ${gitService.command}`);
 
-    spinner.start(notifications.searchCommits);
+    spinner.start($l('searchingForCommits'));
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {
-      throw new Error(notifications.noCommitsFoundError);
+      throw new Error($l('noCommitsFound'));
     }
 
-    spinner.succeed(`${notifications.commitsFound}: ${sourceCommits.length}`);
-    spinner.start(notifications.generatePrText);
+    spinner.succeed(`${$l('commitsFounded')}: ${sourceCommits.length}`);
+    spinner.start($l('generatingPullRequestText'));
 
     const prLlmService = new PrLlmService(appConfig);
 
@@ -42,7 +40,7 @@ export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
     );
 
     if (!completionResult) {
-      throw new Error(notifications.llmEmptyResponse);
+      throw new Error($l('gotEmptyResponseFromLlm'));
     }
 
     const prText = {
@@ -55,26 +53,26 @@ export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
       },
     } satisfies IPullRequestBody;
 
-    spinner.succeed(notifications.prTextGenerateSuccess);
+    spinner.succeed($l('pullRequestTextGeneratedSuccess'));
 
     const statisticsData = {
-      [notifications.promptTokens]: { value: prText.statistic.promptTokens },
-      [notifications.completionTokens]: {
+      [$l('promptWord')]: { value: prText.statistic.promptTokens },
+      [$l('completionWord')]: {
         value: prText.statistic.completionTokens,
       },
-      [notifications.totalTokens]: { value: prText.statistic.totalTokens },
+      [$l('totalWord')]: { value: prText.statistic.totalTokens },
     };
 
     console.log();
-    console.log(notifications.prText);
+    console.log($l('pullRequestTextWord'));
     console.log(prText.body.trim());
 
     console.log();
-    console.log(notifications.statistics);
+    console.log($l('tokenUsageStatisticsTitle'));
     console.table(statisticsData);
   } catch (error: unknown) {
     spinner.fail(
-      `${notifications.errorOccured}: ${
+      `${$l('errorOccured')}: ${
         error instanceof Error ? error.message : String(error)
       }`,
     );

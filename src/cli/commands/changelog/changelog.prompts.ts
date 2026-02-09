@@ -1,7 +1,7 @@
-import type { ILocalization } from '@/types/localization.js';
+import type { ILocalizationTypes } from '@/localization/localization.types.js';
 
 export const changelogPrompts = {
-  getSystemPrompts: function (localization: ILocalization) {
+  getSystemPrompts: function (localization: ILocalizationTypes) {
     switch (localization) {
       case 'ru':
         return `
@@ -81,7 +81,7 @@ export const changelogPrompts = {
     }
   },
 
-  getUserPrompt: function (commits: string, localization: ILocalization) {
+  getUserPrompt: function (commits: string, localization: ILocalizationTypes) {
     switch (localization) {
       case 'ru':
         return `

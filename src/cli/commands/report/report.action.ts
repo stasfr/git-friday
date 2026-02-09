@@ -1,8 +1,8 @@
 import ora from 'ora';
 
+import { setupLocalization, $l } from '@/localization/localization.js';
 import { GitService } from '@/services/git.service.js';
 import { ReportLlmService } from '@/cli/commands/report/report.llm.js';
-import { ReportNotifications } from '@/cli/commands/report/report.notifications.js';
 
 import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type {
@@ -15,11 +15,11 @@ export async function reportAction(
   appConfig: AppConfig,
 ) {
   const spinner = ora();
+  setupLocalization(appConfig.appLocalization);
   const gitService = new GitService();
-  const notifications = new ReportNotifications(appConfig).getNotification();
 
   try {
-    spinner.start(notifications.gitLogCommandCreation);
+    spinner.start($l('creatingGitLogCommand'));
 
     if (options.all === true) {
       gitService.forAllBranches();
@@ -48,19 +48,17 @@ export async function reportAction(
     }
 
     gitService.pretty();
-    spinner.succeed(
-      `${notifications.gitLogCommandCreated}: ${gitService.command}`,
-    );
+    spinner.succeed(`${$l('gitLogCommandCreated')}: ${gitService.command}`);
 
-    spinner.start(notifications.searchCommits);
+    spinner.start($l('searchingForCommits'));
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {
-      throw new Error(notifications.noCommitsFoundError);
+      throw new Error($l('noCommitsFound'));
     }
 
-    spinner.succeed(`${notifications.commitsFound}: ${sourceCommits.length}`);
-    spinner.start(notifications.generateReport);
+    spinner.succeed(`${$l('commitsFounded')}: ${sourceCommits.length}`);
+    spinner.start($l('generatingReport'));
 
     const reportLlmService = new ReportLlmService(appConfig);
 
@@ -69,7 +67,7 @@ export async function reportAction(
     );
 
     if (!completionResult) {
-      throw new Error(notifications.llmEmptyResponse);
+      throw new Error($l('gotEmptyResponseFromLlm'));
     }
 
     const report = {
@@ -82,26 +80,26 @@ export async function reportAction(
       },
     } satisfies IReport;
 
-    spinner.succeed(notifications.reportGenerateSuccess);
+    spinner.succeed($l('reportGeneratedSuccessfully'));
 
     const statisticsData = {
-      [notifications.promptTokens]: { value: report.statistic.promptTokens },
-      [notifications.completionTokens]: {
+      [$l('promptWord')]: { value: report.statistic.promptTokens },
+      [$l('completionWord')]: {
         value: report.statistic.completionTokens,
       },
-      [notifications.totalTokens]: { value: report.statistic.totalTokens },
+      [$l('totalWord')]: { value: report.statistic.totalTokens },
     };
 
     console.log();
-    console.log(notifications.report);
+    console.log($l('reportWord'));
     console.log(report.body.trim());
 
     console.log();
-    console.log(notifications.statistics);
+    console.log($l('tokenUsageStatisticsTitle'));
     console.table(statisticsData);
   } catch (error: unknown) {
     spinner.fail(
-      `${notifications.errorOccured}: ${
+      `${$l('errorOccured')}: ${
         error instanceof Error ? error.message : String(error)
       }`,
     );

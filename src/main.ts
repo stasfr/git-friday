@@ -5,7 +5,8 @@ import pkg from '../package.json' with { type: 'json' };
 import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
-import { loadAppConfig } from '@/config/config.js';
+
+import { config } from '@/cli/commands/config/config.command.js';
 
 import { changelog } from '@/cli/commands/changelog/changelog.command.js';
 import { pr } from '@/cli/commands/pr/pr.command.js';
@@ -27,17 +28,25 @@ async function main() {
     );
   }
 
-  const appConfig = loadAppConfig();
+  try {
+    const program = new Command();
 
-  const program = new Command();
+    program.name('friday').version(pkg.version).description(pkg.description);
 
-  program.name('friday').version(pkg.version).description(pkg.description);
+    config(program);
 
-  changelog(program, appConfig);
-  pr(program, appConfig);
-  report(program, appConfig);
+    changelog(program);
+    pr(program);
+    report(program);
 
-  program.parse(process.argv);
+    await program.parseAsync(process.argv);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.log('Error: ', error.message);
+    } else {
+      console.log('Unknown error: ', error);
+    }
+  }
 }
 
 void main();

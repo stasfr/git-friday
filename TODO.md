@@ -10,8 +10,8 @@ This file serves as a technical roadmap outlining planned features and enhanceme
 
 ## Milestone 2
 
-- [ ] **Global Configuration**: Add support for global configuration file (e.g., `~/.git-friday/config.json`) to store default settings across all projects
-- [ ] **Configuration Hierarchy**: Implement three-tier configuration system (CLI flags > .env > global config) with proper precedence handling
+- [x] **Global Configuration**: Add support for global configuration file (e.g., `~/.git-friday/config.json`) to store default settings across all projects
+- [ ] ~~**Configuration Hierarchy**: Implement three-tier configuration system (CLI flags > .env > global config) with proper precedence handling~~ **DEPRECATED**: Decided against configuration hierarchy in favor of a single source of truth. API key declaration remains in the .env file.
 
 ## Milestone 3
 

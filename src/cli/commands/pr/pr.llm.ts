@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { prPrompts } from '@/cli/commands/pr/pr.prompts.js';
 
-import type { AppConfig } from '@/config/config.types.js';
+import type { AppConfig } from '@/cli/commands/config/config.types.js';
 import type { ILocalization } from '@/types/localization.js';
 
 export class PrLlmService {
@@ -12,7 +12,7 @@ export class PrLlmService {
   public constructor(appConfig: AppConfig) {
     this.client = new OpenAI({
       baseURL: 'https://openrouter.ai/api/v1',
-      apiKey: appConfig.openRouterApiKey,
+      apiKey: appConfig.apiKey,
     });
     this.localization = appConfig.appLocalization;
     this.modelName = appConfig.aiCompletionModel;

@@ -28,17 +28,25 @@ async function main() {
     );
   }
 
-  const program = new Command();
+  try {
+    const program = new Command();
 
-  program.name('friday').version(pkg.version).description(pkg.description);
+    program.name('friday').version(pkg.version).description(pkg.description);
 
-  config(program);
+    config(program);
 
-  changelog(program);
-  pr(program);
-  report(program);
+    changelog(program);
+    pr(program);
+    report(program);
 
-  program.parseAsync(process.argv);
+    await program.parseAsync(process.argv);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.log('Error: ', error.message);
+    } else {
+      console.log('Unknown error: ', error);
+    }
+  }
 }
 
 void main();

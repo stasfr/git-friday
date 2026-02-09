@@ -29,18 +29,49 @@ export class ConfigService {
   }
 
   private validateFileBasedConfig(config: unknown): config is IFileBasedConfig {
-    return (
-      typeof config === 'object' &&
-      config !== null &&
-      'llmProvider' in config &&
-      typeof config.llmProvider === 'string' &&
-      this.validateLlmProviderName(config.llmProvider) === true &&
-      'aiCompletionModel' in config &&
-      typeof config.aiCompletionModel === 'string' &&
-      'appLocalization' in config &&
-      typeof config.appLocalization === 'string' &&
-      this.validateAppLocalization(config.appLocalization) === true
-    );
+    if (config === null) {
+      throw new Error('Config file is empty');
+    }
+
+    if (typeof config !== 'object') {
+      throw new Error('Config file is not a valid JSON');
+    }
+
+    if (!('llmProvider' in config)) {
+      throw new Error('Config file is missing llmProvider property');
+    }
+
+    if (typeof config.llmProvider !== 'string') {
+      throw new Error('Invalid llmProvider value');
+    }
+
+    if (!this.validateLlmProviderName(config.llmProvider)) {
+      throw new Error('Invalid provider name. Supported providers: openrouter');
+    }
+
+    if (!('aiCompletionModel' in config)) {
+      throw new Error('Config file is missing aiCompletionModel property');
+    }
+
+    if (typeof config.aiCompletionModel !== 'string') {
+      throw new Error('Invalid aiCompletionModel value');
+    }
+
+    if (!('appLocalization' in config)) {
+      throw new Error('Config file is missing appLocalization property');
+    }
+
+    if (typeof config.appLocalization !== 'string') {
+      throw new Error('Invalid appLocalization value');
+    }
+
+    if (!this.validateAppLocalization(config.appLocalization)) {
+      throw new Error(
+        'Invalid appLocalization value. Supported values: en, ru',
+      );
+    }
+
+    return true;
   }
 
   private getOsPaths() {

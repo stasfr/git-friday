@@ -139,6 +139,23 @@ export class ConfigService {
     await fs.writeFile(configFilePath, jsonEmptyConfig, 'utf-8');
   }
 
+  public async setValueToKey(key: string, value: string) {
+    const osPaths = this.getOsPaths();
+
+    if (!osPaths) {
+      throw new Error('Unsupported operating system');
+    }
+
+    const configPath = path.join(osPaths.config, 'config.json');
+    const configFile = await fs.readFile(configPath, 'utf-8');
+    const config = JSON.parse(configFile);
+
+    config[key] = value;
+
+    const updatedConfig = JSON.stringify(config, null, 2);
+    await fs.writeFile(configPath, updatedConfig, 'utf-8');
+  }
+
   // TODO: add localization to messages in config service
   public async getAppConfig() {
     const osPaths = this.getOsPaths();

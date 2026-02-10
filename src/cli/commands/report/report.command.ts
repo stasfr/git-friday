@@ -3,7 +3,17 @@ import { ConfigService } from '@/cli/commands/config/config.service.js';
 import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
 import { reportAction } from '@/cli/commands/report/report.action.js';
 
-import type { CommandOption } from '@/cli/commands/report/report.types.js';
+export type CommandOption = {
+  authors?: string[];
+  branches?: string[];
+  all: boolean;
+  since?: string;
+  until?: string;
+  currentUser: boolean;
+  range?: string;
+  sinceRef?: string;
+  today?: boolean;
+};
 
 export function report(program: Command) {
   program

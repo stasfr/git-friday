@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { ConfigService } from '@/cli/commands/config/config.service.js';
+import { ConfigService } from '@/cli/commands/config/configService.js';
 import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
-import { changelogAction } from '@/cli/commands/changelog/changelog.action.js';
+import { changelogAction } from '@/cli/commands/changelog/changelogAction.js';
 
 export type ChangelogCommandOption = {
   sinceRef: string;

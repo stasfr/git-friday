@@ -4,7 +4,7 @@ import { ru } from '@/localization/ru/ru.js';
 import type {
   ILocalizationTypes,
   ILocalizationKey,
-} from '@/localization/localization.types.js';
+} from '@/localization/localizationTypes.js';
 
 let lang: ILocalizationTypes = 'en';
 

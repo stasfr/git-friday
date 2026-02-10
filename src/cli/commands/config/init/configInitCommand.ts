@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { configInitAction } from '@/cli/commands/config/init/init.action.js';
+import { configInitAction } from '@/cli/commands/config/init/configInitAction.js';
 
 export function configInit(configCommand: Command) {
   configCommand

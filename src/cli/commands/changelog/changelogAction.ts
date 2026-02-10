@@ -2,13 +2,13 @@ import ora from 'ora';
 
 import { setupLocalization, $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
-import { GitService } from '@/services/git.service.js';
-import { changelogPrompts } from '@/cli/commands/changelog/changelog.prompts.js';
+import { GitService } from '@/services/gitService.js';
+import { changelogPrompts } from '@/cli/commands/changelog/changelogPrompts.js';
 
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
-import type { AppConfig } from '@/cli/commands/config/config.types.js';
-import type { ChangelogCommandOption } from '@/cli/commands/changelog/changelog.command.js';
+import type { AppConfig } from '@/cli/commands/config/configTypes.js';
+import type { ChangelogCommandOption } from '@/cli/commands/changelog/changelogCommand.js';
 
 export async function changelogAction(
   options: ChangelogCommandOption,

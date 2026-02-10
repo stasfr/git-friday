@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 
-import type { AppConfig } from '@/cli/commands/config/config.types.js';
+import type { AppConfig } from '@/cli/commands/config/configTypes.js';
 
 interface IPrompts {
   systemPrompt: string;

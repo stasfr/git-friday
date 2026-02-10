@@ -1,4 +1,4 @@
-import type { IMessagesLocalization } from '@/localization/localization.types.js';
+import type { IMessagesLocalization } from '@/localization/localizationTypes.js';
 
 export const messages = {
   creatingGitLogCommand: 'Создание git log команды...',

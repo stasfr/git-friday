@@ -6,11 +6,11 @@ import updateNotifier from 'update-notifier';
 
 import { Command } from 'commander';
 
-import { config } from '@/cli/commands/config/config.command.js';
+import { config } from '@/cli/commands/config/configCommand.js';
 
-import { changelog } from '@/cli/commands/changelog/changelog.command.js';
-import { pr } from '@/cli/commands/pr/pr.command.js';
-import { report } from '@/cli/commands/report/report.command.js';
+import { changelog } from '@/cli/commands/changelog/changelogCommand.js';
+import { pr } from '@/cli/commands/pr/prCommand.js';
+import { report } from '@/cli/commands/report/reportCommand.js';
 
 async function main() {
   try {

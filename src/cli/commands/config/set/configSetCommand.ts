@@ -1,7 +1,10 @@
 import { Command } from 'commander';
-import { configSetAction } from '@/cli/commands/config/set/set.action.js';
+import { configSetAction } from '@/cli/commands/config/set/configSetAction.js';
 
-import type { ConfigSetCommandOption } from '@/cli/commands/config/set/set.types.js';
+export type ConfigSetCommandOption = {
+  key: string;
+  value: string;
+};
 
 export function configSet(configCommand: Command) {
   configCommand

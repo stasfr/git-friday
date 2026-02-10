@@ -1,4 +1,4 @@
-import { ConfigService } from '../config.service.js';
+import { ConfigService } from '../configService.js';
 
 export async function configExistCheckHook() {
   const configService = new ConfigService();

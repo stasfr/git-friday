@@ -1,4 +1,4 @@
-import type { ILocalizationTypes } from '@/localization/localization.types.js';
+import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
 
 export type IOsPaths = {
   data: string;

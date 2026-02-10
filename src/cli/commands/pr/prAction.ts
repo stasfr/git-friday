@@ -2,13 +2,13 @@ import ora from 'ora';
 
 import { setupLocalization, $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
-import { GitService } from '@/services/git.service.js';
-import { prPrompts } from '@/cli/commands/pr/pr.prompts.js';
+import { GitService } from '@/services/gitService.js';
+import { prPrompts } from '@/cli/commands/pr/prPrompts.js';
 
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
-import type { AppConfig } from '@/cli/commands/config/config.types.js';
-import type { PrCommandOption } from '@/cli/commands/pr/pr.command.js';
+import type { AppConfig } from '@/cli/commands/config/configTypes.js';
+import type { PrCommandOption } from '@/cli/commands/pr/prCommand.js';
 
 export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
   const spinner = ora();

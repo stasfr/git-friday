@@ -3,12 +3,12 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { constants } from 'node:fs';
 
-import type { ILocalizationTypes } from '@/localization/localization.types.js';
+import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
 import type {
   AppConfig,
   IOsPaths,
   IFileBasedConfig,
-} from '@/cli/commands/config/config.types.js';
+} from '@/cli/commands/config/configTypes.js';
 
 export class ConfigService {
   private validateAppLocalization(

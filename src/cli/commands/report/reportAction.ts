@@ -2,13 +2,13 @@ import ora from 'ora';
 
 import { setupLocalization, $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
-import { GitService } from '@/services/git.service.js';
-import { reportPrompts } from '@/cli/commands/report/report.prompts.js';
+import { GitService } from '@/services/gitService.js';
+import { reportPrompts } from '@/cli/commands/report/reportPrompts.js';
 
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
-import type { AppConfig } from '@/cli/commands/config/config.types.js';
-import type { ReportCommandOption } from '@/cli/commands/report/report.command.js';
+import type { AppConfig } from '@/cli/commands/config/configTypes.js';
+import type { ReportCommandOption } from '@/cli/commands/report/reportCommand.js';
 
 export async function reportAction(
   options: ReportCommandOption,

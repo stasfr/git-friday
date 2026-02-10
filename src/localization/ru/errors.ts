@@ -1,4 +1,4 @@
-import type { IErrorLocalization } from '@/localization/localization.types.js';
+import type { IErrorLocalization } from '@/localization/localizationTypes.js';
 
 export const errors = {
   errorOccured: 'Произошла ошибка',

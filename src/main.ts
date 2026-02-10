@@ -2,8 +2,8 @@
 
 import 'dotenv/config';
 import pkg from '../package.json' with { type: 'json' };
-import updateNotifier from 'update-notifier';
 
+import { checkForUpdates } from '@/services/pkgUpdateService.js';
 import { Command } from 'commander';
 
 import { config } from '@/cli/commands/config/configCommand.js';
@@ -13,20 +13,7 @@ import { pr } from '@/cli/commands/pr/prCommand.js';
 import { report } from '@/cli/commands/report/reportCommand.js';
 
 async function main() {
-  try {
-    const notifier = updateNotifier({ pkg });
-    const update = await notifier.fetchInfo();
-
-    if (update && update.latest !== update.current) {
-      console.log(`Update available ${update.current} -> ${update.latest}`);
-      console.log(`Run 'pnpm add -g ${update.name}' to install it\n`);
-    }
-  } catch (error: unknown) {
-    console.log(
-      'Could not check for updates. Error:',
-      error instanceof Error ? error.message : error,
-    );
-  }
+  await checkForUpdates();
 
   try {
     const program = new Command();

@@ -2,23 +2,15 @@ import process from 'node:process';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { constants } from 'node:fs';
-import { LlmProviderKeyNames } from '@/cli/commands/config/config.types.js';
 
 import type { ILocalizationTypes } from '@/localization/localization.types.js';
 import type {
   AppConfig,
-  ILlmProviders,
   IOsPaths,
   IFileBasedConfig,
 } from '@/cli/commands/config/config.types.js';
 
 export class ConfigService {
-  private validateLlmProviderName(
-    provider: unknown,
-  ): provider is ILlmProviders {
-    return typeof provider === 'string' && provider === 'openrouter';
-  }
-
   private validateAppLocalization(
     localization: unknown,
   ): localization is ILocalizationTypes {
@@ -35,18 +27,6 @@ export class ConfigService {
 
     if (typeof config !== 'object') {
       throw new Error('Config file is not a valid JSON');
-    }
-
-    if (!('llmProvider' in config)) {
-      throw new Error('Config file is missing llmProvider property');
-    }
-
-    if (typeof config.llmProvider !== 'string') {
-      throw new Error('Invalid llmProvider value');
-    }
-
-    if (!this.validateLlmProviderName(config.llmProvider)) {
-      throw new Error('Invalid provider name. Supported providers: openrouter');
     }
 
     if (!('aiCompletionModel' in config)) {
@@ -128,7 +108,6 @@ export class ConfigService {
     }
 
     const emptyConfig = {
-      llmProvider: null,
       aiCompletionModel: null,
       appLocalization: null,
     };
@@ -166,23 +145,7 @@ export class ConfigService {
 
     const configFile = await this.loadConfigFile(osPaths);
 
-    const apiKeyName = LlmProviderKeyNames.get(configFile.llmProvider);
-
-    if (!apiKeyName) {
-      throw new Error(
-        'Invalid LLM provider. Could not find API key name in LlmProviderKeyNames',
-      );
-    }
-
-    const apiKey = process.env[apiKeyName];
-
-    if (!apiKey) {
-      throw new Error(`Missing required environment variable: ${apiKeyName}`);
-    }
-
     return {
-      llmProvider: configFile.llmProvider,
-      apiKey,
       aiCompletionModel: configFile.aiCompletionModel,
       appLocalization: configFile.appLocalization,
     } satisfies AppConfig;

@@ -10,10 +10,7 @@ export class PrLlmService {
   private readonly modelName: string;
 
   public constructor(appConfig: AppConfig) {
-    this.client = new OpenAI({
-      baseURL: 'https://openrouter.ai/api/v1',
-      apiKey: appConfig.apiKey,
-    });
+    this.client = new OpenAI();
     this.localization = appConfig.appLocalization;
     this.modelName = appConfig.aiCompletionModel;
   }

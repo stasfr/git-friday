@@ -8,10 +8,10 @@ import { reportPrompts } from '@/cli/commands/report/report.prompts.js';
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
 import type { AppConfig } from '@/cli/commands/config/config.types.js';
-import type { CommandOption } from '@/cli/commands/report/report.command.js';
+import type { ReportCommandOption } from '@/cli/commands/report/report.command.js';
 
 export async function reportAction(
-  options: CommandOption,
+  options: ReportCommandOption,
   appConfig: AppConfig,
 ) {
   const spinner = ora();

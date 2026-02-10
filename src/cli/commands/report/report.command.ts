@@ -3,7 +3,7 @@ import { ConfigService } from '@/cli/commands/config/config.service.js';
 import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
 import { reportAction } from '@/cli/commands/report/report.action.js';
 
-export type CommandOption = {
+export type ReportCommandOption = {
   authors?: string[];
   branches?: string[];
   all: boolean;
@@ -57,7 +57,7 @@ export function report(program: Command) {
       'Get commits after a specific tag or ref (e.g., v0.13.0)',
     )
     .hook('preAction', configExistCheckHook)
-    .action(async (options: CommandOption) => {
+    .action(async (options: ReportCommandOption) => {
       const configService = new ConfigService();
       const appConfig = await configService.getAppConfig();
       await reportAction(options, appConfig);

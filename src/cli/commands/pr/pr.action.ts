@@ -1,19 +1,20 @@
 import ora from 'ora';
 
 import { setupLocalization, $l } from '@/localization/localization.js';
+import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/git.service.js';
-import { PrLlmService } from '@/cli/commands/pr/pr.llm.js';
+import { prPrompts } from '@/cli/commands/pr/pr.prompts.js';
+
+import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
 import type { AppConfig } from '@/cli/commands/config/config.types.js';
-import type {
-  PrCommandOption,
-  IPullRequestBody,
-} from '@/cli/commands/pr/pr.types.js';
+import type { PrCommandOption } from '@/cli/commands/pr/pr.command.js';
 
 export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
   const spinner = ora();
   setupLocalization(appConfig.appLocalization);
   const gitService = new GitService();
+  const llmService = new LlmService(appConfig);
 
   try {
     spinner.start($l('creatingGitLogCommand'));
@@ -33,43 +34,42 @@ export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
     spinner.succeed(`${$l('commitsFounded')}: ${sourceCommits.length}`);
     spinner.start($l('generatingPullRequestText'));
 
-    const prLlmService = new PrLlmService(appConfig);
-
-    const completionResult = await prLlmService.getPrTextBody(
+    const systemPrompt = prPrompts.getSystemPrompts(appConfig.appLocalization);
+    const userPrompt = prPrompts.getUserPrompt(
       sourceCommits.join('\n'),
+      appConfig.appLocalization,
     );
 
-    if (!completionResult) {
+    const llmResponse = await llmService.getCompletion({
+      systemPrompt,
+      userPrompt,
+    });
+
+    if (!llmResponse) {
       throw new Error($l('gotEmptyResponseFromLlm'));
     }
 
-    const prText = {
-      body: completionResult.content,
-      statistic: {
-        promptTokens: completionResult.promptTokens,
-        completionTokens: completionResult.completionTokens,
-        totalTokens:
-          completionResult.promptTokens + completionResult.completionTokens,
-      },
-    } satisfies IPullRequestBody;
-
     spinner.succeed($l('pullRequestTextGeneratedSuccess'));
-
-    const statisticsData = {
-      [$l('promptWord')]: { value: prText.statistic.promptTokens },
-      [$l('completionWord')]: {
-        value: prText.statistic.completionTokens,
-      },
-      [$l('totalWord')]: { value: prText.statistic.totalTokens },
-    };
 
     console.log();
     console.log($l('pullRequestTextWord'));
-    console.log(prText.body.trim());
+    console.log(llmResponse.content.trim());
 
-    console.log();
-    console.log($l('tokenUsageStatisticsTitle'));
-    console.table(statisticsData);
+    if (llmResponse.usage) {
+      const usageTables = generateUsageTables(llmResponse.usage);
+
+      if (usageTables.tokens) {
+        console.log();
+        console.log($l('tokenUsageStatisticsTitle'));
+        console.table(usageTables.tokens);
+      }
+
+      if (usageTables.cost) {
+        console.log();
+        console.log('Cost Statistics in $:');
+        console.table(usageTables.cost);
+      }
+    }
   } catch (error: unknown) {
     spinner.fail(
       `${$l('errorOccured')}: ${

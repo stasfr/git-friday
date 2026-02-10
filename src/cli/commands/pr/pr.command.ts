@@ -3,7 +3,9 @@ import { ConfigService } from '@/cli/commands/config/config.service.js';
 import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
 import { prAction } from '@/cli/commands/pr/pr.action.js';
 
-import type { PrCommandOption } from '@/cli/commands/pr/pr.types.js';
+export type PrCommandOption = {
+  range: string;
+};
 
 export function pr(program: Command) {
   program

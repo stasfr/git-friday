@@ -3,7 +3,9 @@ import { ConfigService } from '@/cli/commands/config/config.service.js';
 import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
 import { changelogAction } from '@/cli/commands/changelog/changelog.action.js';
 
-import type { ChangelogCommandOption } from '@/cli/commands/changelog/changelog.types.js';
+export type ChangelogCommandOption = {
+  sinceRef: string;
+};
 
 export function changelog(program: Command) {
   program

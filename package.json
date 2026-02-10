@@ -51,24 +51,24 @@
     "release:patch": "standard-version --release-as patch"
   },
   "dependencies": {
-    "commander": "^14.0.0",
-    "dotenv": "^17.2.1",
-    "openai": "^5.12.2",
+    "commander": "^14.0.3",
+    "dotenv": "^17.2.4",
+    "openai": "^6.21.0",
     "ora": "^8.2.0",
     "update-notifier": "^7.3.1"
   },
   "devDependencies": {
-    "@tsconfig/node24": "^24.0.1",
-    "@types/node": "^24.2.1",
+    "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^25.2.3",
     "@types/update-notifier": "^6.0.8",
     "oxfmt": "^0.27.0",
-    "oxlint": "^1.42.0",
-    "rimraf": "^6.0.1",
+    "oxlint": "^1.46.0",
+    "rimraf": "^6.1.2",
     "standard-version": "^9.5.0",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.20.4",
-    "typescript": "^5.9.2"
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.28.2"
 }

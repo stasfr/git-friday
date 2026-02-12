@@ -8,4 +8,14 @@ export const errors = {
   errorOccured: 'Произошла ошибка',
   noCommitsFound: 'Нет коммитов для указанных критериев',
   gotEmptyResponseFromLlm: 'Получен пустой ответ от LLM',
+  // config service errors
+  configFileIsEmpty: 'Файл конфигурации пуст',
+  configFileIsNotValidJson: 'Файл конфигурации не является корректным JSON',
+  configFileMissingAiCompletionModel:
+    'В файле конфигурации отсутствует свойство aiCompletionModel',
+  invalidAiCompletionModelValue: 'Недопустимое значение aiCompletionModel',
+  invalidAppLocalizationValue:
+    'Недопустимое значение appLocalization. Поддерживаемые значения: en, ru',
+  unsupportedOperatingSystem: 'Неподдерживаемая операционная система',
+  invalidConfigFileStructure: 'Недопустимая структура файла конфигурации',
 } satisfies IErrorLocalization;

@@ -3,6 +3,8 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { constants } from 'node:fs';
 
+import { $l } from '@/localization/localization.js';
+
 import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
 import type {
   AppConfig,
@@ -22,19 +24,19 @@ export class ConfigService {
 
   private validateFileBasedConfig(config: unknown): config is IFileBasedConfig {
     if (config === null) {
-      throw new Error('Config file is empty');
+      throw new Error($l('configFileIsEmpty'));
     }
 
     if (typeof config !== 'object') {
-      throw new Error('Config file is not a valid JSON');
+      throw new Error($l('configFileIsNotValidJson'));
     }
 
     if (!('aiCompletionModel' in config)) {
-      throw new Error('Config file is missing aiCompletionModel property');
+      throw new Error($l('configFileMissingAiCompletionModel'));
     }
 
     if (typeof config.aiCompletionModel !== 'string') {
-      throw new Error('Invalid aiCompletionModel value');
+      throw new Error($l('invalidAiCompletionModelValue'));
     }
 
     if (
@@ -42,9 +44,7 @@ export class ConfigService {
       typeof config.appLocalization === 'string' &&
       !this.validateAppLocalization(config.appLocalization)
     ) {
-      throw new Error(
-        'Invalid appLocalization value. Supported values: en, ru',
-      );
+      throw new Error($l('invalidAppLocalizationValue'));
     }
 
     return true;
@@ -79,7 +79,7 @@ export class ConfigService {
     const config = JSON.parse(configFile);
 
     if (!this.validateFileBasedConfig(config)) {
-      throw new Error('Invalid config file structure');
+      throw new Error($l('invalidConfigFileStructure'));
     }
 
     return config;
@@ -89,7 +89,7 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error('Unsupported operating system');
+      throw new Error($l('unsupportedOperatingSystem'));
     }
 
     const configFilePath = path.join(osPaths.config, 'config.json');
@@ -100,7 +100,7 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error('Unsupported operating system');
+      throw new Error($l('unsupportedOperatingSystem'));
     }
 
     const emptyConfig = {
@@ -118,7 +118,7 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error('Unsupported operating system');
+      throw new Error($l('unsupportedOperatingSystem'));
     }
 
     const configPath = path.join(osPaths.config, 'config.json');
@@ -131,12 +131,11 @@ export class ConfigService {
     await fs.writeFile(configPath, updatedConfig, 'utf-8');
   }
 
-  // TODO: add localization to messages in config service
   public async getAppConfig() {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error('Unsupported operating system');
+      throw new Error($l('unsupportedOperatingSystem'));
     }
 
     const configFile = await this.loadConfigFile(osPaths);

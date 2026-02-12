@@ -7,6 +7,14 @@ export interface IErrorLocalization {
   errorOccured: string;
   noCommitsFound: string;
   gotEmptyResponseFromLlm: string;
+  // config service errors
+  configFileIsEmpty: string;
+  configFileIsNotValidJson: string;
+  configFileMissingAiCompletionModel: string;
+  invalidAiCompletionModelValue: string;
+  invalidAppLocalizationValue: string;
+  unsupportedOperatingSystem: string;
+  invalidConfigFileStructure: string;
 }
 
 export interface IMessagesLocalization {

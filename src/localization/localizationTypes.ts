@@ -2,25 +2,30 @@ export type ILocalizationTypes = 'en' | 'ru';
 
 export interface IErrorLocalization {
   errorOccured: string;
+  noCommitsFound: string;
+  gotEmptyResponseFromLlm: string;
 }
 
 export interface IMessagesLocalization {
+  // core commands shared
   creatingGitLogCommand: string;
   gitLogCommandCreated: string;
   searchingForCommits: string;
-  noCommitsFound: string;
   commitsFounded: string;
-  generatingChangelog: string;
-  gotEmptyResponseFromLlm: string;
-  changelogGeneratedSuccessfully: string;
+  // statistics related
+  tokenUsageStatisticsTitle: string;
   promptWord: string;
   completionWord: string;
   totalWord: string;
+  // changelog command related
+  generatingChangelog: string;
+  changelogGeneratedSuccessfully: string;
   changelogWord: string;
-  tokenUsageStatisticsTitle: string;
+  // pr command related
   generatingPullRequestText: string;
   pullRequestTextGeneratedSuccess: string;
   pullRequestTextWord: string;
+  // report command related
   generatingReport: string;
   reportGeneratedSuccessfully: string;
   reportWord: string;

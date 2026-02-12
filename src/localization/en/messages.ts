@@ -1,9 +1,13 @@
 import type { IMessagesLocalization } from '@/localization/localizationTypes.js';
 
 export const messages = {
+  // common words
+  causeWord: 'Cause',
+  // update notifications
   updateAvailable: 'Update available',
   runWord: 'Run',
   toUpdateWord: 'to update',
+  // core commands shared
   creatingGitLogCommand: 'Creating git log command...',
   gitLogCommandCreated: 'Git log command created',
   searchingForCommits: 'Searching for commits...',

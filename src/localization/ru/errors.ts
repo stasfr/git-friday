@@ -8,6 +8,7 @@ export const errors = {
   errorOccured: 'Произошла ошибка',
   noCommitsFound: 'Нет коммитов для указанных критериев',
   gotEmptyResponseFromLlm: 'Получен пустой ответ от LLM',
+  localizationNotConfigured: 'Локализация не настроена',
   // config service errors
   configFileIsEmpty: 'Файл конфигурации пуст',
   configFileIsNotValidJson: 'Файл конфигурации не является корректным JSON',

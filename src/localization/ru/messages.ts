@@ -1,6 +1,9 @@
 import type { IMessagesLocalization } from '@/localization/localizationTypes.js';
 
 export const messages = {
+  // common words
+  causeWord: 'Причина',
+  // update notifications
   updateAvailable: 'Доступно обновление',
   runWord: 'Выполните',
   toUpdateWord: 'для обновления',

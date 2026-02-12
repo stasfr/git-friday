@@ -16,13 +16,13 @@ export async function setupLocalization() {
     await configService.checkIfConfigExists();
     const config = await configService.getAppConfig();
     if (!config.appLocalization) {
-      throw new Error('Localization not configured');
+      throw new Error($l('localizationNotConfigured'));
     }
     lang = config.appLocalization;
   } catch (error) {
     console.log($l('failedToGetConfigForLocalization'));
     if (error instanceof Error) {
-      console.log('Cause:', error.message);
+      console.log(`${$l('causeWord')}:`, error.message);
     }
     console.log();
   }

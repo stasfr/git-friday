@@ -15,9 +15,12 @@ export interface IErrorLocalization {
   invalidAppLocalizationValue: string;
   unsupportedOperatingSystem: string;
   invalidConfigFileStructure: string;
+  localizationNotConfigured: string;
 }
 
 export interface IMessagesLocalization {
+  // common words
+  causeWord: string;
   // update notifications
   updateAvailable: string;
   runWord: string;

@@ -1,6 +1,6 @@
 import ora from 'ora';
 
-import { setupLocalization, $l } from '@/localization/localization.js';
+import { $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
 import { reportPrompts } from '@/cli/report/reportPrompts.js';
@@ -15,7 +15,6 @@ export async function reportAction(
   appConfig: AppConfig,
 ) {
   const spinner = ora();
-  setupLocalization(appConfig.appLocalization);
   const gitService = new GitService();
   const llmService = new LlmService(appConfig);
 

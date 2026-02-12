@@ -1,3 +1,5 @@
+import { ConfigService } from '@/cli/config/configService.js';
+
 import { en } from '@/localization/en/en.js';
 import { ru } from '@/localization/ru/ru.js';
 
@@ -8,8 +10,17 @@ import type {
 
 let lang: ILocalizationTypes = 'en';
 
-export function setupLocalization(newLang: ILocalizationTypes) {
-  lang = newLang;
+export async function setupLocalization() {
+  const configService = new ConfigService();
+  try {
+    await configService.checkIfConfigExists();
+    const config = await configService.getAppConfig();
+    lang = config.appLocalization;
+  } catch (error) {
+    console.log(
+      'Failed to get application config, used English language as default',
+    );
+  }
 }
 
 export function $l(key: ILocalizationKey) {

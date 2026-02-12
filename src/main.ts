@@ -3,6 +3,7 @@
 import 'dotenv/config';
 import pkg from '../package.json' with { type: 'json' };
 
+import { setupLocalization } from '@/localization/localization.js';
 import { checkForUpdates } from '@/services/pkgUpdateService.js';
 import { Command } from 'commander';
 
@@ -13,6 +14,8 @@ import { pr } from '@/cli/pr/prCommand.js';
 import { report } from '@/cli/report/reportCommand.js';
 
 async function main() {
+  await setupLocalization();
+
   await checkForUpdates();
 
   try {

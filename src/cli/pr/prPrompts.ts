@@ -1,7 +1,7 @@
 import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
 
 export const prPrompts = {
-  getSystemPrompts: function (localization: ILocalizationTypes) {
+  getSystemPrompts: function (localization: ILocalizationTypes | null) {
     switch (localization) {
       case 'ru':
         return `
@@ -42,7 +42,7 @@ export const prPrompts = {
           - Рефакторинг сервиса аутентификации для включения новой логики сброса пароля.
         `;
 
-      case 'en':
+      default:
         return `
           # Role:
           You are an expert AI assistant specializing in analyzing git commit logs to generate high-quality pull request descriptions. You transform raw commit lists into clear, well-structured Markdown summaries for engineering teams.
@@ -83,7 +83,10 @@ export const prPrompts = {
     }
   },
 
-  getUserPrompt: function (commits: string, localization: ILocalizationTypes) {
+  getUserPrompt: function (
+    commits: string,
+    localization: ILocalizationTypes | null,
+  ) {
     switch (localization) {
       case 'ru':
         return `
@@ -94,7 +97,7 @@ export const prPrompts = {
           ${commits}
         `;
 
-      case 'en':
+      default:
         return `
           Analyze the following commits and generate a pull request title and body in Markdown format, strictly following the rules and format specified in your instructions.
           Give the answer in English.

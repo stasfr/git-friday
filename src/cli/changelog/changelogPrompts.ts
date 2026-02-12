@@ -1,7 +1,7 @@
 import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
 
 export const changelogPrompts = {
-  getSystemPrompts: function (localization: ILocalizationTypes) {
+  getSystemPrompts: function (localization: ILocalizationTypes | null) {
     switch (localization) {
       case 'ru':
         return `
@@ -41,7 +41,7 @@ export const changelogPrompts = {
           - API эндпоинт getUser теперь требует заголовок Authorization
         `;
 
-      case 'en':
+      default:
         return `
           # Role:
           You are an expert AI assistant specializing in analyzing git commit logs to generate a formal changelog. You transform raw commit lists into a structured, easy-to-read Markdown document suitable for release notes.
@@ -81,7 +81,10 @@ export const changelogPrompts = {
     }
   },
 
-  getUserPrompt: function (commits: string, localization: ILocalizationTypes) {
+  getUserPrompt: function (
+    commits: string,
+    localization: ILocalizationTypes | null,
+  ) {
     switch (localization) {
       case 'ru':
         return `
@@ -92,7 +95,7 @@ export const changelogPrompts = {
           ${commits}
         `;
 
-      case 'en':
+      default:
         return `
           Analyze the following commits and generate a changelog in Markdown format, strictly following the rules and format specified in your instructions.
           Give the answer in English.

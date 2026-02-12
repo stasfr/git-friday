@@ -15,9 +15,16 @@ export async function setupLocalization() {
   try {
     await configService.checkIfConfigExists();
     const config = await configService.getAppConfig();
+    if (!config.appLocalization) {
+      throw new Error('Localization not configured');
+    }
     lang = config.appLocalization;
   } catch (error) {
     console.log($l('failedToGetConfigForLocalization'));
+    if (error instanceof Error) {
+      console.log('Cause:', error.message);
+    }
+    console.log();
   }
 }
 

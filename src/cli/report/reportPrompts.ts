@@ -1,7 +1,7 @@
 import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
 
 export const reportPrompts = {
-  getSystemPrompts: function (localization: ILocalizationTypes) {
+  getSystemPrompts: function (localization: ILocalizationTypes | null) {
     switch (localization) {
       case 'ru':
         return `
@@ -25,7 +25,7 @@ export const reportPrompts = {
           проведен рефакторинг системы управления правами доступа для повышения ее надежности и упрощения дальнейшей поддержки;
         `;
 
-      case 'en':
+      default:
         return `
           # Role:
           You are an AI Team Lead Assistant specializing in analyzing git logs and compiling progress reports. You transform technical lists of commits into clear, management-appropriate reports.
@@ -49,7 +49,10 @@ export const reportPrompts = {
     }
   },
 
-  getUserPrompt: function (commits: string, localization: ILocalizationTypes) {
+  getUserPrompt: function (
+    commits: string,
+    localization: ILocalizationTypes | null,
+  ) {
     switch (localization) {
       case 'ru':
         return `
@@ -60,7 +63,7 @@ export const reportPrompts = {
           ${commits}
         `;
 
-      case 'en':
+      default:
         return `
           Analyze the following commits and generate a report, strictly following the rules and format defined in your instructions.
           Give the answer in English.

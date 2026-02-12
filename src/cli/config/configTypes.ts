@@ -10,10 +10,10 @@ export type IOsPaths = {
 
 export type IFileBasedConfig = {
   aiCompletionModel: string;
-  appLocalization: ILocalizationTypes;
+  appLocalization?: ILocalizationTypes;
 };
 
 export type AppConfig = {
   aiCompletionModel: string;
-  appLocalization: ILocalizationTypes;
+  appLocalization: ILocalizationTypes | null;
 };

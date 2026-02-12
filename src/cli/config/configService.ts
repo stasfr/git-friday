@@ -37,15 +37,11 @@ export class ConfigService {
       throw new Error('Invalid aiCompletionModel value');
     }
 
-    if (!('appLocalization' in config)) {
-      throw new Error('Config file is missing appLocalization property');
-    }
-
-    if (typeof config.appLocalization !== 'string') {
-      throw new Error('Invalid appLocalization value');
-    }
-
-    if (!this.validateAppLocalization(config.appLocalization)) {
+    if (
+      'appLocalization' in config &&
+      typeof config.appLocalization === 'string' &&
+      !this.validateAppLocalization(config.appLocalization)
+    ) {
       throw new Error(
         'Invalid appLocalization value. Supported values: en, ru',
       );
@@ -147,7 +143,7 @@ export class ConfigService {
 
     return {
       aiCompletionModel: configFile.aiCompletionModel,
-      appLocalization: configFile.appLocalization,
+      appLocalization: configFile.appLocalization ?? null,
     } satisfies AppConfig;
   }
 }

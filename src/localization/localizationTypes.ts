@@ -1,6 +1,7 @@
 export type ILocalizationTypes = 'en' | 'ru';
 
 export interface IErrorLocalization {
+  failedToGetConfigForLocalization: string;
   errorOccured: string;
   noCommitsFound: string;
   gotEmptyResponseFromLlm: string;

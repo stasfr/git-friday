@@ -17,9 +17,7 @@ export async function setupLocalization() {
     const config = await configService.getAppConfig();
     lang = config.appLocalization;
   } catch (error) {
-    console.log(
-      'Failed to get application config, used English language as default',
-    );
+    console.log($l('failedToGetConfigForLocalization'));
   }
 }
 

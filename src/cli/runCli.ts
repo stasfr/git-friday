@@ -7,18 +7,22 @@ import { changelog } from '@/cli/changelog/changelogCommand.js';
 import { pr } from '@/cli/pr/prCommand.js';
 import { report } from '@/cli/report/reportCommand.js';
 
+function buildCli() {
+  const program = new Command();
+
+  program.name('friday').version(pkg.version).description(pkg.description);
+
+  config(program);
+  changelog(program);
+  pr(program);
+  report(program);
+
+  return program;
+}
+
 export async function runCli() {
   try {
-    const program = new Command();
-
-    program.name('friday').version(pkg.version).description(pkg.description);
-
-    config(program);
-
-    changelog(program);
-    pr(program);
-    report(program);
-
+    const program = buildCli();
     await program.parseAsync(process.argv);
   } catch (error: unknown) {
     if (error instanceof Error) {

@@ -1,6 +1,9 @@
 import type { IMessagesLocalization } from '@/localization/localizationTypes.js';
 
 export const messages = {
+  updateAvailable: 'Доступно обновление',
+  runWord: 'Выполните',
+  toUpdateWord: 'для обновления',
   creatingGitLogCommand: 'Создание git log команды...',
   gitLogCommandCreated: 'Git log команда создана',
   searchingForCommits: 'Получение списка коммитов...',

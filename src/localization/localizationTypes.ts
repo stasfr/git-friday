@@ -2,12 +2,18 @@ export type ILocalizationTypes = 'en' | 'ru';
 
 export interface IErrorLocalization {
   failedToGetConfigForLocalization: string;
+  failedToCheckForUpdates: string;
+  errorWord: string;
   errorOccured: string;
   noCommitsFound: string;
   gotEmptyResponseFromLlm: string;
 }
 
 export interface IMessagesLocalization {
+  // update notifications
+  updateAvailable: string;
+  runWord: string;
+  toUpdateWord: string;
   // core commands shared
   creatingGitLogCommand: string;
   gitLogCommandCreated: string;

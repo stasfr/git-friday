@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
-import { ConfigService } from '@/cli/commands/config/configService.js';
-import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
-import { reportAction } from '@/cli/commands/report/reportAction.js';
+import { ConfigService } from '@/cli/config/configService.js';
+import { configExistCheckHook } from '@/cli/config/hooks/configExistCheckHook.js';
+import { reportAction } from '@/cli/report/reportAction.js';
 
 export type ReportCommandOption = {
   authors?: string[];

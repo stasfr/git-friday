@@ -3,14 +3,17 @@ import ora from 'ora';
 import { setupLocalization, $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
-import { prPrompts } from '@/cli/commands/pr/prPrompts.js';
+import { reportPrompts } from '@/cli/report/reportPrompts.js';
 
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
-import type { AppConfig } from '@/cli/commands/config/configTypes.js';
-import type { PrCommandOption } from '@/cli/commands/pr/prCommand.js';
+import type { AppConfig } from '@/cli/config/configTypes.js';
+import type { ReportCommandOption } from '@/cli/report/reportCommand.js';
 
-export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
+export async function reportAction(
+  options: ReportCommandOption,
+  appConfig: AppConfig,
+) {
   const spinner = ora();
   setupLocalization(appConfig.appLocalization);
   const gitService = new GitService();
@@ -19,7 +22,31 @@ export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
   try {
     spinner.start($l('creatingGitLogCommand'));
 
-    gitService.forRange(options.range);
+    if (options.all === true) {
+      gitService.forAllBranches();
+    }
+
+    if (options.branches && options.branches.length > 0) {
+      gitService.forBranches(options.branches);
+    }
+
+    if (options.authors) {
+      gitService.forAuthors(options.authors);
+    } else if (options.currentUser) {
+      await gitService.forCurrentUser();
+    }
+
+    if (options.since) {
+      gitService.since(options.since);
+    }
+
+    if (options.until) {
+      gitService.until(options.until);
+    }
+
+    if (options.today === true) {
+      gitService.today();
+    }
 
     gitService.pretty();
     spinner.succeed(`${$l('gitLogCommandCreated')}: ${gitService.command}`);
@@ -32,10 +59,12 @@ export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
     }
 
     spinner.succeed(`${$l('commitsFounded')}: ${sourceCommits.length}`);
-    spinner.start($l('generatingPullRequestText'));
+    spinner.start($l('generatingReport'));
 
-    const systemPrompt = prPrompts.getSystemPrompts(appConfig.appLocalization);
-    const userPrompt = prPrompts.getUserPrompt(
+    const systemPrompt = reportPrompts.getSystemPrompts(
+      appConfig.appLocalization,
+    );
+    const userPrompt = reportPrompts.getUserPrompt(
       sourceCommits.join('\n'),
       appConfig.appLocalization,
     );
@@ -49,10 +78,10 @@ export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
       throw new Error($l('gotEmptyResponseFromLlm'));
     }
 
-    spinner.succeed($l('pullRequestTextGeneratedSuccess'));
+    spinner.succeed($l('reportGeneratedSuccessfully'));
 
     console.log();
-    console.log($l('pullRequestTextWord'));
+    console.log($l('reportWord'));
     console.log(llmResponse.content.trim());
 
     if (llmResponse.usage) {

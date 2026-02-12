@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { ConfigService } from '@/cli/commands/config/configService.js';
-import { configExistCheckHook } from '@/cli/commands/config/hooks/configExistCheckHook.js';
-import { prAction } from '@/cli/commands/pr/prAction.js';
+import { ConfigService } from '@/cli/config/configService.js';
+import { configExistCheckHook } from '@/cli/config/hooks/configExistCheckHook.js';
+import { prAction } from '@/cli/pr/prAction.js';
 
 export type PrCommandOption = {
   range: string;

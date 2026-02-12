@@ -1,4 +1,4 @@
-import { ConfigService } from '@/cli/commands/config/configService.js';
+import { ConfigService } from '@/cli/config/configService.js';
 
 export async function configInitAction() {
   try {

@@ -6,11 +6,11 @@ import pkg from '../package.json' with { type: 'json' };
 import { checkForUpdates } from '@/services/pkgUpdateService.js';
 import { Command } from 'commander';
 
-import { config } from '@/cli/commands/config/configCommand.js';
+import { config } from '@/cli/config/configCommand.js';
 
-import { changelog } from '@/cli/commands/changelog/changelogCommand.js';
-import { pr } from '@/cli/commands/pr/prCommand.js';
-import { report } from '@/cli/commands/report/reportCommand.js';
+import { changelog } from '@/cli/changelog/changelogCommand.js';
+import { pr } from '@/cli/pr/prCommand.js';
+import { report } from '@/cli/report/reportCommand.js';
 
 async function main() {
   await checkForUpdates();

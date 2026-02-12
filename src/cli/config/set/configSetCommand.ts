@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { configSetAction } from '@/cli/commands/config/set/configSetAction.js';
+import { configSetAction } from '@/cli/config/set/configSetAction.js';
 
 export type ConfigSetCommandOption = {
   key: string;

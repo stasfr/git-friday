@@ -3,15 +3,15 @@ import ora from 'ora';
 import { setupLocalization, $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
-import { reportPrompts } from '@/cli/commands/report/reportPrompts.js';
+import { changelogPrompts } from '@/cli/changelog/changelogPrompts.js';
 
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
-import type { AppConfig } from '@/cli/commands/config/configTypes.js';
-import type { ReportCommandOption } from '@/cli/commands/report/reportCommand.js';
+import type { AppConfig } from '@/cli/config/configTypes.js';
+import type { ChangelogCommandOption } from '@/cli/changelog/changelogCommand.js';
 
-export async function reportAction(
-  options: ReportCommandOption,
+export async function changelogAction(
+  options: ChangelogCommandOption,
   appConfig: AppConfig,
 ) {
   const spinner = ora();
@@ -22,31 +22,7 @@ export async function reportAction(
   try {
     spinner.start($l('creatingGitLogCommand'));
 
-    if (options.all === true) {
-      gitService.forAllBranches();
-    }
-
-    if (options.branches && options.branches.length > 0) {
-      gitService.forBranches(options.branches);
-    }
-
-    if (options.authors) {
-      gitService.forAuthors(options.authors);
-    } else if (options.currentUser) {
-      await gitService.forCurrentUser();
-    }
-
-    if (options.since) {
-      gitService.since(options.since);
-    }
-
-    if (options.until) {
-      gitService.until(options.until);
-    }
-
-    if (options.today === true) {
-      gitService.today();
-    }
+    gitService.sinceTag(options.sinceRef);
 
     gitService.pretty();
     spinner.succeed(`${$l('gitLogCommandCreated')}: ${gitService.command}`);
@@ -59,12 +35,12 @@ export async function reportAction(
     }
 
     spinner.succeed(`${$l('commitsFounded')}: ${sourceCommits.length}`);
-    spinner.start($l('generatingReport'));
+    spinner.start($l('generatingChangelog'));
 
-    const systemPrompt = reportPrompts.getSystemPrompts(
+    const systemPrompt = changelogPrompts.getSystemPrompts(
       appConfig.appLocalization,
     );
-    const userPrompt = reportPrompts.getUserPrompt(
+    const userPrompt = changelogPrompts.getUserPrompt(
       sourceCommits.join('\n'),
       appConfig.appLocalization,
     );
@@ -78,10 +54,10 @@ export async function reportAction(
       throw new Error($l('gotEmptyResponseFromLlm'));
     }
 
-    spinner.succeed($l('reportGeneratedSuccessfully'));
+    spinner.succeed($l('changelogGeneratedSuccessfully'));
 
     console.log();
-    console.log($l('reportWord'));
+    console.log($l('changelogWord'));
     console.log(llmResponse.content.trim());
 
     if (llmResponse.usage) {

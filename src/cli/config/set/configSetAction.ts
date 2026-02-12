@@ -1,6 +1,6 @@
-import { ConfigService } from '@/cli/commands/config/configService.js';
+import { ConfigService } from '@/cli/config/configService.js';
 
-import type { ConfigSetCommandOption } from '@/cli/commands/config/set/configSetCommand.js';
+import type { ConfigSetCommandOption } from '@/cli/config/set/configSetCommand.js';
 
 export async function configSetAction(options: ConfigSetCommandOption) {
   try {

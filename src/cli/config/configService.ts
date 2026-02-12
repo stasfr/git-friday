@@ -8,7 +8,7 @@ import type {
   AppConfig,
   IOsPaths,
   IFileBasedConfig,
-} from '@/cli/commands/config/configTypes.js';
+} from '@/cli/config/configTypes.js';
 
 export class ConfigService {
   private validateAppLocalization(

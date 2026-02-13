@@ -23,4 +23,13 @@ export const messages = {
   generatingReport: 'Создание отчета...',
   reportGeneratedSuccessfully: 'Отчет успешно создан',
   reportWord: 'Отчет:',
+  // tokens table
+  promptTokens: 'Токены промпта',
+  completionTokens: 'Токены ответа',
+  totalTokens: 'Всего токенов',
+  // cost table
+  totalCost: 'Общая стоимость',
+  inferenceCost: 'Стоимость инференса',
+  promptCost: 'Стоимость промпта',
+  completionCost: 'Стоимость ответа',
 } satisfies IMessagesLocalization;

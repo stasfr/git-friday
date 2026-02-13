@@ -48,6 +48,14 @@ export interface IMessagesLocalization {
   generatingReport: string;
   reportGeneratedSuccessfully: string;
   reportWord: string;
+  // usage tables related
+  promptTokens: string;
+  completionTokens: string;
+  totalTokens: string;
+  totalCost: string;
+  inferenceCost: string;
+  promptCost: string;
+  completionCost: string;
 }
 
 export interface ILocalizationList

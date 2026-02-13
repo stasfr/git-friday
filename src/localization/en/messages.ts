@@ -24,4 +24,12 @@ export const messages = {
   generatingReport: 'Generating report...',
   reportGeneratedSuccessfully: 'Report generated successfully',
   reportWord: 'Report:',
+  // usage tables
+  promptTokens: 'Prompt Tokens',
+  completionTokens: 'Completion Tokens',
+  totalTokens: 'Total Tokens',
+  totalCost: 'Total Cost',
+  inferenceCost: 'Inference Cost',
+  promptCost: 'Prompt Cost',
+  completionCost: 'Completion Cost',
 } satisfies IMessagesLocalization;

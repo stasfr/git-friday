@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command, Argument } from 'commander';
 import { configSetAction } from '@/cli/config/set/configSetAction.js';
 
 export type ConfigSetCommandOption = {
@@ -10,7 +10,12 @@ export function configSet(configCommand: Command) {
   configCommand
     .command('set')
     .description('Set configuration settings for the application')
-    .argument('<key>', 'Configuration key to set')
+    .addArgument(
+      new Argument('<key>', 'Configuration key to set').choices([
+        'aiCompletionModel',
+        'appLocalization',
+      ]),
+    )
     .argument('<value>', 'Value to set for the key')
     .action(async (key: string, value: string) => {
       const options: ConfigSetCommandOption = { key, value };

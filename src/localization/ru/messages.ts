@@ -3,14 +3,12 @@ import type { IMessagesLocalization } from '@/localization/localizationTypes.js'
 export const messages = {
   // common words
   causeWord: 'Причина',
+  commandWord: 'Команда',
+  commitCount: 'Количество коммитов',
   // update notifications
   updateAvailable: 'Доступно обновление',
   runWord: 'Выполните',
   toUpdateWord: 'для обновления',
-  creatingGitLogCommand: 'Создание git log команды...',
-  gitLogCommandCreated: 'Git log команда создана',
-  searchingForCommits: 'Получение списка коммитов...',
-  commitsFounded: 'Коммиты получены',
   generatingChangelog: 'Создание changelog...',
   changelogGeneratedSuccessfully: 'Changelog успешно создан',
   promptWord: 'Промпт',

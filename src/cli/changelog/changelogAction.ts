@@ -1,4 +1,5 @@
 import ora from 'ora';
+import boxen from 'boxen';
 
 import { $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
@@ -19,21 +20,28 @@ export async function changelogAction(
   const llmService = new LlmService(appConfig);
 
   try {
-    spinner.start($l('creatingGitLogCommand'));
-
     gitService.sinceTag(options.sinceRef);
-
     gitService.pretty();
-    spinner.succeed(`${$l('gitLogCommandCreated')}: ${gitService.command}`);
 
-    spinner.start($l('searchingForCommits'));
     const sourceCommits = await gitService.getCommitLog();
 
     if (sourceCommits.length === 0) {
       throw new Error($l('noCommitsFound'));
     }
 
-    spinner.succeed(`${$l('commitsFounded')}: ${sourceCommits.length}`);
+    console.log(
+      boxen(
+        `${$l('commandWord')}: ${gitService.command}\n${$l('commitCount')}: ${sourceCommits.length}`,
+        {
+          title: 'Git Log',
+          padding: 0.75,
+          margin: 0.75,
+          borderColor: 'green',
+          borderStyle: 'round',
+        },
+      ),
+    );
+
     spinner.start($l('generatingChangelog'));
 
     const systemPrompt = changelogPrompts.getSystemPrompts(

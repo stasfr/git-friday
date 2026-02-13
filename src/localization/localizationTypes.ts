@@ -21,15 +21,12 @@ export interface IErrorLocalization {
 export interface IMessagesLocalization {
   // common words
   causeWord: string;
+  commandWord: string;
+  commitCount: string;
   // update notifications
   updateAvailable: string;
   runWord: string;
   toUpdateWord: string;
-  // core commands shared
-  creatingGitLogCommand: string;
-  gitLogCommandCreated: string;
-  searchingForCommits: string;
-  commitsFounded: string;
   // statistics related
   tokenUsageStatisticsTitle: string;
   promptWord: string;

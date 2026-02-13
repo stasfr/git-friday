@@ -19,6 +19,7 @@ export interface IErrorLocalization {
   unsupportedOperatingSystem: string;
   invalidConfigFileStructure: string;
   localizationNotConfigured: string;
+  failedToInitializeConfig: string;
 }
 
 export interface IMessagesLocalization {

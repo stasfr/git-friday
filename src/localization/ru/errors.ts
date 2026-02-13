@@ -12,6 +12,7 @@ export const errors = {
   noCommitsFound: 'Нет коммитов для указанных критериев',
   gotEmptyResponseFromLlm: 'Получен пустой ответ от LLM',
   localizationNotConfigured: 'Локализация не настроена',
+  failedToInitializeConfig: 'Не удалось инициализировать файл конфигурации',
   // config service errors
   configFileIsEmpty: 'Файл конфигурации пуст',
   configFileIsNotValidJson: 'Файл конфигурации не является корректным JSON',

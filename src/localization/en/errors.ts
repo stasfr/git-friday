@@ -12,6 +12,7 @@ export const errors = {
   noCommitsFound: 'No commits found for the specified criteria',
   gotEmptyResponseFromLlm: 'Got empty response from Llm Provider',
   localizationNotConfigured: 'Localization not configured',
+  failedToInitializeConfig: 'Failed to initialize configuration',
   // config service errors
   configFileIsEmpty: 'Config file is empty',
   configFileIsNotValidJson: 'Config file is not a valid JSON',

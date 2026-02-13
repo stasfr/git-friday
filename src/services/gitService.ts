@@ -21,11 +21,6 @@ export class GitService {
     return this.commandParts.join(' ');
   }
 
-  private reset() {
-    this.commandParts = ['git', 'log'];
-    return this;
-  }
-
   private async getGitUserEmail() {
     const { stdout } = await this.exec('git config user.email');
     return stdout.trim();
@@ -89,9 +84,6 @@ export class GitService {
   public async getCommitLog() {
     const command = this.command;
     const cwd = process.cwd();
-
-    // Reset for the next potential command build
-    this.reset();
 
     const { stdout } = await this.exec(command, { cwd });
     const trimmedOutput = stdout.trim();

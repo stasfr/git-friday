@@ -4,6 +4,9 @@ export interface IErrorLocalization {
   failedToGetConfigForLocalization: string;
   failedToCheckForUpdates: string;
   errorWord: string;
+  unknownError: string;
+  inServiceWord: string;
+  hintWord: string;
   errorOccured: string;
   noCommitsFound: string;
   gotEmptyResponseFromLlm: string;

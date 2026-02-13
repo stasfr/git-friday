@@ -3,6 +3,9 @@ import type { IErrorLocalization } from '@/localization/localizationTypes.js';
 export const errors = {
   failedToCheckForUpdates: 'Failed to check for updates',
   errorWord: 'Error',
+  unknownError: 'Unknown error',
+  inServiceWord: 'In service',
+  hintWord: 'Hint',
   failedToGetConfigForLocalization:
     'Failed to get application config, used English language as default',
   errorOccured: 'An error occured',

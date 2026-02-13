@@ -78,7 +78,7 @@ export async function changelogAction(
 
       if (usageTables.cost) {
         console.log();
-        console.log('Cost Statistics in $:');
+        console.log($l('costStatistics'));
         console.table(usageTables.cost);
       }
     }

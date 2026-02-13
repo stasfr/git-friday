@@ -32,6 +32,7 @@ export interface IMessagesLocalization {
   promptWord: string;
   completionWord: string;
   totalWord: string;
+  costStatistics: string;
   // changelog command related
   generatingChangelog: string;
   changelogGeneratedSuccessfully: string;

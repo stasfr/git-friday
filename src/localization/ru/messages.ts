@@ -14,6 +14,7 @@ export const messages = {
   promptWord: 'Промпт',
   completionWord: 'Ответ',
   totalWord: 'Всего',
+  costStatistics: 'Стоимость запроса $',
   changelogWord: 'Changelog:',
   tokenUsageStatisticsTitle: 'Статистика использования токенов:',
   generatingPullRequestText: 'Создание текста для пулл реквеста...',

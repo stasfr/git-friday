@@ -13,6 +13,11 @@ This file serves as a technical roadmap outlining planned features and enhanceme
 - [x] **Global Configuration**: Add support for global configuration file (e.g., `~/.git-friday/config.json`) to store default settings across all projects
 - [ ] ~~**Configuration Hierarchy**: Implement three-tier configuration system (CLI flags > .env > global config) with proper precedence handling~~ **DEPRECATED**: Decided against configuration hierarchy in favor of a single source of truth. API key declaration remains in the .env file.
 
+### New
+
+- [ ] **Localization**: Translate the entire application to English and Russian, optimize localization workflow and management
+- [ ] **Error Messages & UX**: Add readable and comprehensive error messages, improve UI/UX to provide better understanding of what is happening and what went wrong
+
 ## Milestone 3
 
 - [ ] **Multi-Provider Support**: Integrate alternative AI providers beyond OpenRouter, with emphasis on local LLM support

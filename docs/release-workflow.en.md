@@ -5,12 +5,17 @@ This document describes the process for releasing a new version of the package.
 ## 1. Development
 
 - The main development branch is `dev`.
-- All new features and fixes are done in separate branches created from `dev`.
-- After work on a feature or fix is complete, the changes are merged into the `dev` branch.
+- Most of the work (features, fixes) is done directly in the `dev` branch.
+- Occasionally, separate branches may be created for larger features, but this is rare.
 
 ## 2. Release Preparation
 
 - When enough changes have accumulated in `dev` for a release, a Pull Request is created from `dev` to `main`.
+- **Before opening the Pull Request**, generate a PR description using Git Friday:
+  ```bash
+  friday pr -r "main..dev"
+  ```
+  This will generate an AI-powered summary of all changes in the PR, which you can use for the PR description.
 - After review and approval, the Pull Request is merged into `main`. This creates a merge commit that contains all the changes from `dev`.
 
 ## 3. Release
@@ -36,17 +41,33 @@ This document describes the process for releasing a new version of the package.
       ```bash
       pnpm run release:major
       ```
-      This command automatically:
-    - Updates the version in `package.json`.
-    - Creates a commit with the message `chore(release): publish vX.X.X`.
-    - Creates a Git tag with the new version.
-    - Pushes the commit and tag to the remote repository.
-    - Builds the project.
-    - Publishes the new version to npm.
 
-3.  **Create a release on GitHub:**
+    This command uses `standard-version` under the hood and automatically:
+    - Updates the version in `package.json`.
+    - Creates a commit with the message `chore(release): vX.X.X`.
+    - Creates a Git tag with the new version.
+
+3.  **Push changes to the remote repository:**
+
+    ```bash
+    git push origin main --follow-tags
+    ```
+
+4.  **Build and publish to npm:**
+
+    ```bash
+    pnpm run build
+    pnpm publish
+    ```
+
+5.  **Create a release on GitHub:**
+    - First, generate the changelog using Git Friday:
+      ```bash
+      friday changelog --since-ref "vX.X.X"
+      ```
+      Replace `vX.X.X` with the previous version tag to get all changes since the last release.
     - Go to the "Releases" section of your repository on GitHub.
     - Click "Draft a new release".
     - Select the newly created tag.
-    - Generate or write release notes.
+    - Use the generated changelog as release notes.
     - Publish the release.

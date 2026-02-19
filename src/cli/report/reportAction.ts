@@ -10,52 +10,21 @@ import { reportPrompts } from '@/cli/report/reportPrompts.js';
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
 import type { AppConfig } from '@/cli/config/configTypes.js';
-import type { ReportCommandOption } from '@/cli/report/reportCommand.js';
 
-export async function reportAction(
-  options: ReportCommandOption,
-  appConfig: AppConfig,
-) {
+export async function reportAction(appConfig: AppConfig) {
   const spinner = ora();
   const gitService = new GitService();
   const llmService = new LlmService(appConfig);
 
   try {
-    if (options.customLog == false) {
-      if (options.all === true) {
-        gitService.forAllBranches();
-      }
+    const customLog = await input({
+      message: 'Enter your custom git log command: git log',
+    });
 
-      if (options.branches && options.branches.length > 0) {
-        gitService.forBranches(options.branches);
-      }
-
-      if (options.authors) {
-        gitService.forAuthors(options.authors);
-      }
-
-      if (options.since) {
-        gitService.since(options.since);
-      }
-
-      if (options.until) {
-        gitService.until(options.until);
-      }
-
-      if (options.today === true) {
-        gitService.today();
-      }
-    } else {
-      const customLog = await input({
-        message: 'Enter your custom git log command: git log',
-      });
-
-      gitService.customLog(customLog);
-    }
-
-    gitService.pretty();
-
-    const sourceCommits = await gitService.getCommitLog();
+    const sourceCommits = await gitService
+      .customLog(customLog)
+      .pretty()
+      .getCommitLog();
 
     if (sourceCommits.length === 0) {
       throw new Error($l('noCommitsFound'));

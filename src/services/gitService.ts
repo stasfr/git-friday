@@ -21,42 +21,8 @@ export class GitService {
     return this.commandParts.join(' ');
   }
 
-  public forAuthors(authors: string[]) {
-    const authorArgs = authors
-      .map((author) => `--author="${author}"`)
-      .join(' ');
-    this.commandParts.push(authorArgs);
-    return this;
-  }
-
-  public forBranches(branches: string[]) {
-    const branchArgs = branches.join(' ');
-    this.commandParts.push(branchArgs);
-    return this;
-  }
-
-  public forAllBranches() {
-    this.commandParts.push('--all');
-    return this;
-  }
-
-  public today() {
-    this.commandParts.push('--since="00:00:00"');
-    return this;
-  }
-
   public pretty() {
     this.commandParts.push('--pretty=format:"- %s%n%b"');
-    return this;
-  }
-
-  public since(date: string) {
-    this.commandParts.push(`--since="${date}"`);
-    return this;
-  }
-
-  public until(date: string) {
-    this.commandParts.push(`--until="${date}"`);
     return this;
   }
 

@@ -5,7 +5,6 @@ An intelligent CLI tool that uses AI to analyze git commits and generate a clear
 ## Docs links
 
 - [Release Workflow](./docs/release-workflow.en.md) - how do I release a new version of the project?
-- [TODO](./docs/TODO.md) - list of current tasks and plans for project development.
 
 ## Installation
 
@@ -46,21 +45,25 @@ Create a `.env` file in the root of your repository with the following variables
 
 #### 2. Application Configuration
 
-Git Friday uses a file-based configuration system. Before using the tool, you need to initialize the configuration:
+Git Friday uses a file-based configuration system. Before using the tool, run the interactive setup command:
 
 ```bash
-friday config init
+friday config setup
 ```
 
-Then set the required configuration values:
+This will guide you through the configuration interactively, prompting you to enter the required values step by step.
 
-- `aiCompletionModel`: The identifier of the AI model you want to use (e.g., `mistralai/mistral-7b-instruct`, `openai/gpt-4o`).
-- `appLocalization`: (Optional) The language for the application interface. Supported values are `en` (English) and `ru` (Russian). Defaults to `ru` if not specified.
+Alternatively, you can set individual configuration values manually at any time:
 
 ```bash
 friday config set aiCompletionModel "openai/gpt-4o"
 friday config set appLocalization "en"
 ```
+
+The available configuration keys are:
+
+- `aiCompletionModel`: The identifier of the AI model you want to use (e.g., `mistralai/mistral-7b-instruct`, `openai/gpt-4o`).
+- `appLocalization`: (Optional) The language for the application interface. Supported values are `en` (English) and `ru` (Russian). Defaults to `ru` if not specified.
 
 The tool will not work without the required environment variables and configuration values defined.
 
@@ -74,12 +77,12 @@ Git Friday provides several commands to generate different types of content base
 
 Manage application configuration settings.
 
-##### `config init`
+##### `config setup`
 
-Initialize configuration settings for the application. This creates the configuration file with default empty values.
+Interactively configure the application settings. This command walks you through all available options step by step, creating or updating the configuration file.
 
 ```bash
-friday config init
+friday config setup
 ```
 
 ##### `config set`
@@ -94,7 +97,7 @@ Set a specific configuration value.
 **Examples:**
 
 ```bash
-friday config set aiCompletionModel "anthropic/claude-3.5-sonnet"
+friday config set aiCompletionModel "google/gemini-3-flash-preview"
 friday config set appLocalization "ru"
 ```
 
@@ -104,121 +107,70 @@ friday config set appLocalization "ru"
 
 Generates a daily activity report based on git commits.
 
-**Options:**
-
-- `-a, --authors <authors...>`: (Optional) A space-separated list of Git authors whose commits you want to analyze. If not provided, commits from all authors will be included. Cannot be used with `--current-user`.
-- `-b, --branches <branches...>`: (Optional) A space-separated list of branches to include in the analysis.
-- `--all`: (Optional) Include all branches in the analysis. Defaults to `false`.
-- `--today`: (Optional) Filter commits by today. Cannot be used with `--since` or `--until`.
-- `--since <date>`: (Optional) Filter commits starting from a specific date (e.g., "2023-01-01" or "yesterday"). Cannot be used with `--today`.
-- `--until <date>`: (Optional) Filter commits up to a specific date (e.g., "2023-01-01" or "today"). Cannot be used with `--today`.
-- `--current-user`: (Optional) A flag to filter commits by your current Git `user.email`. Cannot be used with `--authors`.
-- `-r, --range <range>`: (Optional) Revision range for commits (e.g., `main..dev`, `HEAD~5..HEAD`).
-- `--since-ref <ref>`: (Optional) Get commits after a specific tag or ref (e.g., `v0.13.0`).
-
-**Examples:**
-
-To generate a report for commits made by `s.farkash` and `stas_fr` in the `dev` and `main` branches:
+Run the command without any arguments — it will interactively prompt you to enter a full `git log` command:
 
 ```bash
-friday report -a s.farkash stas_fr -b dev main
+friday report
 ```
 
-To generate a report for your own commits across all branches:
-
-```bash
-friday report --current-user --all
+```
+? Enter your custom git log command: git log
 ```
 
-To generate a report for today's commits:
+You can type any valid `git log` command, for example:
 
-```bash
-friday report --today
 ```
-
-To generate a report for commits from a specific date range:
-
-```bash
-friday report --since "2023-01-01" --until "2023-01-07"
-```
-
-To generate a report for commits from a relative date (supports formats like "yesterday", "1 day ago", etc.):
-
-```bash
-friday report --since "yesterday"
-```
-
-To generate a report using a revision range:
-
-```bash
-friday report -r "main..dev"
-friday report -r "HEAD~5..HEAD"
-```
-
-To generate a report for commits since a specific tag:
-
-```bash
-friday report --since-ref "v0.13.0"
+? Enter your custom git log command: git log --author="s.farkash" --since="yesterday"
+? Enter your custom git log command: git log main..dev
+? Enter your custom git log command: git log HEAD~5..HEAD
 ```
 
 ---
 
 #### `pr`
 
-Generate a PR (Pull Request) report based on commit history within pull requests.
+Generates a PR (Pull Request) description based on commit history.
 
-**Options:**
-
-- `-r, --range <range>`: (Required) Revision range for commits (e.g., `main..dev`, `HEAD~5..HEAD`).
-
-**Examples:**
-
-To generate a PR report comparing the `dev` branch against `main`:
+Run the command without any arguments — it will interactively prompt you to enter a full `git log` command:
 
 ```bash
-friday pr -r "main..dev"
+friday pr
 ```
 
-To generate a PR report for the last 10 commits:
-
-```bash
-friday pr -r "HEAD~10..HEAD"
+```
+? Enter your custom git log command: git log
 ```
 
-To generate a PR report comparing two specific branches:
+You can type any valid `git log` command, for example:
 
-```bash
-friday pr -r "origin/main..feature/new-feature"
+```
+? Enter your custom git log command: git log main..dev
+? Enter your custom git log command: git log HEAD~10..HEAD
+? Enter your custom git log command: git log origin/main..feature/new-feature
 ```
 
 ---
 
 #### `changelog`
 
-Generate a changelog from git commits since a specific tag or reference.
+Generates a changelog from git commits.
 
-**Options:**
-
-- `--since-ref <ref>`: (Required) Get commits after a specific tag or ref (e.g., `v0.13.0`).
-
-**Examples:**
-
-To generate a changelog for all commits since version 0.13.0:
+Run the command without any arguments — it will interactively prompt you to enter a full `git log` command:
 
 ```bash
-friday changelog --since-ref "v0.13.0"
+friday changelog
 ```
 
-To generate a changelog since a specific commit:
-
-```bash
-friday changelog --since-ref "abc1234"
+```
+? Enter your custom git log command: git log
 ```
 
-To generate a changelog since a branch point:
+You can type any valid `git log` command, for example:
 
-```bash
-friday changelog --since-ref "main"
+```
+? Enter your custom git log command: git log v0.13.0..HEAD
+? Enter your custom git log command: git log abc1234..HEAD
+? Enter your custom git log command: git log main..release/1.0
 ```
 
 ---

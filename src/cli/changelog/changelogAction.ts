@@ -2,7 +2,6 @@ import ora from 'ora';
 import boxen from 'boxen';
 import { input } from '@inquirer/prompts';
 
-import { $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
 import { changelogPrompts } from '@/cli/changelog/changelogPrompts.js';
@@ -27,12 +26,12 @@ export async function changelogAction(appConfig: AppConfig) {
       .getCommitLog();
 
     if (sourceCommits.length === 0) {
-      throw new Error($l('noCommitsFound'));
+      throw new Error('No commits found for the specified criteria');
     }
 
     console.log(
       boxen(
-        `${$l('commandWord')}: ${gitService.command}\n${$l('commitCount')}: ${sourceCommits.length}`,
+        `Command: ${gitService.command}\nCommit Count: ${sourceCommits.length}`,
         {
           title: 'Git Log',
           padding: 0.75,
@@ -43,14 +42,14 @@ export async function changelogAction(appConfig: AppConfig) {
       ),
     );
 
-    spinner.start($l('generatingChangelog'));
+    spinner.start('Generating changelog...');
 
     const systemPrompt = changelogPrompts.getSystemPrompts(
-      appConfig.appLocalization,
+      appConfig.llmPromptsLocalization,
     );
     const userPrompt = changelogPrompts.getUserPrompt(
       sourceCommits.join('\n'),
-      appConfig.appLocalization,
+      appConfig.llmPromptsLocalization,
     );
 
     const llmResponse = await llmService.getCompletion({
@@ -59,13 +58,13 @@ export async function changelogAction(appConfig: AppConfig) {
     });
 
     if (!llmResponse) {
-      throw new Error($l('gotEmptyResponseFromLlm'));
+      throw new Error('Got empty response from Llm Provider');
     }
 
-    spinner.succeed($l('changelogGeneratedSuccessfully'));
+    spinner.succeed('Changelog generated successfully');
 
     console.log();
-    console.log($l('changelogWord'));
+    console.log('Changelog:');
     console.log(llmResponse.content.trim());
 
     if (llmResponse.usage) {
@@ -73,19 +72,19 @@ export async function changelogAction(appConfig: AppConfig) {
 
       if (usageTables.tokens) {
         console.log();
-        console.log($l('tokenUsageStatisticsTitle'));
+        console.log('Tokens Usage Statistics:');
         console.table(usageTables.tokens);
       }
 
       if (usageTables.cost) {
         console.log();
-        console.log($l('costStatistics'));
+        console.log('Cost Statistics in $');
         console.table(usageTables.cost);
       }
     }
   } catch (error: unknown) {
     spinner.fail(
-      `${$l('errorOccured')}: ${
+      `Error occurred: ${
         error instanceof Error ? error.message : String(error)
       }`,
     );

@@ -1,7 +1,5 @@
 import OpenAI from 'openai';
 
-import { $l } from '@/localization/localization.js';
-
 interface IOpenRouterUsage extends OpenAI.CompletionUsage {
   cost: number;
   is_byok: boolean;
@@ -37,16 +35,16 @@ export function generateUsageTables(
   }
 
   const tokensTable: IUsageTable = {
-    [$l('promptTokens')]: usage.prompt_tokens,
-    [$l('completionTokens')]: usage.completion_tokens,
-    [$l('totalTokens')]: usage.total_tokens,
+    ['Prompt Tokens']: usage.prompt_tokens,
+    ['Completion Tokens']: usage.completion_tokens,
+    ['Total Tokens']: usage.total_tokens,
   };
 
   let costTable: IUsageTable | null = null;
 
   if ('cost' in usage) {
     costTable = {
-      [$l('totalCost')]: usage.cost,
+      ['Total Cost']: usage.cost,
     };
   }
 
@@ -54,10 +52,10 @@ export function generateUsageTables(
     if (!costTable) {
       costTable = {};
     }
-    costTable[$l('inferenceCost')] = usage.cost_details.upstream_inference_cost;
-    costTable[$l('promptCost')] =
+    costTable['Inference Cost'] = usage.cost_details.upstream_inference_cost;
+    costTable['Prompt Cost'] =
       usage.cost_details.upstream_inference_prompt_cost;
-    costTable[$l('completionCost')] =
+    costTable['Completion Cost'] =
       usage.cost_details.upstream_inference_completions_cost;
   }
 

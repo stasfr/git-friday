@@ -2,7 +2,6 @@ import ora from 'ora';
 import boxen from 'boxen';
 import { input } from '@inquirer/prompts';
 
-import { $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
 import { prPrompts } from '@/cli/pr/prPrompts.js';
@@ -27,12 +26,12 @@ export async function prAction(appConfig: AppConfig) {
       .getCommitLog();
 
     if (sourceCommits.length === 0) {
-      throw new Error($l('noCommitsFound'));
+      throw new Error('No commits found for the specified criteria');
     }
 
     console.log(
       boxen(
-        `${$l('commandWord')}: ${gitService.command}\n${$l('commitCount')}: ${sourceCommits.length}`,
+        `Command: ${gitService.command}\nCommit Count: ${sourceCommits.length}`,
         {
           title: 'Git Log',
           padding: 0.75,
@@ -43,12 +42,14 @@ export async function prAction(appConfig: AppConfig) {
       ),
     );
 
-    spinner.start($l('generatingPullRequestText'));
+    spinner.start('Generating pull request text...');
 
-    const systemPrompt = prPrompts.getSystemPrompts(appConfig.appLocalization);
+    const systemPrompt = prPrompts.getSystemPrompts(
+      appConfig.llmPromptsLocalization,
+    );
     const userPrompt = prPrompts.getUserPrompt(
       sourceCommits.join('\n'),
-      appConfig.appLocalization,
+      appConfig.llmPromptsLocalization,
     );
 
     const llmResponse = await llmService.getCompletion({
@@ -57,13 +58,13 @@ export async function prAction(appConfig: AppConfig) {
     });
 
     if (!llmResponse) {
-      throw new Error($l('gotEmptyResponseFromLlm'));
+      throw new Error('Got empty response from Llm Provider');
     }
 
-    spinner.succeed($l('pullRequestTextGeneratedSuccess'));
+    spinner.succeed('Pull Request text generated successfully');
 
     console.log();
-    console.log($l('pullRequestTextWord'));
+    console.log('Pull Request text:');
     console.log(llmResponse.content.trim());
 
     if (llmResponse.usage) {
@@ -71,19 +72,19 @@ export async function prAction(appConfig: AppConfig) {
 
       if (usageTables.tokens) {
         console.log();
-        console.log($l('tokenUsageStatisticsTitle'));
+        console.log('Tokens Usage Statistics:');
         console.table(usageTables.tokens);
       }
 
       if (usageTables.cost) {
         console.log();
-        console.log($l('costStatistics'));
+        console.log('Cost Statistics in $');
         console.table(usageTables.cost);
       }
     }
   } catch (error: unknown) {
     spinner.fail(
-      `${$l('errorOccured')}: ${
+      `Error occurred: ${
         error instanceof Error ? error.message : String(error)
       }`,
     );

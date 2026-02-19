@@ -1,5 +1,3 @@
-import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
-
 export type IOsPaths = {
   data: string;
   config: string;
@@ -8,12 +6,14 @@ export type IOsPaths = {
   temp: string;
 };
 
+export type ILocalizationTypes = 'en' | 'ru';
+
 export type IFileBasedConfig = {
   aiCompletionModel: string;
-  appLocalization?: ILocalizationTypes;
+  llmPromptsLocalization?: ILocalizationTypes;
 };
 
 export type AppConfig = {
   aiCompletionModel: string;
-  appLocalization: ILocalizationTypes | null;
+  llmPromptsLocalization: ILocalizationTypes | null;
 };

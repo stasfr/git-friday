@@ -3,8 +3,6 @@ import updateNotifier from 'update-notifier';
 import chalk from 'chalk';
 import boxen from 'boxen';
 
-import { $l } from '@/localization/localization.js';
-
 export async function checkForUpdates() {
   try {
     const notifier = updateNotifier({ pkg });
@@ -12,13 +10,13 @@ export async function checkForUpdates() {
 
     if (update && update.latest !== update.current) {
       const updateMessage =
-        `${$l('updateAvailable')} ` +
+        'Update available ' +
         chalk.dim(update.current) +
         chalk.reset(' → ') +
         chalk.green(update.latest) +
-        ` \n${$l('runWord')} ` +
+        ' \nRun ' +
         chalk.cyan(`'pnpm add -g ${update.name}'`) +
-        ` ${$l('toUpdateWord')}`;
+        ' to update';
 
       const message = boxen(updateMessage, {
         padding: 1,
@@ -31,8 +29,8 @@ export async function checkForUpdates() {
       console.log(message);
     }
   } catch (error: unknown) {
-    console.log($l('failedToCheckForUpdates'));
-    console.log($l('errorWord') + ':');
+    console.log('Failed to check for updates');
+    console.log('Error:');
     console.log(error instanceof Error ? error.message : error);
   }
 }

@@ -1,5 +1,3 @@
-import { $l } from '@/localization/localization.js';
-
 import type { IErrorMetadata } from '@/errors/errorsTypes.js';
 
 export class ExtendedError extends Error {
@@ -13,14 +11,14 @@ export class ExtendedError extends Error {
   logToConsole() {
     console.log(`${this.metadata.layer}`);
     if (this.metadata.command) {
-      console.log(`${$l('commandWord')}:`, this.metadata.command);
+      console.log('Command:', this.metadata.command);
     }
     if (this.metadata.service) {
-      console.log(`${$l('inServiceWord')}:`, this.metadata.service);
+      console.log('In Service:', this.metadata.service);
     }
     console.log(`\n${this.metadata.message}\n`);
     if (this.metadata.hint) {
-      console.log($l('hintWord'));
+      console.log('Hint:');
       console.log(this.metadata.hint);
     }
   }

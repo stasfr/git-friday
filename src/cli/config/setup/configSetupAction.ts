@@ -1,6 +1,5 @@
 import { select, input, confirm } from '@inquirer/prompts';
 
-import { $l } from '@/localization/localization.js';
 import { ConfigService } from '@/cli/config/configService.js';
 
 export async function configSetupAction() {
@@ -22,27 +21,30 @@ export async function configSetupAction() {
     }
   }
 
-  const appLocalization = await select({
-    message: $l('configSetupSelectLocalization'),
+  const llmPromptsLocalization = await select({
+    message: 'Select llm prompts localization',
     choices: [
       {
-        name: $l('configSetupEnglishOption'),
+        name: 'English',
         value: 'en',
       },
       {
-        name: $l('configSetupRussianOption'),
+        name: 'Russian',
         value: 'ru',
       },
     ],
   });
 
-  await configService.setValueToKey('appLocalization', appLocalization);
+  await configService.setValueToKey(
+    'llmPromptsLocalization',
+    llmPromptsLocalization,
+  );
 
   const aiCompletionModel = await input({
-    message: $l('configSetupEnterAiModel'),
+    message: 'Enter AI completion model',
     validate: (input) => {
       if (!input) {
-        return $l('configSetupPleaseEnterModel');
+        return 'Please enter a model';
       }
       return true;
     },

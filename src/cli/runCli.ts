@@ -1,7 +1,5 @@
 import pkg from '../../package.json' with { type: 'json' };
 
-import { $l } from '@/localization/localization.js';
-
 import { Command } from 'commander';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
@@ -31,9 +29,9 @@ export async function runCli() {
     if (error instanceof ExtendedError) {
       error.logToConsole();
     } else if (error instanceof Error) {
-      console.log(`${$l('errorWord')}:`, error.message);
+      console.log('Error:', error.message);
     } else {
-      console.log(`${$l('unknownError')}:`, error);
+      console.log('Unknown error:', error);
     }
   }
 }

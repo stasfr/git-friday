@@ -3,17 +3,15 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { constants } from 'node:fs';
 
-import { $l } from '@/localization/localization.js';
-
-import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
 import type {
+  ILocalizationTypes,
   AppConfig,
   IOsPaths,
   IFileBasedConfig,
 } from '@/cli/config/configTypes.js';
 
 export class ConfigService {
-  private validateAppLocalization(
+  private validateLlmPromptsLocalization(
     localization: unknown,
   ): localization is ILocalizationTypes {
     return (
@@ -24,27 +22,29 @@ export class ConfigService {
 
   private validateFileBasedConfig(config: unknown): config is IFileBasedConfig {
     if (config === null) {
-      throw new Error($l('configFileIsEmpty'));
+      throw new Error('Config file is empty');
     }
 
     if (typeof config !== 'object') {
-      throw new Error($l('configFileIsNotValidJson'));
+      throw new Error('Config file is not a valid JSON');
     }
 
     if (!('aiCompletionModel' in config)) {
-      throw new Error($l('configFileMissingAiCompletionModel'));
+      throw new Error('Config file is missing aiCompletionModel property');
     }
 
     if (typeof config.aiCompletionModel !== 'string') {
-      throw new Error($l('invalidAiCompletionModelValue'));
+      throw new Error('Invalid aiCompletionModel value');
     }
 
     if (
-      'appLocalization' in config &&
-      typeof config.appLocalization === 'string' &&
-      !this.validateAppLocalization(config.appLocalization)
+      'llmPromptsLocalization' in config &&
+      typeof config.llmPromptsLocalization === 'string' &&
+      !this.validateLlmPromptsLocalization(config.llmPromptsLocalization)
     ) {
-      throw new Error($l('invalidAppLocalizationValue'));
+      throw new Error(
+        'Invalid llmPromptsLocalization value. Supported values: en, ru',
+      );
     }
 
     return true;
@@ -79,7 +79,7 @@ export class ConfigService {
     const config = JSON.parse(configFile);
 
     if (!this.validateFileBasedConfig(config)) {
-      throw new Error($l('invalidConfigFileStructure'));
+      throw new Error('Invalid config file structure');
     }
 
     return config;
@@ -89,7 +89,7 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error($l('unsupportedOperatingSystem'));
+      throw new Error('Unsupported operating system');
     }
 
     const configFilePath = path.join(osPaths.config, 'config.json');
@@ -105,12 +105,12 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error($l('unsupportedOperatingSystem'));
+      throw new Error('Unsupported operating system');
     }
 
     const emptyConfig = {
       aiCompletionModel: null,
-      appLocalization: null,
+      llmPromptsLocalization: null,
     };
 
     const jsonEmptyConfig = JSON.stringify(emptyConfig, null, 2);
@@ -123,7 +123,7 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error($l('unsupportedOperatingSystem'));
+      throw new Error('Unsupported operating system');
     }
 
     const configPath = path.join(osPaths.config, 'config.json');
@@ -140,14 +140,14 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
 
     if (!osPaths) {
-      throw new Error($l('unsupportedOperatingSystem'));
+      throw new Error('Unsupported operating system');
     }
 
     const configFile = await this.loadConfigFile(osPaths);
 
     return {
       aiCompletionModel: configFile.aiCompletionModel,
-      appLocalization: configFile.appLocalization ?? null,
+      llmPromptsLocalization: configFile.llmPromptsLocalization ?? null,
     } satisfies AppConfig;
   }
 }

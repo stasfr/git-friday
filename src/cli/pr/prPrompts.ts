@@ -1,4 +1,4 @@
-import type { ILocalizationTypes } from '@/localization/localizationTypes.js';
+import type { ILocalizationTypes } from '@/cli/config/configTypes.js';
 
 export const prPrompts = {
   getSystemPrompts: function (localization: ILocalizationTypes | null) {

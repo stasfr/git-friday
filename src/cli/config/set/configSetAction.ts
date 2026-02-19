@@ -1,14 +1,15 @@
-import { $l } from '@/localization/localization.js';
 import { ConfigService } from '@/cli/config/configService.js';
 
 import type { ConfigSetCommandOption } from '@/cli/config/set/configSetCommand.js';
 
 export async function configSetAction(options: ConfigSetCommandOption) {
   if (
-    options.key === 'appLocalization' &&
+    options.key === 'llmPromptsLocalization' &&
     (typeof options.value !== 'string' || !['en', 'ru'].includes(options.value))
   ) {
-    throw new Error($l('invalidAppLocalizationValue'));
+    throw new Error(
+      'Invalid llmPromptsLocalization value. Supported values: en, ru',
+    );
   }
 
   if (
@@ -16,7 +17,7 @@ export async function configSetAction(options: ConfigSetCommandOption) {
     (typeof options.value !== 'string' ||
       isNaN(Number(options.value)) === false)
   ) {
-    throw new Error($l('invalidAiCompletionModelValue'));
+    throw new Error('Invalid aiCompletionModel value');
   }
 
   const configService = new ConfigService();

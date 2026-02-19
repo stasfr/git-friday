@@ -13,7 +13,7 @@ export function configSet(configCommand: Command) {
     .addArgument(
       new Argument('<key>', 'Configuration key to set').choices([
         'aiCompletionModel',
-        'appLocalization',
+        'llmPromptsLocalization',
       ]),
     )
     .argument('<value>', 'Value to set for the key')

@@ -81,6 +81,12 @@ export class GitService {
     return this;
   }
 
+  public customLog(command: string) {
+    const cleanedCommand = command.replace(/^git\s+log\s*/i, '');
+    this.commandParts.push(cleanedCommand);
+    return this;
+  }
+
   public async getCommitLog() {
     const command = this.command;
     const cwd = process.cwd();

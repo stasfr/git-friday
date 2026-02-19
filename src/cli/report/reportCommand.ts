@@ -13,6 +13,7 @@ export type ReportCommandOption = {
   range?: string;
   sinceRef?: string;
   today?: boolean;
+  customLog: boolean;
 };
 
 export function report(program: Command) {
@@ -55,6 +56,12 @@ export function report(program: Command) {
     .option(
       '--since-ref <ref>',
       'Get commits after a specific tag or ref (e.g., v0.13.0)',
+    )
+    .addOption(
+      new Option(
+        '--custom-log',
+        'Get commits using a custom git log command. All other options will be ignored',
+      ).default(false),
     )
     .hook('preAction', configExistCheckHook)
     .action(async (options: ReportCommandOption) => {

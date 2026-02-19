@@ -1,5 +1,6 @@
 import ora from 'ora';
 import boxen from 'boxen';
+import { input } from '@inquirer/prompts';
 
 import { $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
@@ -20,30 +21,38 @@ export async function reportAction(
   const llmService = new LlmService(appConfig);
 
   try {
-    if (options.all === true) {
-      gitService.forAllBranches();
-    }
+    if (options.customLog == false) {
+      if (options.all === true) {
+        gitService.forAllBranches();
+      }
 
-    if (options.branches && options.branches.length > 0) {
-      gitService.forBranches(options.branches);
-    }
+      if (options.branches && options.branches.length > 0) {
+        gitService.forBranches(options.branches);
+      }
 
-    if (options.authors) {
-      gitService.forAuthors(options.authors);
-    } else if (options.currentUser) {
-      await gitService.forCurrentUser();
-    }
+      if (options.authors) {
+        gitService.forAuthors(options.authors);
+      } else if (options.currentUser) {
+        await gitService.forCurrentUser();
+      }
 
-    if (options.since) {
-      gitService.since(options.since);
-    }
+      if (options.since) {
+        gitService.since(options.since);
+      }
 
-    if (options.until) {
-      gitService.until(options.until);
-    }
+      if (options.until) {
+        gitService.until(options.until);
+      }
 
-    if (options.today === true) {
-      gitService.today();
+      if (options.today === true) {
+        gitService.today();
+      }
+    } else {
+      const customLog = await input({
+        message: 'Enter your custom git log command: git log',
+      });
+
+      gitService.customLog(customLog);
     }
 
     gitService.pretty();

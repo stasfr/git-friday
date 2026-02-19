@@ -1,5 +1,6 @@
 import ora from 'ora';
 import boxen from 'boxen';
+import { input } from '@inquirer/prompts';
 
 import { $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
@@ -9,21 +10,21 @@ import { changelogPrompts } from '@/cli/changelog/changelogPrompts.js';
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
 import type { AppConfig } from '@/cli/config/configTypes.js';
-import type { ChangelogCommandOption } from '@/cli/changelog/changelogCommand.js';
 
-export async function changelogAction(
-  options: ChangelogCommandOption,
-  appConfig: AppConfig,
-) {
+export async function changelogAction(appConfig: AppConfig) {
   const spinner = ora();
   const gitService = new GitService();
   const llmService = new LlmService(appConfig);
 
   try {
-    gitService.sinceTag(options.sinceRef);
-    gitService.pretty();
+    const customLog = await input({
+      message: 'Enter your custom git log command: git log',
+    });
 
-    const sourceCommits = await gitService.getCommitLog();
+    const sourceCommits = await gitService
+      .customLog(customLog)
+      .pretty()
+      .getCommitLog();
 
     if (sourceCommits.length === 0) {
       throw new Error($l('noCommitsFound'));

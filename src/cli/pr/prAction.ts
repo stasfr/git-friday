@@ -1,5 +1,6 @@
 import ora from 'ora';
 import boxen from 'boxen';
+import { input } from '@inquirer/prompts';
 
 import { $l } from '@/localization/localization.js';
 import { LlmService } from '@/services/llmService.js';
@@ -9,18 +10,21 @@ import { prPrompts } from '@/cli/pr/prPrompts.js';
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
 import type { AppConfig } from '@/cli/config/configTypes.js';
-import type { PrCommandOption } from '@/cli/pr/prCommand.js';
 
-export async function prAction(options: PrCommandOption, appConfig: AppConfig) {
+export async function prAction(appConfig: AppConfig) {
   const spinner = ora();
   const gitService = new GitService();
   const llmService = new LlmService(appConfig);
 
   try {
-    gitService.forRange(options.range);
-    gitService.pretty();
+    const customLog = await input({
+      message: 'Enter your custom git log command: git log',
+    });
 
-    const sourceCommits = await gitService.getCommitLog();
+    const sourceCommits = await gitService
+      .customLog(customLog)
+      .pretty()
+      .getCommitLog();
 
     if (sourceCommits.length === 0) {
       throw new Error($l('noCommitsFound'));

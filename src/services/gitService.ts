@@ -26,16 +26,6 @@ export class GitService {
     return this;
   }
 
-  public forRange(range: string) {
-    this.commandParts.push(range);
-    return this;
-  }
-
-  public sinceTag(tag: string) {
-    this.commandParts.push(`${tag}..`);
-    return this;
-  }
-
   public customLog(command: string) {
     const cleanedCommand = command.replace(/^git\s+log\s*/i, '');
     this.commandParts.push(cleanedCommand);

@@ -9,7 +9,6 @@ export type ReportCommandOption = {
   all: boolean;
   since?: string;
   until?: string;
-  currentUser: boolean;
   range?: string;
   sinceRef?: string;
   today?: boolean;
@@ -20,11 +19,7 @@ export function report(program: Command) {
   program
     .command('report')
     .description('Generate a report from git commits')
-    .addOption(
-      new Option('-a, --authors <authors...>', 'Git authors').conflicts(
-        'current-user',
-      ),
-    )
+    .option('-a, --authors <authors...>', 'Git authors')
     .option('-b, --branches <branches...>', 'Git branches')
     .option('--all', 'Include all branches', false)
     .addOption(
@@ -43,11 +38,6 @@ export function report(program: Command) {
         '--until <date>',
         'Filter commits until a specific date',
       ).conflicts('today'),
-    )
-    .addOption(
-      new Option('--current-user', 'Filter commits by your git user.email')
-        .conflicts('authors')
-        .default(false),
     )
     .option(
       '-r, --range <range>',

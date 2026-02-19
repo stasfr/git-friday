@@ -32,8 +32,6 @@ export async function reportAction(
 
       if (options.authors) {
         gitService.forAuthors(options.authors);
-      } else if (options.currentUser) {
-        await gitService.forCurrentUser();
       }
 
       if (options.since) {

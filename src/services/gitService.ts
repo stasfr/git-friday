@@ -21,22 +21,11 @@ export class GitService {
     return this.commandParts.join(' ');
   }
 
-  private async getGitUserEmail() {
-    const { stdout } = await this.exec('git config user.email');
-    return stdout.trim();
-  }
-
   public forAuthors(authors: string[]) {
     const authorArgs = authors
       .map((author) => `--author="${author}"`)
       .join(' ');
     this.commandParts.push(authorArgs);
-    return this;
-  }
-
-  public async forCurrentUser() {
-    const userEmail = await this.getGitUserEmail();
-    this.commandParts.push(`--author="${userEmail}"`);
     return this;
   }
 

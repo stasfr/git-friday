@@ -7,14 +7,14 @@ export async function configSetupAction() {
   const configService = new ConfigService();
 
   const appLocalization = await select({
-    message: 'Select app localization',
+    message: $l('configSetupSelectLocalization'),
     choices: [
       {
-        name: 'English',
+        name: $l('configSetupEnglishOption'),
         value: 'en',
       },
       {
-        name: 'Russian',
+        name: $l('configSetupRussianOption'),
         value: 'ru',
       },
     ],
@@ -23,10 +23,10 @@ export async function configSetupAction() {
   await configService.setValueToKey('appLocalization', appLocalization);
 
   const aiCompletionModel = await input({
-    message: 'Enter AI completion model',
+    message: $l('configSetupEnterAiModel'),
     validate: (input) => {
       if (!input) {
-        return 'Please enter a model';
+        return $l('configSetupPleaseEnterModel');
       }
       return true;
     },

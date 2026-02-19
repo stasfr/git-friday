@@ -32,4 +32,10 @@ export const messages = {
   inferenceCost: 'Стоимость инференса',
   promptCost: 'Стоимость промпта',
   completionCost: 'Стоимость ответа',
+  // config setup command
+  configSetupSelectLocalization: 'Выберите язык приложения',
+  configSetupEnglishOption: 'Английский',
+  configSetupRussianOption: 'Русский',
+  configSetupEnterAiModel: 'Введите LLM-модель для генерации',
+  configSetupPleaseEnterModel: 'Пожалуйста, введите модель',
 } satisfies IMessagesLocalization;

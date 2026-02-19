@@ -32,4 +32,10 @@ export const messages = {
   inferenceCost: 'Inference Cost',
   promptCost: 'Prompt Cost',
   completionCost: 'Completion Cost',
+  // config setup command
+  configSetupSelectLocalization: 'Select app localization',
+  configSetupEnglishOption: 'English',
+  configSetupRussianOption: 'Russian',
+  configSetupEnterAiModel: 'Enter AI completion model',
+  configSetupPleaseEnterModel: 'Please enter a model',
 } satisfies IMessagesLocalization;

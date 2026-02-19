@@ -57,6 +57,12 @@ export interface IMessagesLocalization {
   inferenceCost: string;
   promptCost: string;
   completionCost: string;
+  // config setup command related
+  configSetupSelectLocalization: string;
+  configSetupEnglishOption: string;
+  configSetupRussianOption: string;
+  configSetupEnterAiModel: string;
+  configSetupPleaseEnterModel: string;
 }
 
 export interface ILocalizationList

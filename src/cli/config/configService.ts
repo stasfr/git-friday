@@ -93,7 +93,12 @@ export class ConfigService {
     }
 
     const configFilePath = path.join(osPaths.config, 'config.json');
-    await fs.access(configFilePath, constants.F_OK);
+    try {
+      await fs.access(configFilePath, constants.F_OK);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   public async initConfig() {

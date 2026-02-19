@@ -2,5 +2,9 @@ import { ConfigService } from '../configService.js';
 
 export async function configExistCheckHook() {
   const configService = new ConfigService();
-  await configService.checkIfConfigExists();
+  const result = await configService.checkIfConfigExists();
+  if (!result) {
+    console.error('Config file does not exist.');
+    process.exit(1);
+  }
 }

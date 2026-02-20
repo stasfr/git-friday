@@ -40,6 +40,7 @@
     "dev": "tsx --env-file .env src/main.ts",
     "start": "node dist/src/main.js",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias",
+    "build:local": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias && pnpm remove -g git-friday && pnpm link -g",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",

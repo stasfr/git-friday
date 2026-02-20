@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 
-import { configSet } from '@/cli/config/set/configSetCommand.js';
 import { configSetup } from '@/cli/config/setup/configSetupCommand.js';
+import { configSet } from '@/cli/config/set/configSetCommand.js';
+import { configGet } from '@/cli/config/get/configGetCommand.js';
 
 export function config(program: Command) {
   const configCommand = program
@@ -10,4 +11,5 @@ export function config(program: Command) {
 
   configSetup(configCommand);
   configSet(configCommand);
+  configGet(configCommand);
 }

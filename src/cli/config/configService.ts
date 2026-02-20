@@ -3,6 +3,8 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { constants } from 'node:fs';
 
+import { ExtendedError } from '@/errors/ExtendedError.js';
+
 import type {
   ILocalizationTypes,
   AppConfig,
@@ -53,24 +55,36 @@ export class ConfigService {
   private getOsPaths() {
     const os = process.platform;
 
-    if (
-      os === 'win32' &&
-      typeof process.env.LOCALAPPDATA === 'string' &&
-      typeof process.env.APPDATA === 'string'
-    ) {
-      const localAppData = process.env.LOCALAPPDATA;
-      const appData = process.env.APPDATA;
-
-      return {
-        data: path.join(localAppData, '.git-friday', 'data'),
-        config: path.join(appData, '.git-friday', 'config'),
-        cache: path.join(localAppData, '.git-friday', 'cache'),
-        log: path.join(localAppData, '.git-friday', 'log'),
-        temp: path.join(localAppData, 'Temp', '.git-friday'),
-      } satisfies IOsPaths;
+    if (os !== 'win32') {
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Unsupported OS',
+        command: null,
+        service: null,
+        hint: 'At this point, only Windows is supported',
+      });
     }
 
-    return null;
+    if (!process.env.LOCALAPPDATA || !process.env.APPDATA) {
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Missing environment variables for Windows',
+        command: null,
+        service: null,
+        hint: 'process.env.LOCALAPPDATA or process.env.APPDATA',
+      });
+    }
+
+    const localAppData = process.env.LOCALAPPDATA;
+    const appData = process.env.APPDATA;
+
+    return {
+      data: path.join(localAppData, '.git-friday', 'data'),
+      config: path.join(appData, '.git-friday', 'config'),
+      cache: path.join(localAppData, '.git-friday', 'cache'),
+      log: path.join(localAppData, '.git-friday', 'log'),
+      temp: path.join(localAppData, 'Temp', '.git-friday'),
+    } satisfies IOsPaths;
   }
 
   private async loadConfigFile(osPaths: IOsPaths) {
@@ -87,11 +101,6 @@ export class ConfigService {
 
   public async checkIfConfigExists() {
     const osPaths = this.getOsPaths();
-
-    if (!osPaths) {
-      throw new Error('Unsupported operating system');
-    }
-
     const configFilePath = path.join(osPaths.config, 'config.json');
     try {
       await fs.access(configFilePath, constants.F_OK);
@@ -103,11 +112,6 @@ export class ConfigService {
 
   public async initConfig() {
     const osPaths = this.getOsPaths();
-
-    if (!osPaths) {
-      throw new Error('Unsupported operating system');
-    }
-
     const emptyConfig = {
       aiCompletionModel: null,
       llmPromptsLocalization: null,
@@ -121,11 +125,6 @@ export class ConfigService {
 
   public async setValueToKey(key: string, value: string) {
     const osPaths = this.getOsPaths();
-
-    if (!osPaths) {
-      throw new Error('Unsupported operating system');
-    }
-
     const configPath = path.join(osPaths.config, 'config.json');
     const configFile = await fs.readFile(configPath, 'utf-8');
     const config = JSON.parse(configFile);
@@ -138,11 +137,6 @@ export class ConfigService {
 
   public async getAppConfig() {
     const osPaths = this.getOsPaths();
-
-    if (!osPaths) {
-      throw new Error('Unsupported operating system');
-    }
-
     const configFile = await this.loadConfigFile(osPaths);
 
     return {

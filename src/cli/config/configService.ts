@@ -6,47 +6,74 @@ import { constants } from 'node:fs';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
 import type {
-  ILocalizationTypes,
   AppConfig,
   IOsPaths,
   IFileBasedConfig,
 } from '@/cli/config/configTypes.js';
 
 export class ConfigService {
-  private validateLlmPromptsLocalization(
-    localization: unknown,
-  ): localization is ILocalizationTypes {
-    return (
-      typeof localization === 'string' &&
-      (localization === 'en' || localization === 'ru')
-    );
-  }
-
   private validateFileBasedConfig(config: unknown): config is IFileBasedConfig {
     if (config === null) {
-      throw new Error('Config file is empty');
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Config file is empty',
+        command: null,
+        service: null,
+        hint: 'Ensure config file contains valid JSON content. Run "friday config setup"',
+      });
     }
 
     if (typeof config !== 'object') {
-      throw new Error('Config file is not a valid JSON');
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Config file is not a valid JSON',
+        command: null,
+        service: null,
+        hint: 'Ensure config file is valid JSON format. Run "friday config setup"',
+      });
     }
 
     if (!('aiCompletionModel' in config)) {
-      throw new Error('Config file is missing aiCompletionModel property');
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Config file is missing aiCompletionModel property',
+        command: null,
+        service: null,
+        hint: 'Add aiCompletionModel property to config file. Run "friday config set" or "friday config setup"',
+      });
     }
 
     if (typeof config.aiCompletionModel !== 'string') {
-      throw new Error('Invalid aiCompletionModel value');
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Invalid aiCompletionModel value',
+        command: null,
+        service: null,
+        hint: 'aiCompletionModel must be a string. Run "friday config set" or "friday config setup"',
+      });
+    }
+
+    if (!('llmPromptsLocalization' in config)) {
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Config file is missing llmPromptsLocalization property',
+        command: null,
+        service: null,
+        hint: 'Add llmPromptsLocalization property to config file. Run "friday config set" or "friday config setup"',
+      });
     }
 
     if (
-      'llmPromptsLocalization' in config &&
-      typeof config.llmPromptsLocalization === 'string' &&
-      !this.validateLlmPromptsLocalization(config.llmPromptsLocalization)
+      config.llmPromptsLocalization !== 'en' &&
+      config.llmPromptsLocalization !== 'ru'
     ) {
-      throw new Error(
-        'Invalid llmPromptsLocalization value. Supported values: en, ru',
-      );
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Invalid llmPromptsLocalization value',
+        command: null,
+        service: null,
+        hint: 'Supported values: en, ru. Run "friday config set" or "friday config setup"',
+      });
     }
 
     return true;

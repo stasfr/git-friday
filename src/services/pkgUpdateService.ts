@@ -28,9 +28,17 @@ export async function checkForUpdates() {
 
       console.log(message);
     }
-  } catch (error: unknown) {
-    console.log('Failed to check for updates');
-    console.log('Error:');
-    console.log(error instanceof Error ? error.message : error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorBox = boxen(errorMessage, {
+      title: 'Failed to check for updates',
+      titleAlignment: 'center',
+      padding: 1,
+      margin: 1,
+      textAlignment: 'center',
+      borderColor: 'red',
+      borderStyle: 'round',
+    });
+    console.log(errorBox);
   }
 }

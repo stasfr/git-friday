@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-import 'dotenv/config';
+#!/usr/bin/env node --env-file .env
 
 import { checkForUpdates } from '@/services/pkgUpdateService.js';
 import { runCli } from '@/cli/runCli.js';

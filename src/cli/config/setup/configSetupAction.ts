@@ -1,5 +1,6 @@
 import { select, input, confirm } from '@inquirer/prompts';
 
+import { ExtendedError } from '@/errors/ExtendedError.js';
 import { ConfigService } from '@/cli/config/configService.js';
 
 export async function configSetupAction() {
@@ -7,15 +8,15 @@ export async function configSetupAction() {
 
   const configExists = await configService.checkIfConfigExists();
 
-  if (!configExists) {
-    configService.initConfig();
+  if (configExists instanceof ExtendedError) {
+    await configService.initConfig();
 
     const setupConfig = await confirm({
       message: 'Would you like to setup your configuration?',
       default: true,
     });
 
-    if (!setupConfig) {
+    if (setupConfig === false) {
       console.log('Configuration setup cancelled.');
       process.exit(0);
     }

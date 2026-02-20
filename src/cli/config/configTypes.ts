@@ -8,6 +8,11 @@ export type IOsPaths = {
 
 export type ILocalizationTypes = 'en' | 'ru';
 
+export type IEmptyFileBasedConfig = {
+  aiCompletionModel: null;
+  llmPromptsLocalization: null;
+};
+
 export type IFileBasedConfig = {
   aiCompletionModel: string;
   llmPromptsLocalization?: ILocalizationTypes;

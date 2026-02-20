@@ -9,6 +9,7 @@ import type {
   AppConfig,
   IOsPaths,
   IFileBasedConfig,
+  IEmptyFileBasedConfig,
 } from '@/cli/config/configTypes.js';
 
 export class ConfigService {
@@ -114,18 +115,6 @@ export class ConfigService {
     } satisfies IOsPaths;
   }
 
-  private async loadConfigFile(osPaths: IOsPaths) {
-    const configPath = path.join(osPaths.config, 'config.json');
-    const configFile = await fs.readFile(configPath, 'utf-8');
-    const config = JSON.parse(configFile);
-
-    if (!this.validateFileBasedConfig(config)) {
-      throw new Error('Invalid config file structure');
-    }
-
-    return config;
-  }
-
   public async checkIfConfigExists() {
     const osPaths = this.getOsPaths();
     const configFilePath = path.join(osPaths.config, 'config.json');
@@ -133,38 +122,66 @@ export class ConfigService {
       await fs.access(configFilePath, constants.F_OK);
       return true;
     } catch {
-      return false;
+      return new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'Config file not found',
+        command: null,
+        service: null,
+        hint: 'Run "friday config setup" to create a new config file',
+      });
     }
   }
 
-  public async initConfig() {
-    const osPaths = this.getOsPaths();
-    const emptyConfig = {
-      aiCompletionModel: null,
-      llmPromptsLocalization: null,
-    };
-
-    const jsonEmptyConfig = JSON.stringify(emptyConfig, null, 2);
-    const configFilePath = path.join(osPaths.config, 'config.json');
-
-    await fs.writeFile(configFilePath, jsonEmptyConfig, 'utf-8');
-  }
-
-  public async setValueToKey(key: string, value: string) {
+  private async readConfig() {
+    const configExists = await this.checkIfConfigExists();
+    if (configExists instanceof ExtendedError) {
+      throw configExists;
+    }
     const osPaths = this.getOsPaths();
     const configPath = path.join(osPaths.config, 'config.json');
     const configFile = await fs.readFile(configPath, 'utf-8');
     const config = JSON.parse(configFile);
 
-    config[key] = value;
+    if (!this.validateFileBasedConfig(config)) throw new Error();
 
-    const updatedConfig = JSON.stringify(config, null, 2);
-    await fs.writeFile(configPath, updatedConfig, 'utf-8');
+    return config;
+  }
+
+  private async writeConfig(config: IFileBasedConfig | IEmptyFileBasedConfig) {
+    const configExists = await this.checkIfConfigExists();
+    if (configExists instanceof ExtendedError) {
+      throw configExists;
+    }
+    const osPaths = this.getOsPaths();
+    const configPath = path.join(osPaths.config, 'config.json');
+    await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
+  }
+
+  public async initConfig() {
+    const emptyConfig = {
+      aiCompletionModel: null,
+      llmPromptsLocalization: null,
+    } satisfies IEmptyFileBasedConfig;
+    await this.writeConfig(emptyConfig);
+  }
+
+  public async setValueToKey(key: string, value: string) {
+    const config = await this.readConfig();
+    // Key comes from user input (CLI args), so it can be any string.
+    // Runtime validation is intentionally skipped here - invalid keys
+    // will simply not affect the config object.
+    // @ts-expect-error
+    config[key] = value;
+    await this.writeConfig(config);
+  }
+
+  public async getValueFromKey(key: keyof IFileBasedConfig) {
+    const config = await this.readConfig();
+    return config[key];
   }
 
   public async getAppConfig() {
-    const osPaths = this.getOsPaths();
-    const configFile = await this.loadConfigFile(osPaths);
+    const configFile = await this.readConfig();
 
     return {
       aiCompletionModel: configFile.aiCompletionModel,

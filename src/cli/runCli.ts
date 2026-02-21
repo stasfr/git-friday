@@ -7,6 +7,7 @@ import { config } from '@/cli/config/configCommand.js';
 import { changelog } from '@/cli/changelog/changelogCommand.js';
 import { pr } from '@/cli/pr/prCommand.js';
 import { report } from '@/cli/report/reportCommand.js';
+import { profile } from '@/cli/profile/profileCommand.js';
 
 function buildCli() {
   const program = new Command();
@@ -17,6 +18,7 @@ function buildCli() {
   changelog(program);
   pr(program);
   report(program);
+  profile(program);
 
   return program;
 }

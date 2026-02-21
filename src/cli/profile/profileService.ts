@@ -35,6 +35,15 @@ export class ProfileService {
     this.profilePath = profilePath;
   }
 
+  public static async listAllProfiles() {
+    const osPaths = getOsPaths();
+    const entries = await fs.readdir(osPaths.profiles, { withFileTypes: true });
+    const profileNames = entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+    return profileNames;
+  }
+
   public async checkIfProfileConfigExists() {
     try {
       const profileConfigPath = path.join(this.profilePath, 'config.json');

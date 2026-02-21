@@ -1,5 +1,5 @@
 import ora from 'ora';
-import { input } from '@inquirer/prompts';
+import { input, select } from '@inquirer/prompts';
 
 import { ProfileService } from '@/cli/profile/profileService.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
@@ -8,12 +8,45 @@ import { GitService } from '@/services/gitService.js';
 
 import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 
-import type { ProfileRunCommandOption } from '@/cli/profile/run/profileRunCommand.js';
+import type { RunCommandOption } from '@/cli/run/runCommand.js';
 
-export async function profileRunAction(options: ProfileRunCommandOption) {
-  const { profileName } = options;
+export async function runAction(options: RunCommandOption) {
+  let profileName = options.profileName;
 
   const spinner = ora();
+
+  if (!profileName) {
+    const profiles = await ProfileService.listAllProfiles();
+
+    if (profiles.length === 0) {
+      throw new ExtendedError({
+        layer: 'CommandExecutionError',
+        message: 'No profiles found',
+        command: 'profile run',
+        service: null,
+        hint: 'Create a profile first using "profile create" command',
+      });
+    }
+
+    profileName = await select({
+      message: 'Select a profile:',
+      choices: profiles.map((name) => ({
+        name,
+        value: name,
+      })),
+    });
+
+    if (typeof profileName !== 'string' || profileName.length === 0) {
+      throw new ExtendedError({
+        layer: 'CommandExecutionError',
+        message: 'Invalid profile selection',
+        command: 'profile run',
+        service: null,
+        hint: 'Please select a valid profile from the list',
+      });
+    }
+  }
+
   const profileService = new ProfileService({ profileName });
 
   const profileConfig = await profileService.getValidProfileConfig();

@@ -3,6 +3,7 @@ import pkg from '../../package.json' with { type: 'json' };
 import { Command } from 'commander';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
+import { useRunCommand } from '@/cli/run/runCommand.js';
 import { useProfileCommand } from '@/cli/profile/profileCommand.js';
 
 function buildCli() {
@@ -10,6 +11,7 @@ function buildCli() {
 
   program.name('friday').version(pkg.version).description(pkg.description);
 
+  useRunCommand(program);
   useProfileCommand(program);
 
   return program;

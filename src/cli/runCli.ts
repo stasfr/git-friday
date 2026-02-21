@@ -19,13 +19,13 @@ export async function runCli() {
   try {
     const program = buildCli();
     await program.parseAsync(process.argv);
-  } catch (error: unknown) {
+  } catch (error) {
     if (error instanceof ExtendedError) {
       error.logToConsole();
     } else if (error instanceof Error) {
-      console.log('Error:', error.message);
+      console.log('Unknown error:', error.message);
     } else {
-      console.log('Unknown error:', error);
+      console.log('Unrecognized error:', error);
     }
   }
 }

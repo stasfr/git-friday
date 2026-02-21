@@ -132,6 +132,23 @@ export class ConfigService {
     }
   }
 
+  public async initConfig() {
+    const osPaths = this.getOsPaths();
+    await fs.mkdir(osPaths.config, { recursive: true });
+
+    const emptyConfig = {
+      aiCompletionModel: null,
+      llmPromptsLocalization: null,
+    } satisfies IEmptyFileBasedConfig;
+
+    const configPath = path.join(osPaths.config, 'config.json');
+    await fs.writeFile(
+      configPath,
+      JSON.stringify(emptyConfig, null, 2),
+      'utf-8',
+    );
+  }
+
   private async readConfig() {
     const configExists = await this.checkIfConfigExists();
     if (configExists instanceof ExtendedError) {
@@ -155,14 +172,6 @@ export class ConfigService {
     const osPaths = this.getOsPaths();
     const configPath = path.join(osPaths.config, 'config.json');
     await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
-  }
-
-  public async initConfig() {
-    const emptyConfig = {
-      aiCompletionModel: null,
-      llmPromptsLocalization: null,
-    } satisfies IEmptyFileBasedConfig;
-    await this.writeConfig(emptyConfig);
   }
 
   public async setValueToKey(key: string, value: string) {

@@ -10,6 +10,9 @@ export interface IRawProfileConfig {
   aiCompletionModel: string | null;
 }
 
+export type IRawProfileConfigKeys = keyof IRawProfileConfig;
+export type IEditableProfileConfigKeys = Exclude<IRawProfileConfigKeys, 'name'>;
+
 export interface IValidProfileConfig {
   name: string;
   gitLogCommand: string | null;

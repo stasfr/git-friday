@@ -13,6 +13,7 @@ import {
 import type {
   IEmptyProfileConfig,
   IRawProfileConfig,
+  IRawProfileConfigKeys,
   IValidProfileConfig,
   IProfilePrompts,
 } from '@/cli/profile/profileTypes.js';
@@ -94,13 +95,13 @@ export class ProfileService {
     );
   }
 
-  public async setValueToKey(key: keyof IRawProfileConfig, value: string) {
+  public async setValueToKey(key: IRawProfileConfigKeys, value: string) {
     const profileConfig = await this.readProfileConfig();
     profileConfig[key] = value;
     await this.writeProfileConfig(profileConfig);
   }
 
-  public async getValueFromKey(key: keyof IRawProfileConfig) {
+  public async getValueFromKey(key: IRawProfileConfigKeys) {
     const config = await this.readProfileConfig();
     return config[key];
   }

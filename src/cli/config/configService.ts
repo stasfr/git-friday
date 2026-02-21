@@ -183,6 +183,11 @@ export class ConfigService {
     return config[key];
   }
 
+  public async getRawConfig() {
+    const config = await this.readConfig();
+    return config;
+  }
+
   public async getValidAppConfig() {
     const configFile = await this.readConfig();
 

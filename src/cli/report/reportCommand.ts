@@ -8,7 +8,7 @@ export function report(program: Command) {
     .description('Generate a report from git commits')
     .action(async () => {
       const configService = new ConfigService();
-      const appConfig = await configService.getAppConfig();
+      const appConfig = await configService.getValidAppConfig();
       await reportAction(appConfig);
     });
 }

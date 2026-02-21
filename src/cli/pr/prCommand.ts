@@ -10,7 +10,7 @@ export function pr(program: Command) {
     )
     .action(async () => {
       const configService = new ConfigService();
-      const appConfig = await configService.getAppConfig();
+      const appConfig = await configService.getValidAppConfig();
       await prAction(appConfig);
     });
 }

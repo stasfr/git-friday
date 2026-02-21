@@ -8,7 +8,7 @@ export function changelog(program: Command) {
     .description('Generate a changelog from git commits since a specific tag')
     .action(async () => {
       const configService = new ConfigService();
-      const appConfig = await configService.getAppConfig();
+      const appConfig = await configService.getValidAppConfig();
       await changelogAction(appConfig);
     });
 }

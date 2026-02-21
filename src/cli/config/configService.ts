@@ -159,8 +159,6 @@ export class ConfigService {
     const configFile = await fs.readFile(configPath, 'utf-8');
     const config = JSON.parse(configFile);
 
-    if (!this.validateFileBasedConfig(config)) throw new Error();
-
     return config;
   }
 
@@ -176,10 +174,6 @@ export class ConfigService {
 
   public async setValueToKey(key: string, value: string) {
     const config = await this.readConfig();
-    // Key comes from user input (CLI args), so it can be any string.
-    // Runtime validation is intentionally skipped here - invalid keys
-    // will simply not affect the config object.
-    // @ts-expect-error
     config[key] = value;
     await this.writeConfig(config);
   }
@@ -189,8 +183,10 @@ export class ConfigService {
     return config[key];
   }
 
-  public async getAppConfig() {
+  public async getValidAppConfig() {
     const configFile = await this.readConfig();
+
+    if (!this.validateFileBasedConfig(configFile)) throw new Error();
 
     return {
       aiCompletionModel: configFile.aiCompletionModel,

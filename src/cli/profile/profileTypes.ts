@@ -1,11 +1,11 @@
 export interface IProfileConfigFile {
   name: string;
-  git_log_command: string;
+  git_log_command: string | null;
 }
 
 export interface IProfileConfig {
   name: string;
-  gitLogCommand: string;
+  gitLogCommand: string | null;
 }
 
 export interface IProfilePrompts {

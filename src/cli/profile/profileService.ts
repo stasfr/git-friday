@@ -75,7 +75,10 @@ export class ProfileService {
       });
     }
 
-    if (typeof config.git_log_command !== 'string') {
+    if (
+      typeof config.git_log_command !== 'string' &&
+      config.git_log_command !== null
+    ) {
       throw new ExtendedError({
         layer: 'ConfigurationError',
         message: 'Invalid git_log_command value',

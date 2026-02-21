@@ -1,4 +1,5 @@
 import ora from 'ora';
+import { input } from '@inquirer/prompts';
 
 import { ConfigService } from '@/cli/config/configService.js';
 import { ProfileService } from '@/cli/profile/profileService.js';
@@ -22,8 +23,27 @@ export async function profileRunAction(options: ProfileRunCommandOption) {
   const gitService = new GitService();
   const llmService = new LlmService(appConfig);
 
+  let customLog = profileConfig.gitLogCommand;
+
+  if (profileConfig.gitLogCommand === null) {
+    console.log('Enter your custom git log command:');
+    customLog = await input({
+      message: 'git log',
+    });
+  }
+
+  if (customLog === null) {
+    throw new ExtendedError({
+      layer: 'CommandExecutionError',
+      message: 'No custom git log command provided',
+      command: 'profile run',
+      service: null,
+      hint: 'Please enter a valid git log command or configure it in your profile',
+    });
+  }
+
   const sourceCommits = await gitService
-    .customLog(profileConfig.gitLogCommand)
+    .customLog(customLog)
     .pretty()
     .getCommitLog();
 

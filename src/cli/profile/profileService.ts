@@ -28,7 +28,7 @@ export class ProfileService {
   constructor(options: IProfileServiceOptions) {
     const { profileName } = options;
     const osPaths = getOsPaths();
-    const profilePath = path.join(osPaths.config, 'profiles', profileName);
+    const profilePath = path.join(osPaths.profiles, profileName);
 
     this.profileName = profileName;
     this.profilePath = profilePath;

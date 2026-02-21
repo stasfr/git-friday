@@ -1,24 +1,24 @@
-export type IOsPaths = {
+export interface IOsPaths {
   data: string;
   config: string;
   cache: string;
   log: string;
   temp: string;
-};
+}
 
 export type ILocalizationTypes = 'en' | 'ru';
 
-export type IEmptyFileBasedConfig = {
+export interface IEmptyFileBasedConfig {
   aiCompletionModel: null;
   llmPromptsLocalization: null;
-};
+}
 
-export type IFileBasedConfig = {
+export interface IFileBasedConfig {
   aiCompletionModel: string;
   llmPromptsLocalization?: ILocalizationTypes;
-};
+}
 
-export type AppConfig = {
+export interface AppConfig {
   aiCompletionModel: string;
   llmPromptsLocalization: ILocalizationTypes | null;
-};
+}

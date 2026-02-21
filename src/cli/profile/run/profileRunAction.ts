@@ -1,7 +1,6 @@
 import ora from 'ora';
 import { input } from '@inquirer/prompts';
 
-import { ConfigService } from '@/cli/config/configService.js';
 import { ProfileService } from '@/cli/profile/profileService.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 import { LlmService } from '@/services/llmService.js';
@@ -12,16 +11,18 @@ import { generateUsageTables } from '@/helpers/generateUsageTables.js';
 import type { ProfileRunCommandOption } from '@/cli/profile/run/profileRunCommand.js';
 
 export async function profileRunAction(options: ProfileRunCommandOption) {
-  const spinner = ora();
-  const configService = new ConfigService();
-  const profileService = new ProfileService(configService, options.profileName);
+  const { profileName } = options;
 
-  const appConfig = await configService.getValidAppConfig();
+  const spinner = ora();
+  const profileService = new ProfileService({ profileName });
+
   const profileConfig = await profileService.getValidProfileConfig();
   const profilePrompts = await profileService.getProfilePrompts();
 
   const gitService = new GitService();
-  const llmService = new LlmService(appConfig);
+  const llmService = new LlmService({
+    aiCompletionModel: profileConfig.aiCompletionModel,
+  });
 
   let customLog = profileConfig.gitLogCommand;
 

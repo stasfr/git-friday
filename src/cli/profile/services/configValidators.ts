@@ -68,5 +68,28 @@ export function validateProfileConfig(
     });
   }
 
+  if (!('ai_completion_model' in config)) {
+    throw new ExtendedError({
+      layer: 'ConfigurationError',
+      message: 'Profile config file is missing ai_completion_model property',
+      command: null,
+      service: null,
+      hint: null,
+    });
+  }
+
+  if (
+    typeof config.ai_completion_model !== 'string' &&
+    config.ai_completion_model !== null
+  ) {
+    throw new ExtendedError({
+      layer: 'ConfigurationError',
+      message: 'Invalid ai_completion_model value',
+      command: null,
+      service: null,
+      hint: null,
+    });
+  }
+
   return true;
 }

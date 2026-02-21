@@ -1,6 +1,8 @@
 import OpenAI from 'openai';
 
-import type { AppConfig } from '@/cli/config/configTypes.js';
+interface ILlmServiceOptions {
+  aiCompletionModel: string;
+}
 
 interface IPrompts {
   systemPrompt: string;
@@ -11,9 +13,11 @@ export class LlmService {
   private readonly client: OpenAI;
   private readonly modelName: string;
 
-  public constructor(appConfig: AppConfig) {
+  public constructor(options: ILlmServiceOptions) {
+    const { aiCompletionModel } = options;
+
     this.client = new OpenAI();
-    this.modelName = appConfig.aiCompletionModel;
+    this.modelName = aiCompletionModel;
   }
 
   public async getCompletion(prompts: IPrompts) {

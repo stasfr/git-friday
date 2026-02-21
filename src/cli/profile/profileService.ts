@@ -54,6 +54,7 @@ export class ProfileService {
     const emptyConfig = {
       name: this.profileName,
       git_log_command: null,
+      ai_completion_model: null,
     } satisfies IEmptyProfileConfig;
 
     const configPath = path.join(this.profilePath, 'config.json');
@@ -114,6 +115,7 @@ export class ProfileService {
     return {
       name: profileConfig.name,
       gitLogCommand: profileConfig.git_log_command,
+      aiCompletionModel: profileConfig.ai_completion_model,
     } satisfies IProfileConfig;
   }
 

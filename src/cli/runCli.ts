@@ -4,9 +4,6 @@ import { Command } from 'commander';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
 import { config } from '@/cli/config/configCommand.js';
-import { changelog } from '@/cli/changelog/changelogCommand.js';
-import { pr } from '@/cli/pr/prCommand.js';
-import { report } from '@/cli/report/reportCommand.js';
 import { profile } from '@/cli/profile/profileCommand.js';
 
 function buildCli() {
@@ -15,9 +12,6 @@ function buildCli() {
   program.name('friday').version(pkg.version).description(pkg.description);
 
   config(program);
-  changelog(program);
-  pr(program);
-  report(program);
   profile(program);
 
   return program;

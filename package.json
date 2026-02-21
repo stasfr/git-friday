@@ -34,6 +34,9 @@
     "LICENSE",
     "README.md"
   ],
+  "os": [
+    "win32"
+  ],
   "type": "module",
   "main": "dist/src/main.js",
   "scripts": {
@@ -72,6 +75,9 @@
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   },
   "packageManager": "pnpm@10.30.1"
 }

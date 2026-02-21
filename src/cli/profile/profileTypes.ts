@@ -1,3 +1,8 @@
+export interface IEmptyProfileConfig {
+  name: string;
+  git_log_command: null;
+}
+
 export interface IProfileConfigFile {
   name: string;
   git_log_command: string | null;

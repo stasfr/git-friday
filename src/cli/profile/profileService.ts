@@ -3,92 +3,33 @@ import fs from 'node:fs/promises';
 import { constants } from 'node:fs';
 
 import { ExtendedError } from '@/errors/ExtendedError.js';
-import { ConfigService } from '@/cli/config/configService.js';
 
+import { getOsPaths } from '@/cli/profile/services/osPathsService.js';
+import { validateProfileConfig } from '@/cli/profile/services/configValidators.js';
+
+import type { IOsPaths } from '@/cli/profile/services/osPathsService.js';
 import type {
+  IEmptyProfileConfig,
   IProfileConfigFile,
   IProfileConfig,
   IProfilePrompts,
 } from '@/cli/profile/profileTypes.js';
 
+interface IProfileServiceOptions {
+  profileName: string;
+}
+
 export class ProfileService {
   private profileName: string;
   private profilePath: string;
 
-  constructor(configService: ConfigService, profileName: string) {
+  constructor(options: IProfileServiceOptions) {
+    const { profileName } = options;
+    const osPaths = getOsPaths();
+    const profilePath = path.join(osPaths.config, 'profiles', profileName);
+
     this.profileName = profileName;
-    this.profilePath = path.join(
-      configService.getOsPaths().data,
-      'profiles',
-      this.profileName,
-    );
-  }
-
-  private validateProfileConfig(config: unknown): config is IProfileConfigFile {
-    if (config === null) {
-      throw new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'Profile config file is empty',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
-
-    if (typeof config !== 'object') {
-      throw new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'Profile config file is not a valid JSON',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
-
-    if (!('name' in config)) {
-      throw new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'Profile config file is missing name property',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
-
-    if (typeof config.name !== 'string') {
-      throw new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'Invalid name value',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
-
-    if (!('git_log_command' in config)) {
-      throw new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'Profile config file is missing git_log_command property',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
-
-    if (
-      typeof config.git_log_command !== 'string' &&
-      config.git_log_command !== null
-    ) {
-      throw new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'Invalid git_log_command value',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
-
-    return true;
+    this.profilePath = profilePath;
   }
 
   public async checkIfProfileConfigExists() {
@@ -107,6 +48,22 @@ export class ProfileService {
     }
   }
 
+  public async initProfileWithConfig() {
+    await fs.mkdir(this.profilePath, { recursive: true });
+
+    const emptyConfig = {
+      name: this.profileName,
+      git_log_command: null,
+    } satisfies IEmptyProfileConfig;
+
+    const configPath = path.join(this.profilePath, 'config.json');
+    await fs.writeFile(
+      configPath,
+      JSON.stringify(emptyConfig, null, 2),
+      'utf-8',
+    );
+  }
+
   private async readProfileConfig() {
     const profileConfigExists = await this.checkIfProfileConfigExists();
     if (profileConfigExists instanceof ExtendedError) {
@@ -114,15 +71,45 @@ export class ProfileService {
     }
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     const configFile = await fs.readFile(profileConfigPath, 'utf-8');
-    const config = JSON.parse(configFile);
+    const profileConfig = JSON.parse(configFile);
+    return profileConfig;
+  }
 
+  private async writeProfileConfig(
+    config: IProfileConfigFile | IEmptyProfileConfig,
+  ) {
+    const profileConfigExists = await this.checkIfProfileConfigExists();
+    if (profileConfigExists instanceof ExtendedError) {
+      throw profileConfigExists;
+    }
+    const profileConfigPath = path.join(this.profilePath, 'config.json');
+    await fs.writeFile(
+      profileConfigPath,
+      JSON.stringify(config, null, 2),
+      'utf-8',
+    );
+  }
+
+  public async setValueToKey(key: string, value: string) {
+    const profileConfig = await this.readProfileConfig();
+    profileConfig[key] = value;
+    await this.writeProfileConfig(profileConfig);
+  }
+
+  public async getValueFromKey(key: keyof IProfileConfigFile) {
+    const config = await this.readProfileConfig();
+    return config[key];
+  }
+
+  public async getRawProfileConfig() {
+    const config = await this.readProfileConfig();
     return config;
   }
 
   public async getValidProfileConfig() {
     const profileConfig = await this.readProfileConfig();
 
-    if (!this.validateProfileConfig(profileConfig)) throw new Error();
+    if (!validateProfileConfig(profileConfig)) throw new Error();
 
     return {
       name: profileConfig.name,

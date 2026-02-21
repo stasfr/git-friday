@@ -5,13 +5,15 @@ import { constants } from 'node:fs';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
 import { getOsPaths } from '@/cli/profile/services/osPathsService.js';
-import { validateProfileConfig } from '@/cli/profile/services/configValidators.js';
+import {
+  configIsValidProfileConfig,
+  configIsRawProfileConfig,
+} from '@/cli/profile/services/configValidators.js';
 
-import type { IOsPaths } from '@/cli/profile/services/osPathsService.js';
 import type {
   IEmptyProfileConfig,
-  IProfileConfigFile,
-  IProfileConfig,
+  IRawProfileConfig,
+  IValidProfileConfig,
   IProfilePrompts,
 } from '@/cli/profile/profileTypes.js';
 
@@ -53,8 +55,8 @@ export class ProfileService {
 
     const emptyConfig = {
       name: this.profileName,
-      git_log_command: null,
-      ai_completion_model: null,
+      gitLogCommand: null,
+      aiCompletionModel: null,
     } satisfies IEmptyProfileConfig;
 
     const configPath = path.join(this.profilePath, 'config.json');
@@ -73,11 +75,12 @@ export class ProfileService {
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     const configFile = await fs.readFile(profileConfigPath, 'utf-8');
     const profileConfig = JSON.parse(configFile);
+    if (!configIsRawProfileConfig(profileConfig)) throw new Error();
     return profileConfig;
   }
 
   private async writeProfileConfig(
-    config: IProfileConfigFile | IEmptyProfileConfig,
+    config: IRawProfileConfig | IEmptyProfileConfig,
   ) {
     const profileConfigExists = await this.checkIfProfileConfigExists();
     if (profileConfigExists instanceof ExtendedError) {
@@ -91,32 +94,33 @@ export class ProfileService {
     );
   }
 
-  public async setValueToKey(key: string, value: string) {
+  public async setValueToKey(key: keyof IRawProfileConfig, value: string) {
     const profileConfig = await this.readProfileConfig();
     profileConfig[key] = value;
     await this.writeProfileConfig(profileConfig);
   }
 
-  public async getValueFromKey(key: keyof IProfileConfigFile) {
+  public async getValueFromKey(key: keyof IRawProfileConfig) {
     const config = await this.readProfileConfig();
     return config[key];
   }
 
   public async getRawProfileConfig() {
-    const config = await this.readProfileConfig();
-    return config;
+    const profileConfig = await this.readProfileConfig();
+    if (!configIsRawProfileConfig(profileConfig)) throw new Error();
+    return profileConfig;
   }
 
   public async getValidProfileConfig() {
     const profileConfig = await this.readProfileConfig();
 
-    if (!validateProfileConfig(profileConfig)) throw new Error();
+    if (!configIsValidProfileConfig(profileConfig)) throw new Error();
 
     return {
       name: profileConfig.name,
-      gitLogCommand: profileConfig.git_log_command,
-      aiCompletionModel: profileConfig.ai_completion_model,
-    } satisfies IProfileConfig;
+      gitLogCommand: profileConfig.gitLogCommand,
+      aiCompletionModel: profileConfig.aiCompletionModel,
+    } satisfies IValidProfileConfig;
   }
 
   public async getProfilePrompts() {

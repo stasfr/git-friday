@@ -1,16 +1,16 @@
 export interface IEmptyProfileConfig {
   name: string;
-  git_log_command: null;
-  ai_completion_model: null;
+  gitLogCommand: null;
+  aiCompletionModel: null;
 }
 
-export interface IProfileConfigFile {
+export interface IRawProfileConfig {
   name: string;
-  git_log_command: string | null;
-  ai_completion_model: string;
+  gitLogCommand: string | null;
+  aiCompletionModel: string | null;
 }
 
-export interface IProfileConfig {
+export interface IValidProfileConfig {
   name: string;
   gitLogCommand: string | null;
   aiCompletionModel: string;

@@ -80,7 +80,7 @@ export class ConfigService {
     return true;
   }
 
-  private getOsPaths() {
+  public getOsPaths() {
     const os = process.platform;
 
     if (os !== 'win32') {

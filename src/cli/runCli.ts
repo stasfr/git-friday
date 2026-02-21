@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
 import { config } from '@/cli/config/configCommand.js';
-import { profile } from '@/cli/profile/profileCommand.js';
+import { useProfileCommand } from '@/cli/profile/profileCommand.js';
 
 function buildCli() {
   const program = new Command();
@@ -12,7 +12,7 @@ function buildCli() {
   program.name('friday').version(pkg.version).description(pkg.description);
 
   config(program);
-  profile(program);
+  useProfileCommand(program);
 
   return program;
 }

@@ -5,8 +5,8 @@ export interface ProfileRunCommandOption {
   profileName: string;
 }
 
-export function profileRun(configCommand: Command) {
-  configCommand
+export function useProfileRunCommand(profileCommand: Command) {
+  profileCommand
     .command('run')
     .description('Run user profile')
     .argument('<profile>', 'Name of user profile')

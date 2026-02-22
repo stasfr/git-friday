@@ -9,7 +9,7 @@ import { GitService } from '@/services/gitService.js';
 import type { RunCommandOption } from '@/cli/run/runCommand.js';
 
 export async function runAction(options: RunCommandOption) {
-  let profileName = options.profileName;
+  let profileName = options.profile;
 
   const spinner = ora();
 

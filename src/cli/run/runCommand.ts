@@ -1,14 +1,8 @@
 import { Command, Option } from 'commander';
 import { runAction } from '@/cli/run/runAction.js';
 
-interface RunCmdOptions {
-  gitLog: boolean;
-  statistics: boolean;
-  disableOutput: boolean;
-}
-
 export interface RunCommandOption {
-  profileName: string | undefined;
+  profile: string | undefined;
   gitLog: boolean;
   statistics: boolean;
   disableOutput: boolean;
@@ -18,7 +12,6 @@ export function useRunCommand(command: Command) {
   command
     .command('run')
     .description('Run user profile')
-    .argument('[profile]', 'Name of user profile')
     .addOption(
       new Option(
         '-g, --git-log',
@@ -37,15 +30,8 @@ export function useRunCommand(command: Command) {
         'Disable llm repospone output in command line',
       ).default(false),
     )
-    .action(
-      async (profileName: string | undefined, cmdOptions: RunCmdOptions) => {
-        const options: RunCommandOption = {
-          profileName,
-          gitLog: cmdOptions.gitLog,
-          statistics: cmdOptions.statistics,
-          disableOutput: cmdOptions.disableOutput,
-        };
-        await runAction(options);
-      },
-    );
+    .option('-p, --profile <profileName>', 'Profile name to delete')
+    .action(async (options: RunCommandOption) => {
+      await runAction(options);
+    });
 }

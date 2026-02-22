@@ -8,6 +8,17 @@ export async function profileConfigSetAction(
 ) {
   const { profileName, key, value } = options;
 
+  const profileExists = await ProfileService.checkIfProfileExists(profileName);
+  if (!profileExists) {
+    throw new ExtendedError({
+      layer: 'CommandExecutionError',
+      message: 'Profile does not exist',
+      command: 'profile config set',
+      service: null,
+      hint: 'Please create a profile first using "friday profile create" command',
+    });
+  }
+
   if (
     key === 'gitLogCommand' &&
     (typeof value !== 'string' || isNaN(Number(value)) === false)

@@ -120,8 +120,6 @@ export async function runAction(options: RunCommandOption) {
     return;
   }
 
-  const spinner = ora().start('Generating llm response...');
-
   const llmService = new LlmService({
     aiCompletionModel: profileConfig.aiCompletionModel,
     prompts: {
@@ -130,7 +128,15 @@ export async function runAction(options: RunCommandOption) {
     },
   });
 
-  await llmService.getCompletion();
+  const spinner = ora();
+  try {
+    spinner.start('Generating llm response...');
+    await llmService.getCompletion();
+    spinner.succeed('LLM response generated successfully');
+  } catch (error) {
+    spinner.fail('Failed to generate LLM response');
+    throw error;
+  }
 
   if (!llmService.content) {
     throw new ExtendedError({
@@ -141,8 +147,6 @@ export async function runAction(options: RunCommandOption) {
       hint: 'Check LLM provider key and url and try again',
     });
   }
-
-  spinner.succeed('LLM response generated successfully');
 
   if (options.fileOutput === true || typeof options.fileOutput === 'string') {
     const filePath = path.join(process.cwd(), fileName);

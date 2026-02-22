@@ -6,7 +6,7 @@ import { ProfileService } from '@/cli/profile/profileService.js';
 import type { ProfileSetupCommandOption } from '@/cli/profile/setup/profileSetupCommand.js';
 
 export async function profileSetupAction(options: ProfileSetupCommandOption) {
-  let profileName = options.profileName;
+  let profileName = options.profile;
 
   if (!profileName) {
     const profiles = await ProfileService.listAllProfiles();

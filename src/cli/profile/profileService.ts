@@ -44,6 +44,33 @@ export class ProfileService {
     return profileNames;
   }
 
+  public static async listAllProfilesAiCompletionModels() {
+    const osPaths = getOsPaths();
+    const entries = await fs.readdir(osPaths.profiles, { withFileTypes: true });
+    const profileDirs = entries.filter((entry) => entry.isDirectory());
+    if (profileDirs.length === 0) {
+      return;
+    }
+    const models = new Set<string>();
+    for await (const dir of profileDirs) {
+      const profileConfigPath = path.join(
+        dir.parentPath,
+        dir.name,
+        'config.json',
+      );
+      try {
+        await fs.access(profileConfigPath, constants.F_OK);
+        const configFile = await fs.readFile(profileConfigPath, 'utf-8');
+        const profileConfig = JSON.parse(configFile);
+        if (!configIsValidProfileConfig(profileConfig)) throw new Error();
+        models.add(profileConfig.aiCompletionModel);
+      } catch {
+        continue;
+      }
+    }
+    return [...models];
+  }
+
   public static async checkIfProfileExists(profileName: string) {
     const osPaths = getOsPaths();
     const profilePath = path.join(osPaths.profiles, profileName);

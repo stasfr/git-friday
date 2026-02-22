@@ -1,5 +1,6 @@
 import { input } from '@inquirer/prompts';
 
+import { aiCompletionModelSelect } from '@/ui/aiCompletionModelSelect.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
 import type { IEditableProfileConfigKeys } from '@/cli/profile/profileTypes.js';
@@ -52,10 +53,14 @@ export async function profileConfigSetInput(
       });
     }
   } else {
-    newValue = await input({
-      message: `Enter value for ${options.key}:`,
-      validate: (val) => validateConfigValue(options.key, val),
-    });
+    if (options.key === 'aiCompletionModel') {
+      newValue = await aiCompletionModelSelect();
+    } else {
+      newValue = await input({
+        message: `Enter value for ${options.key}:`,
+        validate: (val) => validateConfigValue(options.key, val),
+      });
+    }
   }
 
   return newValue;

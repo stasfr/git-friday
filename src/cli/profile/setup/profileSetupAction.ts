@@ -1,5 +1,6 @@
 import { input, confirm } from '@inquirer/prompts';
 
+import { aiCompletionModelSelect } from '@/ui/aiCompletionModelSelect.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
@@ -40,15 +41,7 @@ export async function profileSetupAction(options: ProfileSetupCommandOption) {
     await profileService.setValueToKey('gitLogCommand', gitLogCommand);
   }
 
-  const aiCompletionModel = await input({
-    message: 'Enter AI completion model',
-    validate: (input) => {
-      if (!input) {
-        return 'Please enter a model';
-      }
-      return true;
-    },
-  });
+  const aiCompletionModel = await aiCompletionModelSelect();
 
   await profileService.setValueToKey('aiCompletionModel', aiCompletionModel);
 

@@ -22,7 +22,7 @@ export async function runAction(options: RunCommandOption) {
         message: 'No profiles found',
         command: 'run',
         service: null,
-        hint: 'Create a profile first using "profile create" command',
+        hint: 'Create a profile first using "friday profile create" command',
       });
     }
 
@@ -52,7 +52,7 @@ export async function runAction(options: RunCommandOption) {
         message: 'Profile does not exist',
         command: 'run',
         service: null,
-        hint: 'Please create a profile first using "profile create" command',
+        hint: 'Please create a profile first using "friday profile create" command',
       });
     }
   }

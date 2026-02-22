@@ -5,7 +5,8 @@ export interface RunCommandOption {
   profile: string | undefined;
   gitLog: boolean;
   statistics: boolean;
-  disableOutput: boolean;
+  cliOutput: boolean;
+  fileOutput: boolean | string;
 }
 
 export function useRunCommand(command: Command) {
@@ -26,8 +27,14 @@ export function useRunCommand(command: Command) {
     )
     .addOption(
       new Option(
-        '--disable-output',
-        'Disable llm repospone output in command line',
+        '-c, --cli-output',
+        'Write llm response in command line',
+      ).default(false),
+    )
+    .addOption(
+      new Option(
+        '-f, --file-output [fileName]',
+        'Write llm response in file. Note: The file will be saved in the current directory.',
       ).default(false),
     )
     .option('-p, --profile <profileName>', 'Profile name')

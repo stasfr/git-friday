@@ -1,8 +1,11 @@
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { constants } from 'node:fs';
 import ora from 'ora';
 import { input, confirm } from '@inquirer/prompts';
 
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
-
+import { sanitizeFilename } from '@/utils/stringUtils.js';
 import { ProfileService } from '@/cli/profile/profileService.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 import { LlmService } from '@/services/llmService.js';
@@ -11,6 +14,29 @@ import { GitService } from '@/services/gitService.js';
 import type { RunCommandOption } from '@/cli/run/runCommand.js';
 
 export async function runAction(options: RunCommandOption) {
+  if (options.cliOutput === false && options.fileOutput === false) {
+    throw new ExtendedError({
+      layer: 'CommandExecutionError',
+      message: 'No output option selected',
+      command: 'run',
+      service: null,
+      hint: 'Please select at least one output option. Add the -c for console output or -f to save the output to a file.',
+    });
+  }
+
+  if (
+    typeof options.fileOutput === 'string' &&
+    options.fileOutput.trim().length === 0
+  ) {
+    throw new ExtendedError({
+      layer: 'CommandExecutionError',
+      message: 'Invalid file output path',
+      command: 'run',
+      service: null,
+      hint: 'Please provide a valid file path for the output.',
+    });
+  }
+
   const profileName = await profileNameSelect({
     profile: options.profile,
     command: 'run',
@@ -22,6 +48,33 @@ export async function runAction(options: RunCommandOption) {
   const profilePrompts = await profileService.getProfilePrompts();
 
   const gitService = new GitService();
+
+  let fileName = 'llm_response.md';
+  if (options.fileOutput === true || typeof options.fileOutput === 'string') {
+    if (typeof options.fileOutput === 'string') {
+      fileName = `${sanitizeFilename(options.fileOutput.trim())}.md`;
+    }
+
+    while (true) {
+      try {
+        const filePath = path.join(process.cwd(), fileName);
+        await fs.access(filePath, constants.F_OK);
+        console.log(`File ${fileName} already exists.`);
+
+        const newName = await input({
+          message: 'Enter new file name (without .md extension):',
+          validate: (input) => {
+            if (input?.trim().length === 0) return 'File name cannot be empty';
+            return true;
+          },
+        });
+
+        fileName = `${sanitizeFilename(newName.trim())}.md`;
+      } catch {
+        break;
+      }
+    }
+  }
 
   let customLog = profileConfig.gitLogCommand;
 
@@ -91,7 +144,13 @@ export async function runAction(options: RunCommandOption) {
 
   spinner.succeed('LLM response generated successfully');
 
-  if (options.disableOutput === false) {
+  if (options.fileOutput === true || typeof options.fileOutput === 'string') {
+    const filePath = path.join(process.cwd(), fileName);
+    await fs.writeFile(filePath, llmService.content);
+    console.log(`LLM response saved to ${filePath}`);
+  }
+
+  if (options.cliOutput === true) {
     console.log('\nResponse:');
     console.log(llmService.content.trim());
   }

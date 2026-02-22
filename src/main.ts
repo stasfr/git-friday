@@ -1,4 +1,4 @@
-#!/usr/bin/env node --env-file .env
+#!/usr/bin/env node
 
 import { checkForUpdates } from '@/services/pkgUpdateService.js';
 import { runCli } from '@/cli/runCli.js';

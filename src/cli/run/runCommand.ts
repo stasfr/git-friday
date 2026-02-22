@@ -1,3 +1,4 @@
+import { loadEnvFile } from 'node:process';
 import { Command, Option } from 'commander';
 import { runAction } from '@/cli/run/runAction.js';
 
@@ -38,6 +39,9 @@ export function useRunCommand(command: Command) {
       ).default(false),
     )
     .option('-p, --profile <profileName>', 'Profile name')
+    .hook('preAction', () => {
+      loadEnvFile();
+    })
     .action(async (options: RunCommandOption) => {
       await runAction(options);
     });

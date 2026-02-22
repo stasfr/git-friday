@@ -162,6 +162,10 @@ export class ProfileService {
     );
   }
 
+  public async deleteProfile() {
+    await fs.rm(this.profilePath, { recursive: true, force: true });
+  }
+
   private async readProfileConfig() {
     const profileConfigExists = await this.checkIfProfileConfigExists();
     if (profileConfigExists instanceof ExtendedError) {

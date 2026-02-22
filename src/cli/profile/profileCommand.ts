@@ -5,6 +5,7 @@ import { useProfileCreateCommand } from '@/cli/profile/create/profileCreateComma
 import { useProfileSetupCommand } from '@/cli/profile/setup/profileSetupCommand.js';
 import { useProfileListCommand } from '@/cli/profile/list/profileListCommand.js';
 import { useProfilePromptCommand } from '@/cli/profile/prompt/profilePromptCommand.js';
+import { useProfileDeleteCommand } from '@/cli/profile/delete/profileDeleteCommand.js';
 
 export function useProfileCommand(program: Command) {
   const profileCommand = program
@@ -16,4 +17,5 @@ export function useProfileCommand(program: Command) {
   useProfileSetupCommand(profileCommand);
   useProfileListCommand(profileCommand);
   useProfilePromptCommand(profileCommand);
+  useProfileDeleteCommand(profileCommand);
 }

@@ -1,56 +1,17 @@
-import { input, confirm, select } from '@inquirer/prompts';
+import { input, confirm } from '@inquirer/prompts';
 
 import { ExtendedError } from '@/errors/ExtendedError.js';
+import { profileNameSelect } from '@/ui/profileNameSelect.js';
+
 import { ProfileService } from '@/cli/profile/profileService.js';
 
 import type { ProfileSetupCommandOption } from '@/cli/profile/setup/profileSetupCommand.js';
 
 export async function profileSetupAction(options: ProfileSetupCommandOption) {
-  let profileName = options.profile;
-
-  if (!profileName) {
-    const profiles = await ProfileService.listAllProfiles();
-
-    if (profiles.length === 0) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'No profiles found',
-        command: 'profile setup',
-        service: null,
-        hint: 'Create a profile first using "friday profile create" command',
-      });
-    }
-
-    profileName = await select({
-      message: 'Select a profile:',
-      choices: profiles.map((name) => ({
-        name,
-        value: name,
-      })),
-    });
-
-    if (typeof profileName !== 'string' || profileName.length === 0) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'Invalid profile selection',
-        command: 'profile setup',
-        service: null,
-        hint: 'Please select a valid profile from the list',
-      });
-    }
-  } else {
-    const profileExists =
-      await ProfileService.checkIfProfileExists(profileName);
-    if (!profileExists) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'Profile does not exist',
-        command: 'profile setup',
-        service: null,
-        hint: 'Please create a profile first using "friday profile create" command',
-      });
-    }
-  }
+  const profileName = await profileNameSelect({
+    profile: options.profile,
+    command: 'profile setup',
+  });
 
   const profileService = new ProfileService({ profileName });
 

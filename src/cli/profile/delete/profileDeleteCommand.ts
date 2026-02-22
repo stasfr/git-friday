@@ -1,6 +1,10 @@
 import { Command } from 'commander';
 import { profileDeleteAction } from '@/cli/profile/delete/profileDeleteAction.js';
 
+export interface ProfileDeleteOptions {
+  profile?: string;
+}
+
 export function useProfileDeleteCommand(profileCommand: Command) {
   profileCommand
     .command('delete')

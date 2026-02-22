@@ -1,48 +1,16 @@
-import { select, confirm } from '@inquirer/prompts';
+import { confirm } from '@inquirer/prompts';
 
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { profileNameSelect } from '@/ui/profileNameSelect.js';
+
 import { ProfileService } from '@/cli/profile/profileService.js';
 
-interface IProfileDeleteOptions {
-  profile?: string;
-}
+import type { ProfileDeleteOptions } from '@/cli/profile/delete/profileDeleteCommand.js';
 
-export async function profileDeleteAction(options: IProfileDeleteOptions) {
-  let profileName = options.profile;
-
-  if (!profileName) {
-    const profiles = await ProfileService.listAllProfiles();
-
-    if (profiles.length === 0) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'No profiles found',
-        command: 'profile delete',
-        service: null,
-        hint: 'Create a profile first using "friday profile create" command',
-      });
-    }
-
-    profileName = await select({
-      message: 'Select a profile to delete:',
-      choices: profiles.map((profile) => ({
-        name: profile,
-        value: profile,
-      })),
-    });
-  } else {
-    const profileExists =
-      await ProfileService.checkIfProfileExists(profileName);
-    if (!profileExists) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'Profile does not exist',
-        command: 'profile delete',
-        service: null,
-        hint: 'Please create a profile first using "friday profile create" command',
-      });
-    }
-  }
+export async function profileDeleteAction(options: ProfileDeleteOptions) {
+  const profileName = await profileNameSelect({
+    profile: options.profile,
+    command: 'profile delete',
+  });
 
   const isConfirmed = await confirm({
     message: `Are you sure you want to delete profile "${profileName}"? This action cannot be undone.`,

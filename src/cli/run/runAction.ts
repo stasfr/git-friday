@@ -1,5 +1,7 @@
 import ora from 'ora';
-import { input, select } from '@inquirer/prompts';
+import { input } from '@inquirer/prompts';
+
+import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
 import { ProfileService } from '@/cli/profile/profileService.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
@@ -9,53 +11,10 @@ import { GitService } from '@/services/gitService.js';
 import type { RunCommandOption } from '@/cli/run/runCommand.js';
 
 export async function runAction(options: RunCommandOption) {
-  let profileName = options.profile;
-
-  const spinner = ora();
-
-  if (!profileName) {
-    const profiles = await ProfileService.listAllProfiles();
-
-    if (profiles.length === 0) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'No profiles found',
-        command: 'run',
-        service: null,
-        hint: 'Create a profile first using "friday profile create" command',
-      });
-    }
-
-    profileName = await select({
-      message: 'Select a profile:',
-      choices: profiles.map((name) => ({
-        name,
-        value: name,
-      })),
-    });
-
-    if (typeof profileName !== 'string' || profileName.length === 0) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'Invalid profile selection',
-        command: 'run',
-        service: null,
-        hint: 'Please select a valid profile from the list',
-      });
-    }
-  } else {
-    const profileExists =
-      await ProfileService.checkIfProfileExists(profileName);
-    if (!profileExists) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'Profile does not exist',
-        command: 'run',
-        service: null,
-        hint: 'Please create a profile first using "friday profile create" command',
-      });
-    }
-  }
+  const profileName = await profileNameSelect({
+    profile: options.profile,
+    command: 'run',
+  });
 
   const profileService = new ProfileService({ profileName });
 
@@ -99,7 +58,7 @@ export async function runAction(options: RunCommandOption) {
   }
   console.log(`\nCommits count: ${sourceCommits.length}\n`);
 
-  spinner.start('Generating llm response...');
+  const spinner = ora().start('Generating llm response...');
 
   const llmService = new LlmService({
     aiCompletionModel: profileConfig.aiCompletionModel,

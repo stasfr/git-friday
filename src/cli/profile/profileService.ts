@@ -222,6 +222,18 @@ export class ProfileService {
     } satisfies IValidProfileConfig;
   }
 
+  public async getProfileSystemPrompt() {
+    const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
+    const systemPrompt = await fs.readFile(systemPromptPath, 'utf-8');
+    return systemPrompt;
+  }
+
+  public async getProfileUserPrompt() {
+    const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
+    const userPrompt = await fs.readFile(userPromptPath, 'utf-8');
+    return userPrompt;
+  }
+
   public async getProfilePrompts() {
     const systemPromptExists = await this.checkIfSystemPromptExists();
     if (systemPromptExists instanceof ExtendedError) {

@@ -54,7 +54,7 @@ export async function runAction(options: RunCommandOption) {
 
   let customLog = profileConfig.gitLogCommand;
 
-  if (profileConfig.gitLogCommand === null) {
+  if (options.gitLog || customLog === null) {
     console.log('Enter your custom git log command:');
     customLog = await input({
       message: 'git log',

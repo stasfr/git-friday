@@ -1,5 +1,5 @@
 import ora from 'ora';
-import { input } from '@inquirer/prompts';
+import { input, confirm } from '@inquirer/prompts';
 
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
@@ -50,13 +50,22 @@ export async function runAction(options: RunCommandOption) {
   if (sourceCommits.length === 0) {
     throw new ExtendedError({
       layer: 'CommandExecutionError',
-      message: 'No commits found for the specified criteria',
+      message: 'No commits found for the specified filters',
       command: 'run',
       service: null,
       hint: 'Check your git log command and try again',
     });
   }
   console.log(`\nCommits count: ${sourceCommits.length}\n`);
+
+  const shouldProceed = await confirm({
+    message: `Found ${sourceCommits.length} commits matching the specified filters. Send request to LLM?`,
+  });
+
+  if (!shouldProceed) {
+    console.log('Command cancelled');
+    return;
+  }
 
   const spinner = ora().start('Generating llm response...');
 

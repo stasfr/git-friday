@@ -30,7 +30,7 @@ export function useRunCommand(command: Command) {
         'Disable llm repospone output in command line',
       ).default(false),
     )
-    .option('-p, --profile <profileName>', 'Profile name to delete')
+    .option('-p, --profile <profileName>', 'Profile name')
     .action(async (options: RunCommandOption) => {
       await runAction(options);
     });

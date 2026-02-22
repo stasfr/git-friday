@@ -9,7 +9,7 @@ export function useProfileSetupCommand(profileCommand: Command) {
   profileCommand
     .command('setup')
     .description('Step-by-step profile configuration setup')
-    .option('-p, --profile <profileName>', 'Profile name to delete')
+    .option('-p, --profile <profileName>', 'Profile name')
     .action(async (options: ProfileSetupCommandOption) => {
       await profileSetupAction(options);
     });

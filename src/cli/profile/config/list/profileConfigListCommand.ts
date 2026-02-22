@@ -3,16 +3,15 @@ import { Command } from 'commander';
 import { profileConfigListAction } from '@/cli/profile/config/list/profileConfigListAction.js';
 
 export interface ProfileConfigListCommandOption {
-  profileName: string;
+  profile: string | undefined;
 }
 
 export function useProfileConfigListCommand(profileConfigCommand: Command) {
   profileConfigCommand
     .command('list')
     .description('List all profile configuration settings')
-    .argument('<profile>', 'Name of user profile')
-    .action(async (profileName: string) => {
-      const options: ProfileConfigListCommandOption = { profileName };
+    .option('-p, --profile <profileName>', 'Profile name')
+    .action(async (options: ProfileConfigListCommandOption) => {
       await profileConfigListAction(options);
     });
 }

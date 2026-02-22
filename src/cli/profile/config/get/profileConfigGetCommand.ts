@@ -1,10 +1,10 @@
-import { Command, Argument } from 'commander';
+import { Command, Option } from 'commander';
 import { profileConfigGetAction } from '@/cli/profile/config/get/profileConfigGetAction.js';
 
 import type { IEditableProfileConfigKeys } from '@/cli/profile/profileTypes.js';
 
 export interface ProfileConfigGetCommandOption {
-  profileName: string;
+  profile: string | undefined;
   key: IEditableProfileConfigKeys;
 }
 
@@ -12,18 +12,14 @@ export function useProfileConfigGetCommand(profileConfigCommand: Command) {
   profileConfigCommand
     .command('get')
     .description('Get profile configuration value by key')
-    .argument('<profile>', 'Name of user profile')
-    .addArgument(
-      new Argument('<key>', 'Configuration key to get').choices([
+    .option('-p, --profile <profileName>', 'Profile name')
+    .addOption(
+      new Option('-k, --key <key>', 'Configuration key to get').choices([
         'gitLogCommand',
         'aiCompletionModel',
       ]),
     )
-    .action(async (profileName: string, key: IEditableProfileConfigKeys) => {
-      const options: ProfileConfigGetCommandOption = {
-        profileName,
-        key,
-      };
+    .action(async (options: ProfileConfigGetCommandOption) => {
       await profileConfigGetAction(options);
     });
 }

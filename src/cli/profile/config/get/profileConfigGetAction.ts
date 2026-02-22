@@ -1,4 +1,5 @@
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { profileNameSelect } from '@/ui/profileNameSelect.js';
+import { profileConfigKeySelect } from '@/ui/profileConfigKeySelect.js';
 import { ProfileService } from '@/cli/profile/profileService.js';
 
 import type { ProfileConfigGetCommandOption } from '@/cli/profile/config/get/profileConfigGetCommand.js';
@@ -6,30 +7,17 @@ import type { ProfileConfigGetCommandOption } from '@/cli/profile/config/get/pro
 export async function profileConfigGetAction(
   options: ProfileConfigGetCommandOption,
 ) {
-  const { profileName, key } = options;
+  const profileName = await profileNameSelect({
+    profile: options.profile,
+    command: 'profile config get',
+  });
 
-  const profileExists = await ProfileService.checkIfProfileExists(profileName);
-  if (!profileExists) {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
-      message: 'Profile does not exist',
-      command: 'profile config get',
-      service: null,
-      hint: 'Please create a profile first using "friday profile create" command',
-    });
-  }
-
-  if (key !== 'gitLogCommand' && key !== 'aiCompletionModel') {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
-      message: 'Invalid config key',
-      command: 'profile config get',
-      service: null,
-      hint: 'Supported keys: gitLogCommand, aiCompletionModel',
-    });
-  }
+  const selectedKey = await profileConfigKeySelect({
+    key: options.key,
+    command: 'profile config get',
+  });
 
   const profileService = new ProfileService({ profileName });
-  const value = await profileService.getValueFromKey(key);
-  console.log(`${key}: ${value}`);
+  const value = await profileService.getValueFromKey(selectedKey);
+  console.log(`${selectedKey}: ${value}`);
 }

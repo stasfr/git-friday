@@ -60,6 +60,38 @@ export class ProfileService {
     }
   }
 
+  public async checkIfSystemPromptExists() {
+    try {
+      const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
+      await fs.access(systemPromptPath, constants.F_OK);
+      return true;
+    } catch {
+      return new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'System prompt file not found',
+        command: null,
+        service: null,
+        hint: null,
+      });
+    }
+  }
+
+  public async checkIfUserPromptExists() {
+    try {
+      const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
+      await fs.access(userPromptPath, constants.F_OK);
+      return true;
+    } catch {
+      return new ExtendedError({
+        layer: 'ConfigurationError',
+        message: 'User prompt file not found',
+        command: null,
+        service: null,
+        hint: null,
+      });
+    }
+  }
+
   public async initProfileWithConfig() {
     await fs.mkdir(this.profilePath, { recursive: true });
 
@@ -134,6 +166,16 @@ export class ProfileService {
   }
 
   public async getProfilePrompts() {
+    const systemPromptExists = await this.checkIfSystemPromptExists();
+    if (systemPromptExists instanceof ExtendedError) {
+      throw systemPromptExists;
+    }
+
+    const userPromptExists = await this.checkIfUserPromptExists();
+    if (userPromptExists instanceof ExtendedError) {
+      throw userPromptExists;
+    }
+
     const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
     const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
 

@@ -103,6 +103,48 @@ export class ProfileService {
     }
   }
 
+  public async importSystemPrompt(sourcePath: string) {
+    try {
+      const destinationPath = path.join(this.profilePath, 'system-prompt.md');
+      await fs.copyFile(sourcePath, destinationPath);
+    } catch (error) {
+      let errorMessage = 'Unknown error';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: `Failed to import system prompt: ${errorMessage}`,
+        command: null,
+        service: 'ProfileService',
+        hint: 'Ensure the source file exists and you have read permissions.',
+      });
+    }
+  }
+
+  public async importUserPrompt(sourcePath: string) {
+    try {
+      const destinationPath = path.join(this.profilePath, 'user-prompt.md');
+      await fs.copyFile(sourcePath, destinationPath);
+    } catch (error) {
+      let errorMessage = 'Unknown error';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      throw new ExtendedError({
+        layer: 'ConfigurationError',
+        message: `Failed to import user prompt: ${errorMessage}`,
+        command: null,
+        service: 'ProfileService',
+        hint: 'Ensure the source file exists and you have read permissions.',
+      });
+    }
+  }
+
   public async initProfileWithConfig() {
     await fs.mkdir(this.profilePath, { recursive: true });
 

@@ -126,7 +126,7 @@ export async function runAction(options: RunCommandOption) {
   console.log('\nResponse:');
   console.log(llmService.content.trim());
 
-  if (llmService.usage) {
+  if (llmService.usage && options.statistics === true) {
     if (llmService.usage.tokens) {
       console.log('\nTokens Usage Statistics:');
       console.table(llmService.usage.tokens);

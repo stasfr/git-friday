@@ -123,8 +123,10 @@ export async function runAction(options: RunCommandOption) {
 
   spinner.succeed('LLM response generated successfully');
 
-  console.log('\nResponse:');
-  console.log(llmService.content.trim());
+  if (options.disableOutput === false) {
+    console.log('\nResponse:');
+    console.log(llmService.content.trim());
+  }
 
   if (llmService.usage && options.statistics === true) {
     if (llmService.usage.tokens) {

@@ -57,7 +57,6 @@
   "dependencies": {
     "@inquirer/prompts": "^8.2.1",
     "boxen": "^8.0.1",
-    "chalk": "^5.6.2",
     "commander": "^14.0.3",
     "openai": "^6.22.0",
     "ora": "^8.2.0",

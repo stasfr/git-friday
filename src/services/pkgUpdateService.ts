@@ -1,6 +1,6 @@
 import pkg from '../../package.json' with { type: 'json' };
 import updateNotifier from 'update-notifier';
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 import boxen from 'boxen';
 
 export async function checkForUpdates() {
@@ -11,11 +11,11 @@ export async function checkForUpdates() {
     if (update && update.latest !== update.current) {
       const updateMessage =
         'Update available ' +
-        chalk.dim(update.current) +
-        chalk.reset(' → ') +
-        chalk.green(update.latest) +
+        styleText('dim', update.current) +
+        styleText('reset', ' → ') +
+        styleText('green', update.latest) +
         ' \nRun ' +
-        chalk.cyan(`'pnpm add -g ${update.name}'`) +
+        styleText('cyan', `'pnpm add -g ${update.name}'`) +
         ' to update';
 
       const message = boxen(updateMessage, {

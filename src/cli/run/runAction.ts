@@ -6,8 +6,6 @@ import { ExtendedError } from '@/errors/ExtendedError.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
 
-import { generateUsageTables } from '@/helpers/generateUsageTables.js';
-
 import type { RunCommandOption } from '@/cli/run/runCommand.js';
 
 export async function runAction(options: RunCommandOption) {
@@ -53,9 +51,6 @@ export async function runAction(options: RunCommandOption) {
   const profilePrompts = await profileService.getProfilePrompts();
 
   const gitService = new GitService();
-  const llmService = new LlmService({
-    aiCompletionModel: profileConfig.aiCompletionModel,
-  });
 
   let customLog = profileConfig.gitLogCommand;
 
@@ -94,12 +89,17 @@ export async function runAction(options: RunCommandOption) {
 
   spinner.start('Generating llm response...');
 
-  const llmResponse = await llmService.getCompletion({
-    systemPrompt: profilePrompts.systemPrompt,
-    userPrompt: profilePrompts.userPrompt + '\n' + sourceCommits.join('\n'),
+  const llmService = new LlmService({
+    aiCompletionModel: profileConfig.aiCompletionModel,
+    prompts: {
+      systemPrompt: profilePrompts.systemPrompt,
+      userPrompt: profilePrompts.userPrompt + '\n' + sourceCommits.join('\n'),
+    },
   });
 
-  if (!llmResponse) {
+  await llmService.getCompletion();
+
+  if (!llmService.content) {
     throw new ExtendedError({
       layer: 'CommandExecutionError',
       message: 'Got empty response from Llm Provider',
@@ -112,19 +112,17 @@ export async function runAction(options: RunCommandOption) {
   spinner.succeed('LLM response generated successfully');
 
   console.log('\nResponse:');
-  console.log(llmResponse.content.trim());
+  console.log(llmService.content.trim());
 
-  if (llmResponse.usage) {
-    const usageTables = generateUsageTables(llmResponse.usage);
-
-    if (usageTables.tokens) {
+  if (llmService.usage) {
+    if (llmService.usage.tokens) {
       console.log('\nTokens Usage Statistics:');
-      console.table(usageTables.tokens);
+      console.table(llmService.usage.tokens);
     }
 
-    if (usageTables.cost) {
+    if (llmService.usage.cost) {
       console.log('\nCost Statistics in $');
-      console.table(usageTables.cost);
+      console.table(llmService.usage.cost);
     }
   }
 }

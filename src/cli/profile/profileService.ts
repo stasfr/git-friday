@@ -44,6 +44,17 @@ export class ProfileService {
     return profileNames;
   }
 
+  public static async checkIfProfileExists(profileName: string) {
+    const osPaths = getOsPaths();
+    const profilePath = path.join(osPaths.profiles, profileName);
+    try {
+      await fs.access(profilePath, constants.F_OK);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   public async checkIfProfileConfigExists() {
     try {
       const profileConfigPath = path.join(this.profilePath, 'config.json');

@@ -20,7 +20,7 @@ export async function runAction(options: RunCommandOption) {
       throw new ExtendedError({
         layer: 'CommandExecutionError',
         message: 'No profiles found',
-        command: 'profile run',
+        command: 'run',
         service: null,
         hint: 'Create a profile first using "profile create" command',
       });
@@ -38,9 +38,21 @@ export async function runAction(options: RunCommandOption) {
       throw new ExtendedError({
         layer: 'CommandExecutionError',
         message: 'Invalid profile selection',
-        command: 'profile run',
+        command: 'run',
         service: null,
         hint: 'Please select a valid profile from the list',
+      });
+    }
+  } else {
+    const profileExists =
+      await ProfileService.checkIfProfileExists(profileName);
+    if (!profileExists) {
+      throw new ExtendedError({
+        layer: 'CommandExecutionError',
+        message: 'Profile does not exist',
+        command: 'run',
+        service: null,
+        hint: 'Please create a profile first using "profile create" command',
       });
     }
   }
@@ -65,7 +77,7 @@ export async function runAction(options: RunCommandOption) {
     throw new ExtendedError({
       layer: 'CommandExecutionError',
       message: 'No custom git log command provided',
-      command: 'profile run',
+      command: 'run',
       service: null,
       hint: 'Please enter a valid git log command or configure it in your profile',
     });
@@ -80,7 +92,7 @@ export async function runAction(options: RunCommandOption) {
     throw new ExtendedError({
       layer: 'CommandExecutionError',
       message: 'No commits found for the specified criteria',
-      command: 'profile run',
+      command: 'run',
       service: null,
       hint: 'Check your git log command and try again',
     });
@@ -103,7 +115,7 @@ export async function runAction(options: RunCommandOption) {
     throw new ExtendedError({
       layer: 'CommandExecutionError',
       message: 'Got empty response from Llm Provider',
-      command: 'profile run',
+      command: 'run',
       service: null,
       hint: 'Check LLM provider key and url and try again',
     });

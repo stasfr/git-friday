@@ -13,14 +13,13 @@ export async function profileCreateAction() {
     },
   });
 
-  const profileExists = await ProfileService.checkIfProfileExists(profileName);
+  const profileService = new ProfileService({ profileName });
+  const profileExists = await profileService.hasProfile();
 
   if (profileExists) {
     console.log(`Profile "${profileName}" already exists.`);
     return;
   }
-
-  const profileService = new ProfileService({ profileName });
 
   await profileService.initProfileWithConfig();
 

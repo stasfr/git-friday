@@ -1,8 +1,9 @@
 import { ExtendedError } from '@/errors/ExtendedError.js';
-import { ProfileService } from '@/cli/profile/profileService.js';
+import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 
 export async function profileListAction() {
-  const profiles = await ProfileService.listAllProfiles();
+  const profileRegistryService = new ProfileRegistryService();
+  const profiles = await profileRegistryService.listAllProfiles();
 
   if (profiles.length === 0) {
     throw new ExtendedError({

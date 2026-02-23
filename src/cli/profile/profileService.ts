@@ -1,8 +1,8 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import { constants } from 'node:fs';
 
 import { ExtendedError } from '@/errors/ExtendedError.js';
+import { FsService } from '@/services/fsService.js';
 
 import { getOsPaths } from '@/cli/profile/services/osPathsService.js';
 import {
@@ -25,109 +25,50 @@ interface IProfileServiceOptions {
 export class ProfileService {
   private profileName: string;
   private profilePath: string;
+  private osPaths = getOsPaths();
+  private fsService = new FsService();
 
   constructor(options: IProfileServiceOptions) {
-    const { profileName } = options;
-    const osPaths = getOsPaths();
-    const profilePath = path.join(osPaths.profiles, profileName);
-
-    this.profileName = profileName;
-    this.profilePath = profilePath;
+    this.profileName = options.profileName;
+    this.profilePath = path.join(this.osPaths.profiles, options.profileName);
   }
 
-  public static async listAllProfiles() {
-    const osPaths = getOsPaths();
-    const entries = await fs.readdir(osPaths.profiles, { withFileTypes: true });
-    const profileNames = entries
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => entry.name);
-    return profileNames;
+  public async hasProfile() {
+    return await this.fsService.hasFile(this.profilePath);
   }
 
-  public static async listAllProfilesAiCompletionModels() {
-    const osPaths = getOsPaths();
-    const entries = await fs.readdir(osPaths.profiles, { withFileTypes: true });
-    const profileDirs = entries.filter((entry) => entry.isDirectory());
-    if (profileDirs.length === 0) {
-      return;
-    }
-    const models = new Set<string>();
-    for await (const dir of profileDirs) {
-      const profileConfigPath = path.join(
-        dir.parentPath,
-        dir.name,
-        'config.json',
-      );
-      try {
-        await fs.access(profileConfigPath, constants.F_OK);
-        const configFile = await fs.readFile(profileConfigPath, 'utf-8');
-        const profileConfig = JSON.parse(configFile);
-        if (!configIsValidProfileConfig(profileConfig)) throw new Error();
-        models.add(profileConfig.aiCompletionModel);
-      } catch {
-        continue;
-      }
-    }
-    return [...models];
+  public async checkIfProfileExists() {
+    await this.fsService.checkIfFileExists(this.profilePath);
   }
 
-  public static async checkIfProfileExists(profileName: string) {
-    const osPaths = getOsPaths();
-    const profilePath = path.join(osPaths.profiles, profileName);
-    try {
-      await fs.access(profilePath, constants.F_OK);
-      return true;
-    } catch {
-      return false;
-    }
+  public async hasProfileConfigFile() {
+    const profileConfigPath = path.join(this.profilePath, 'config.json');
+    return await this.fsService.hasFile(profileConfigPath);
   }
 
   public async checkIfProfileConfigExists() {
-    try {
-      const profileConfigPath = path.join(this.profilePath, 'config.json');
-      await fs.access(profileConfigPath, constants.F_OK);
-      return true;
-    } catch {
-      return new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'Profile config file not found',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
+    const profileConfigPath = path.join(this.profilePath, 'config.json');
+    await this.fsService.checkIfFileExists(profileConfigPath);
+  }
+
+  public async hasSystemPromptFile() {
+    const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
+    return await this.fsService.hasFile(systemPromptPath);
   }
 
   public async checkIfSystemPromptExists() {
-    try {
-      const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
-      await fs.access(systemPromptPath, constants.F_OK);
-      return true;
-    } catch {
-      return new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'System prompt file not found',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
+    const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
+    await this.fsService.checkIfFileExists(systemPromptPath);
+  }
+
+  public async hasUserPromptFile() {
+    const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
+    return await this.fsService.hasFile(userPromptPath);
   }
 
   public async checkIfUserPromptExists() {
-    try {
-      const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
-      await fs.access(userPromptPath, constants.F_OK);
-      return true;
-    } catch {
-      return new ExtendedError({
-        layer: 'ConfigurationError',
-        message: 'User prompt file not found',
-        command: null,
-        service: null,
-        hint: null,
-      });
-    }
+    const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
+    await this.fsService.checkIfFileExists(userPromptPath);
   }
 
   public async importSystemPrompt(sourcePath: string) {
@@ -194,10 +135,6 @@ export class ProfileService {
   }
 
   private async readProfileConfig() {
-    const profileConfigExists = await this.checkIfProfileConfigExists();
-    if (profileConfigExists instanceof ExtendedError) {
-      throw profileConfigExists;
-    }
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     const configFile = await fs.readFile(profileConfigPath, 'utf-8');
     const profileConfig = JSON.parse(configFile);
@@ -208,10 +145,7 @@ export class ProfileService {
   private async writeProfileConfig(
     config: IRawProfileConfig | IEmptyProfileConfig,
   ) {
-    const profileConfigExists = await this.checkIfProfileConfigExists();
-    if (profileConfigExists instanceof ExtendedError) {
-      throw profileConfigExists;
-    }
+    await this.checkIfProfileConfigExists();
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     await fs.writeFile(
       profileConfigPath,
@@ -251,36 +185,55 @@ export class ProfileService {
 
   public async getProfileSystemPrompt() {
     const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
-    const systemPrompt = await fs.readFile(systemPromptPath, 'utf-8');
-    return systemPrompt;
+    try {
+      return await fs.readFile(systemPromptPath, 'utf-8');
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        error.code === 'ENOENT'
+      ) {
+        throw new ExtendedError({
+          layer: 'ConfigurationError',
+          message: 'System prompt file not found',
+          command: null,
+          service: 'ProfileService',
+          hint: 'Ensure system-prompt.md exists in profile directory',
+        });
+      }
+      throw error;
+    }
   }
 
   public async getProfileUserPrompt() {
     const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
-    const userPrompt = await fs.readFile(userPromptPath, 'utf-8');
-    return userPrompt;
+    try {
+      return await fs.readFile(userPromptPath, 'utf-8');
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        error.code === 'ENOENT'
+      ) {
+        throw new ExtendedError({
+          layer: 'ConfigurationError',
+          message: 'User prompt file not found',
+          command: null,
+          service: 'ProfileService',
+          hint: 'Ensure user-prompt.md exists in profile directory',
+        });
+      }
+      throw error;
+    }
   }
 
   public async getProfilePrompts() {
-    const systemPromptExists = await this.checkIfSystemPromptExists();
-    if (systemPromptExists instanceof ExtendedError) {
-      throw systemPromptExists;
-    }
-
-    const userPromptExists = await this.checkIfUserPromptExists();
-    if (userPromptExists instanceof ExtendedError) {
-      throw userPromptExists;
-    }
-
-    const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
-    const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
-
-    const systemPrompt = await fs.readFile(systemPromptPath, 'utf-8');
-    const userPrompt = await fs.readFile(userPromptPath, 'utf-8');
+    const systemPrompt = await this.getProfileSystemPrompt();
+    const userPrompt = await this.getProfileUserPrompt();
 
     return {
       systemPrompt,
       userPrompt,
-    } satisfies IProfilePrompts;
+    } as const satisfies IProfilePrompts;
   }
 }

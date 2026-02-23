@@ -1,9 +1,10 @@
 import { input, confirm, select } from '@inquirer/prompts';
-import { ProfileService } from '@/cli/profile/profileService.js';
+import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 
 export async function aiCompletionModelSelect() {
+  const profileRegistryService = new ProfileRegistryService();
   const otherProfilesModels =
-    await ProfileService.listAllProfilesAiCompletionModels();
+    await profileRegistryService.listAllProfilesAiCompletionModels();
 
   if (otherProfilesModels && otherProfilesModels.length > 0) {
     const selectAiCompletionModel = await confirm({

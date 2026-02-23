@@ -52,9 +52,9 @@ export async function profilePromptAddAction(
 
   let fileExists = false;
   if (promptType === 'system') {
-    fileExists = (await profileService.checkIfSystemPromptExists()) === true;
+    fileExists = (await profileService.hasSystemPromptFile()) === true;
   } else {
-    fileExists = (await profileService.checkIfUserPromptExists()) === true;
+    fileExists = (await profileService.hasUserPromptFile()) === true;
   }
 
   if (fileExists) {

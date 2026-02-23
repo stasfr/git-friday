@@ -35,15 +35,10 @@ export async function profilePromptReadAction(
 
   const profileService = new ProfileService({ profileName });
 
-  let fileExists: true | ExtendedError;
   if (promptType === 'system') {
-    fileExists = await profileService.checkIfSystemPromptExists();
+    await profileService.checkIfSystemPromptExists();
   } else {
-    fileExists = await profileService.checkIfUserPromptExists();
-  }
-
-  if (fileExists instanceof ExtendedError) {
-    throw fileExists;
+    await profileService.checkIfUserPromptExists();
   }
 
   let prompt = 'Not found';

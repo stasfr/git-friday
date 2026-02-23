@@ -1,7 +1,6 @@
 import { input, confirm } from '@inquirer/prompts';
 
 import { aiCompletionModelSelect } from '@/ui/aiCompletionModelSelect.js';
-import { ExtendedError } from '@/errors/ExtendedError.js';
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
 import { ProfileService } from '@/cli/profile/profileService.js';
@@ -16,11 +15,7 @@ export async function profileSetupAction(options: ProfileSetupCommandOption) {
 
   const profileService = new ProfileService({ profileName });
 
-  const configExists = await profileService.checkIfProfileConfigExists();
-
-  if (configExists instanceof ExtendedError) {
-    throw configExists;
-  }
+  await profileService.checkIfProfileConfigExists();
 
   const setupGitLog = await confirm({
     message: 'Would you like to set a preset git log command?',

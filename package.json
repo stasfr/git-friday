@@ -1,7 +1,7 @@
 {
   "name": "git-friday",
   "version": "0.17.0",
-  "description": "An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report.",
+  "description": "A CLI tool that feeds git commits (with full git log syntax support) into LLMs based on custom user prompts.",
   "keywords": [
     "ai",
     "cli",
@@ -10,8 +10,7 @@
     "git",
     "llm",
     "productivity",
-    "reports",
-    "summary"
+    "prompts"
   ],
   "homepage": "https://github.com/stasfr/git-friday#readme",
   "bugs": {

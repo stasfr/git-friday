@@ -2,7 +2,7 @@ import { confirm } from '@inquirer/prompts';
 
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
-import { ProfileService } from '@/cli/profile/profileService.js';
+import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 
 import type { ProfileDeleteOptions } from '@/cli/profile/delete/profileDeleteCommand.js';
 
@@ -22,8 +22,8 @@ export async function profileDeleteAction(options: ProfileDeleteOptions) {
     return;
   }
 
-  const profileService = new ProfileService({ profileName });
-  await profileService.deleteProfile();
+  const profileRegistryService = new ProfileRegistryService();
+  await profileRegistryService.deleteProfile(profileName);
 
   console.log(`Profile "${profileName}" deleted successfully.`);
 }

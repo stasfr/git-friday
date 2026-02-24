@@ -63,4 +63,34 @@ export class FsService {
       });
     }
   }
+
+  public async removeDir(dirPath: string) {
+    const resolvedPath = path.resolve(dirPath);
+    try {
+      await fs.rm(resolvedPath, { recursive: true, force: true });
+    } catch (error) {
+      throw new ExtendedError({
+        layer: 'InternalError',
+        message: `Got error in removeDir: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        command: null,
+        service: SERVICE_NAME,
+        hint: null,
+      });
+    }
+  }
+
+  public async removeFile(filePath: string) {
+    const resolvedPath = path.resolve(filePath);
+    try {
+      await fs.rm(resolvedPath);
+    } catch (error) {
+      throw new ExtendedError({
+        layer: 'InternalError',
+        message: `Got error in removeFile: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        command: null,
+        service: SERVICE_NAME,
+        hint: null,
+      });
+    }
+  }
 }

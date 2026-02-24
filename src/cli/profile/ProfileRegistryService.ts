@@ -48,4 +48,9 @@ export class ProfileRegistryService {
 
     return [...models];
   }
+
+  public async deleteProfile(profileName: string) {
+    const profileDirPath = path.join(this.osPaths.profiles, profileName);
+    await this.fsService.removeDir(profileDirPath);
+  }
 }

@@ -130,10 +130,6 @@ export class ProfileService {
     );
   }
 
-  public async deleteProfile() {
-    await fs.rm(this.profilePath, { recursive: true, force: true });
-  }
-
   private async readProfileConfig() {
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     const configFile = await fs.readFile(profileConfigPath, 'utf-8');

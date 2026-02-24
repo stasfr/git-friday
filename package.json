@@ -39,7 +39,7 @@
   "type": "module",
   "main": "dist/src/main.js",
   "scripts": {
-    "dev": "tsx --env-file .env src/main.ts",
+    "dev": "tsx src/main.ts",
     "start": "node dist/src/main.js",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias",
     "build:local": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias && pnpm remove -g git-friday && pnpm link -g",

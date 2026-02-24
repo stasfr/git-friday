@@ -14,7 +14,6 @@ import type {
   IEmptyProfileConfig,
   IRawProfileConfig,
   IRawProfileConfigKeys,
-  IValidProfileConfig,
   IProfilePrompts,
 } from '@/cli/profile/profileTypes.js';
 
@@ -124,7 +123,7 @@ export class ProfileService {
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     const configFile = await fs.readFile(profileConfigPath, 'utf-8');
     const profileConfig = JSON.parse(configFile);
-    if (!configIsRawProfileConfig(profileConfig)) throw new Error();
+    configIsRawProfileConfig(profileConfig);
     return profileConfig;
   }
 
@@ -153,20 +152,13 @@ export class ProfileService {
 
   public async getRawProfileConfig() {
     const profileConfig = await this.readProfileConfig();
-    if (!configIsRawProfileConfig(profileConfig)) throw new Error();
     return profileConfig;
   }
 
   public async getValidProfileConfig() {
     const profileConfig = await this.readProfileConfig();
-
-    if (!configIsValidProfileConfig(profileConfig)) throw new Error();
-
-    return {
-      name: profileConfig.name,
-      gitLogCommand: profileConfig.gitLogCommand,
-      aiCompletionModel: profileConfig.aiCompletionModel,
-    } satisfies IValidProfileConfig;
+    configIsValidProfileConfig(profileConfig);
+    return profileConfig;
   }
 
   public async getProfileSystemPrompt() {

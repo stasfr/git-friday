@@ -54,7 +54,7 @@ export class ProfileRegistryService {
         await fs.access(profileConfigPath, constants.F_OK);
         const configFile = await fs.readFile(profileConfigPath, 'utf-8');
         const profileConfig = JSON.parse(configFile);
-        if (!configIsValidProfileConfig(profileConfig)) throw new Error();
+        configIsValidProfileConfig(profileConfig);
         models.add(profileConfig.aiCompletionModel);
       } catch {
         continue;

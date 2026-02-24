@@ -7,7 +7,7 @@ import type {
 
 export function configIsValidProfileConfig(
   config: unknown,
-): config is IValidProfileConfig {
+): asserts config is IValidProfileConfig {
   if (config === null) {
     throw new ExtendedError({
       layer: 'ConfigurationError',
@@ -110,13 +110,11 @@ export function configIsValidProfileConfig(
       hint: null,
     });
   }
-
-  return true;
 }
 
 export function configIsRawProfileConfig(
   config: unknown,
-): config is IRawProfileConfig {
+): asserts config is IRawProfileConfig {
   if (config === null) {
     throw new ExtendedError({
       layer: 'ConfigurationError',
@@ -212,6 +210,4 @@ export function configIsRawProfileConfig(
       hint: null,
     });
   }
-
-  return true;
 }

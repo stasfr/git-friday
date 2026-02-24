@@ -33,14 +33,6 @@ export class ProfileService {
     this.profilePath = path.join(this.osPaths.profiles, options.profileName);
   }
 
-  public async hasProfile() {
-    return await this.fsService.hasFile(this.profilePath);
-  }
-
-  public async checkIfProfileExists() {
-    await this.fsService.checkIfFileExists(this.profilePath);
-  }
-
   public async hasProfileConfigFile() {
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     return await this.fsService.hasFile(profileConfigPath);
@@ -113,9 +105,7 @@ export class ProfileService {
     }
   }
 
-  public async initProfileWithConfig() {
-    await fs.mkdir(this.profilePath, { recursive: true });
-
+  public async initConfig() {
     const emptyConfig = {
       name: this.profileName,
       gitLogCommand: null,

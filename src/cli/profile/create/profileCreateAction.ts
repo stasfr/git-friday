@@ -1,6 +1,7 @@
 import { input } from '@inquirer/prompts';
 
 import { ProfileService } from '@/cli/profile/profileService.js';
+import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 
 export async function profileCreateAction() {
   const profileName = await input({
@@ -13,15 +14,16 @@ export async function profileCreateAction() {
     },
   });
 
-  const profileService = new ProfileService({ profileName });
-  const profileExists = await profileService.hasProfile();
+  const profileRegistryService = new ProfileRegistryService();
+  const profileExists = await profileRegistryService.hasProfile(profileName);
 
   if (profileExists) {
     console.log(`Profile "${profileName}" already exists.`);
     return;
   }
 
-  await profileService.initProfileWithConfig();
+  const profileService = new ProfileService({ profileName });
+  await profileService.initConfig();
 
   console.log(`Profile "${profileName}" created successfully.`);
   console.log('Now you can run "friday profile setup" to configure profile');

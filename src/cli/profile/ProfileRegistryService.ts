@@ -18,6 +18,21 @@ export class ProfileRegistryService {
     this.fsService = new FsService();
   }
 
+  public async hasProfile(profileName: string): Promise<boolean> {
+    const profilePath = path.join(this.osPaths.profiles, profileName);
+    return await this.fsService.hasFile(profilePath);
+  }
+
+  public async checkIfProfileExists(profileName: string): Promise<void> {
+    const profilePath = path.join(this.osPaths.profiles, profileName);
+    await this.fsService.checkIfFileExists(profilePath);
+  }
+
+  public async createProfileDir(profileName: string): Promise<void> {
+    const profilePath = path.join(this.osPaths.profiles, profileName);
+    await fs.mkdir(profilePath, { recursive: true });
+  }
+
   public async listAllProfiles() {
     return await this.fsService.getDirsNames(this.osPaths.profiles);
   }

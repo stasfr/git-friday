@@ -4,7 +4,6 @@ import { firstLetterUpperCase } from '@/utils/stringUtils.js';
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
 import { ProfileService } from '@/cli/profile/profileService.js';
-import { ExtendedError } from '@/errors/ExtendedError.js';
 
 import type { ProfilePromptReadCommandOption } from '@/cli/profile/prompt/read/profilePromptReadCommand.js';
 

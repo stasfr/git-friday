@@ -1,6 +1,5 @@
 import { select } from '@inquirer/prompts';
 
-import { ProfileService } from '@/cli/profile/profileService.js';
 import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 
@@ -11,9 +10,9 @@ interface ProfileNameSelectOptions {
 
 export async function profileNameSelect(options: ProfileNameSelectOptions) {
   let profileName = options.profile;
+  const profileRegistryService = new ProfileRegistryService();
 
   if (!profileName) {
-    const profileRegistryService = new ProfileRegistryService();
     const profiles = await profileRegistryService.listAllProfiles();
 
     if (profiles.length === 0) {
@@ -44,8 +43,7 @@ export async function profileNameSelect(options: ProfileNameSelectOptions) {
       });
     }
   } else {
-    const profileService = new ProfileService({ profileName });
-    const profileExists = await profileService.hasProfile();
+    const profileExists = await profileRegistryService.hasProfile(profileName);
     if (!profileExists) {
       throw new ExtendedError({
         layer: 'CommandExecutionError',

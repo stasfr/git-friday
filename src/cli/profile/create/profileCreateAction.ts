@@ -23,6 +23,7 @@ export async function profileCreateAction() {
   }
 
   const profileService = new ProfileService({ profileName });
+  await profileRegistryService.createProfileDir(profileName);
   await profileService.initConfig();
 
   console.log(`Profile "${profileName}" created successfully.`);

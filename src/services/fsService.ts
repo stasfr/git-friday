@@ -116,4 +116,9 @@ export class FsService {
     await fs.writeFile(filePath, content, 'utf-8');
     return filePath;
   }
+
+  public async readFile(filePath: string, encoding: BufferEncoding = 'utf-8') {
+    const resolvedPath = path.resolve(filePath);
+    return await fs.readFile(resolvedPath, encoding);
+  }
 }

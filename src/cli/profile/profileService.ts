@@ -1,5 +1,4 @@
 import path from 'node:path';
-import fs from 'node:fs/promises';
 
 import { ExtendedError } from '@/errors/ExtendedError.js';
 import { FsService } from '@/services/fsService.js';
@@ -79,17 +78,19 @@ export class ProfileService {
       aiCompletionModel: null,
     } satisfies IEmptyProfileConfig;
 
-    const configPath = path.join(this.profilePath, 'config.json');
-    await fs.writeFile(
-      configPath,
+    await this.fsService.writeFile(
+      this.profilePath,
+      'config.json',
       JSON.stringify(emptyConfig, null, 2),
-      'utf-8',
     );
   }
 
   private async readProfileConfig() {
     const profileConfigPath = path.join(this.profilePath, 'config.json');
-    const configFile = await fs.readFile(profileConfigPath, 'utf-8');
+    const configFile = await this.fsService.readFile(
+      profileConfigPath,
+      'utf-8',
+    );
     const profileConfig = JSON.parse(configFile);
     configIsRawProfileConfig(profileConfig);
     return profileConfig;
@@ -98,12 +99,10 @@ export class ProfileService {
   private async writeProfileConfig(
     config: IRawProfileConfig | IEmptyProfileConfig,
   ) {
-    await this.checkIfProfileConfigExists();
-    const profileConfigPath = path.join(this.profilePath, 'config.json');
-    await fs.writeFile(
-      profileConfigPath,
+    await this.fsService.writeFile(
+      this.profilePath,
+      'config.json',
       JSON.stringify(config, null, 2),
-      'utf-8',
     );
   }
 
@@ -132,7 +131,7 @@ export class ProfileService {
   public async getProfileSystemPrompt() {
     const systemPromptPath = path.join(this.profilePath, 'system-prompt.md');
     try {
-      return await fs.readFile(systemPromptPath, 'utf-8');
+      return await this.fsService.readFile(systemPromptPath, 'utf-8');
     } catch (error) {
       if (
         error instanceof Error &&
@@ -154,7 +153,7 @@ export class ProfileService {
   public async getProfileUserPrompt() {
     const userPromptPath = path.join(this.profilePath, 'user-prompt.md');
     try {
-      return await fs.readFile(userPromptPath, 'utf-8');
+      return await this.fsService.readFile(userPromptPath, 'utf-8');
     } catch (error) {
       if (
         error instanceof Error &&

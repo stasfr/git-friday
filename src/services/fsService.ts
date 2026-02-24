@@ -93,4 +93,20 @@ export class FsService {
       });
     }
   }
+
+  public async copyFile(srcPath: string, destPath: string) {
+    const resolvedSrcPath = path.resolve(srcPath);
+    const resolvedDestPath = path.resolve(destPath);
+    try {
+      await fs.copyFile(resolvedSrcPath, resolvedDestPath);
+    } catch (error) {
+      throw new ExtendedError({
+        layer: 'InternalError',
+        message: `Got error in copyFile: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        command: null,
+        service: SERVICE_NAME,
+        hint: null,
+      });
+    }
+  }
 }

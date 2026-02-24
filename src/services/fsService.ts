@@ -109,4 +109,11 @@ export class FsService {
       });
     }
   }
+
+  public async writeFile(dirPath: string, fileName: string, content: string) {
+    const resolvedDir = path.resolve(dirPath);
+    const filePath = path.join(resolvedDir, fileName);
+    await fs.writeFile(filePath, content, 'utf-8');
+    return filePath;
+  }
 }

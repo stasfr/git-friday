@@ -1,6 +1,3 @@
-import path from 'node:path';
-import fs from 'node:fs/promises';
-import { constants } from 'node:fs';
 import ora from 'ora';
 import { input, confirm } from '@inquirer/prompts';
 
@@ -10,6 +7,7 @@ import { ProfileService } from '@/cli/profile/profileService.js';
 import { ExtendedError } from '@/errors/ExtendedError.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
+import { FsService } from '@/services/fsService.js';
 
 import type { RunCommandOption } from '@/cli/run/runCommand.js';
 
@@ -43,11 +41,11 @@ export async function runAction(options: RunCommandOption) {
   });
 
   const profileService = new ProfileService({ profileName });
+  const gitService = new GitService();
+  const fsService = new FsService();
 
   const profileConfig = await profileService.getValidProfileConfig();
   const profilePrompts = await profileService.getProfilePrompts();
-
-  const gitService = new GitService();
 
   let fileName = 'llm_response.md';
   if (options.fileOutput === true || typeof options.fileOutput === 'string') {
@@ -55,23 +53,17 @@ export async function runAction(options: RunCommandOption) {
       fileName = `${sanitizeFilename(options.fileOutput.trim())}.md`;
     }
 
-    while (true) {
-      try {
-        const filePath = path.join(process.cwd(), fileName);
-        await fs.access(filePath, constants.F_OK);
-        console.log(`File ${fileName} already exists.`);
+    const fileExists = await fsService.hasFile(fileName);
 
-        const newName = await input({
-          message: 'Enter new file name (without .md extension):',
-          validate: (input) => {
-            if (input?.trim().length === 0) return 'File name cannot be empty';
-            return true;
-          },
-        });
+    if (fileExists) {
+      const shouldOverwrite = await confirm({
+        message: `File ${fileName} already exists. Overwrite?`,
+        default: false,
+      });
 
-        fileName = `${sanitizeFilename(newName.trim())}.md`;
-      } catch {
-        break;
+      if (!shouldOverwrite) {
+        console.log('Command cancelled');
+        return;
       }
     }
   }
@@ -149,8 +141,11 @@ export async function runAction(options: RunCommandOption) {
   }
 
   if (options.fileOutput === true || typeof options.fileOutput === 'string') {
-    const filePath = path.join(process.cwd(), fileName);
-    await fs.writeFile(filePath, llmService.content);
+    const filePath = await fsService.writeFile(
+      process.cwd(),
+      fileName,
+      llmService.content,
+    );
     console.log(`LLM response saved to ${filePath}`);
   }
 

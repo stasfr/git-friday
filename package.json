@@ -1,6 +1,6 @@
 {
   "name": "git-friday",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "A CLI tool that feeds git commits (with full git log syntax support) into LLMs based on custom user prompts.",
   "keywords": [
     "ai",

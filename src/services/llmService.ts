@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { ExternalServiceError } from '@/errors/Errors.js';
+import { getErrorMessage, getErrorStatus } from '@/errors/errorHelpers.js';
 
 interface ILlmServiceOptions {
   aiCompletionModel: string;
@@ -102,31 +103,64 @@ export class LlmService {
   }
 
   public async getCompletion() {
-    const completion = await this.client.chat.completions.create({
-      messages: [
-        {
-          role: 'system',
-          content: this.prompts.systemPrompt,
-        },
-        {
-          role: 'user',
-          content: this.prompts.userPrompt,
-        },
-      ],
-      model: this.modelName,
-    });
+    try {
+      const completion = await this.client.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: this.prompts.systemPrompt,
+          },
+          {
+            role: 'user',
+            content: this.prompts.userPrompt,
+          },
+        ],
+        model: this.modelName,
+      });
 
-    if (!completion.choices[0].message.content) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
-        message: 'Got empty response from LLM provider',
-        command: null,
-        service: 'LlmService',
-        hint: 'Check LLM provider key and URL and try again',
+      if (!completion.choices[0].message.content) {
+        throw new ExternalServiceError({
+          service: 'LLM Provider',
+          message: 'Got empty response from LLM provider',
+          hint: 'Check LLM provider key and URL and try again',
+        });
+      }
+
+      this._content = completion.choices[0].message.content;
+      this.formatUsage(completion.usage);
+    } catch (error) {
+      if (error instanceof ExternalServiceError) {
+        throw error;
+      }
+
+      const errorMessage = getErrorMessage(error);
+      const status = getErrorStatus(error);
+
+      if (
+        errorMessage.includes('API key') ||
+        errorMessage.includes('authentication')
+      ) {
+        throw new ExternalServiceError({
+          service: 'LLM Provider',
+          message: 'Authentication failed. Invalid or missing API key.',
+          hint: 'Check your API key configuration.',
+          cause: error,
+        });
+      }
+
+      if (errorMessage.includes('rate limit') || status === 429) {
+        throw new ExternalServiceError({
+          service: 'LLM Provider',
+          message: 'Rate limit exceeded. Please try again later.',
+          cause: error,
+        });
+      }
+
+      throw new ExternalServiceError({
+        service: 'LLM Provider',
+        message: `Failed to get completion from LLM provider.\nOriginal error: ${errorMessage}`,
+        cause: error,
       });
     }
-
-    this._content = completion.choices[0].message.content;
-    this.formatUsage(completion.usage);
   }
 }

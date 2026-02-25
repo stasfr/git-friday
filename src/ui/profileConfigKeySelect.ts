@@ -1,6 +1,6 @@
 import { select } from '@inquirer/prompts';
 
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { CommandExecutionError } from '@/errors/Errors.js';
 
 import type { IEditableProfileConfigKeys } from '@/cli/profile/profileTypes.js';
 
@@ -29,21 +29,15 @@ export async function profileConfigKeySelect(
   }
 
   if (typeof selectedKey !== 'string' || selectedKey.length === 0) {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
+    throw new CommandExecutionError({
       message: 'Invalid key selection',
-      command: options.command,
-      service: null,
       hint: 'Please select a valid key from the list',
     });
   }
 
   if (selectedKey !== 'gitLogCommand' && selectedKey !== 'aiCompletionModel') {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
+    throw new CommandExecutionError({
       message: 'Invalid config key',
-      command: options.command,
-      service: null,
       hint: 'Provide valid config key. Supported keys: gitLogCommand, aiCompletionModel',
     });
   }

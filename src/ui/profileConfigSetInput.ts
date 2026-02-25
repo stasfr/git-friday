@@ -1,7 +1,7 @@
 import { input } from '@inquirer/prompts';
 
 import { aiCompletionModelSelect } from '@/ui/aiCompletionModelSelect.js';
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { CommandExecutionError } from '@/errors/Errors.js';
 
 import type { IEditableProfileConfigKeys } from '@/cli/profile/profileTypes.js';
 
@@ -44,11 +44,8 @@ export async function profileConfigSetInput(
     const validationResult = validateConfigValue(options.key, newValue);
 
     if (validationResult !== true) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
+      throw new CommandExecutionError({
         message: `Invalid ${options.key} value`,
-        command: options.command,
-        service: null,
         hint: validationResult,
       });
     }

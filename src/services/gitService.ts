@@ -1,6 +1,12 @@
 import { exec as syncExec, ExecOptions } from 'child_process';
 import { promisify } from 'util';
 
+import {
+  CommandExecutionError,
+  ExternalServiceError,
+} from '@/errors/Errors.js';
+import { getErrorMessage, getErrorCode } from '@/errors/errorHelpers.js';
+
 export class GitService {
   private readonly exec: (
     command: string,
@@ -32,21 +38,57 @@ export class GitService {
     return this;
   }
 
+  private async executeGitCommand() {
+    try {
+      const command = this.command;
+      const cwd = process.cwd();
+
+      const { stdout } = await this.exec(command, { cwd });
+
+      return stdout.trim();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      const errorCode = getErrorCode(error);
+
+      if (errorMessage.includes('not a git repository')) {
+        throw new CommandExecutionError({
+          message: 'The current directory is not a Git repository.',
+          hint: 'Make sure you are in the correct directory or run "git init".',
+          cause: error,
+        });
+      }
+
+      if (
+        errorCode === 'ENOENT' ||
+        errorMessage.includes('command not found')
+      ) {
+        throw new ExternalServiceError({
+          service: 'Git',
+          message: 'Git is not installed or not available in the PATH.',
+          hint: 'Please install Git to use this application.',
+          cause: error,
+        });
+      }
+
+      throw new ExternalServiceError({
+        service: 'Git',
+        message: `Failed to execute git command.\nOriginal error: ${errorMessage}`,
+        cause: error,
+      });
+    }
+  }
+
   public async getCommitLog() {
-    const command = this.command;
-    const cwd = process.cwd();
+    const gitOutput = await this.executeGitCommand();
 
-    const { stdout } = await this.exec(command, { cwd });
-    const trimmedOutput = stdout.trim();
-
-    if (!trimmedOutput) {
+    if (!gitOutput) {
       return [];
     }
 
     const conventionalCommitHeaderRegex =
       /^- (feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)(\(.*\))?:/gim;
 
-    const matches = [...trimmedOutput.matchAll(conventionalCommitHeaderRegex)];
+    const matches = [...gitOutput.matchAll(conventionalCommitHeaderRegex)];
 
     if (matches.length === 0) {
       return [];
@@ -59,11 +101,9 @@ export class GitService {
       const startIndex = currentMatch.index;
 
       const nextMatch = matches[i + 1];
-      const endIndex = nextMatch ? nextMatch.index : trimmedOutput.length;
+      const endIndex = nextMatch ? nextMatch.index : gitOutput.length;
 
-      const commitMessage = trimmedOutput
-        .substring(startIndex, endIndex)
-        .trim();
+      const commitMessage = gitOutput.substring(startIndex, endIndex).trim();
 
       if (commitMessage) {
         commits.push(commitMessage);

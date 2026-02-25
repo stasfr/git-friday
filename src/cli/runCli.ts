@@ -1,7 +1,7 @@
 import pkg from '../../package.json' with { type: 'json' };
 
 import { Command } from 'commander';
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { printError } from '@/errors/index.js';
 
 import { useUpdateCommand } from '@/cli/update/updateCommand.js';
 import { useRunCommand } from '@/cli/run/runCommand.js';
@@ -24,12 +24,6 @@ export async function runCli() {
     const program = buildCli();
     await program.parseAsync(process.argv);
   } catch (error) {
-    if (error instanceof ExtendedError) {
-      error.logToConsole();
-    } else if (error instanceof Error) {
-      console.log('Unknown error:', error.message);
-    } else {
-      console.log('Unrecognized error:', error);
-    }
+    printError(error);
   }
 }

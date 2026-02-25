@@ -1,7 +1,7 @@
 {
   "name": "git-friday",
   "version": "0.17.0",
-  "description": "An intelligent CLI tool that uses AI to analyze git commits and generate a clear, human-readable report.",
+  "description": "A CLI tool that feeds git commits (with full git log syntax support) into LLMs based on custom user prompts.",
   "keywords": [
     "ai",
     "cli",
@@ -10,8 +10,7 @@
     "git",
     "llm",
     "productivity",
-    "reports",
-    "summary"
+    "prompts"
   ],
   "homepage": "https://github.com/stasfr/git-friday#readme",
   "bugs": {
@@ -34,44 +33,49 @@
     "LICENSE",
     "README.md"
   ],
+  "os": [
+    "win32"
+  ],
   "type": "module",
   "main": "dist/src/main.js",
   "scripts": {
-    "dev": "tsx --env-file .env src/main.ts",
+    "dev": "tsx src/main.ts",
     "start": "node dist/src/main.js",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias",
+    "build:local": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias && pnpm remove -g git-friday && pnpm link -g",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "type-check": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
-    "release:minor": "standard-version --release-as minor",
-    "release:major": "standard-version --release-as major",
-    "release:patch": "standard-version --release-as patch"
+    "release:minor": "commit-and-tag-version --release-as minor",
+    "release:major": "commit-and-tag-version --release-as major",
+    "release:patch": "commit-and-tag-version --release-as patch"
   },
   "dependencies": {
-    "@inquirer/prompts": "^8.2.1",
+    "@inquirer/prompts": "^8.3.0",
     "boxen": "^8.0.1",
-    "chalk": "^5.6.2",
     "commander": "^14.0.3",
-    "dotenv": "^17.2.4",
-    "openai": "^6.21.0",
+    "commit-and-tag-version": "^12.6.1",
+    "openai": "^6.25.0",
     "ora": "^8.2.0",
     "update-notifier": "^7.3.1"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
-    "@types/node": "^25.2.3",
+    "@types/node": "^25.3.0",
     "@types/update-notifier": "^6.0.8",
-    "oxfmt": "^0.27.0",
-    "oxlint": "^1.46.0",
-    "rimraf": "^6.1.2",
-    "standard-version": "^9.5.0",
+    "oxfmt": "^0.34.0",
+    "oxlint": "^1.50.0",
+    "rimraf": "^6.1.3",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.28.2"
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "packageManager": "pnpm@10.30.1"
 }

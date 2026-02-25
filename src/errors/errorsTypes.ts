@@ -1,4 +1,7 @@
-export type IErrorLayerTypes = 'ConfigurationError' | 'CommandExecutionError';
+export type IErrorLayerTypes =
+  | 'ConfigurationError'
+  | 'CommandExecutionError'
+  | 'InternalError';
 
 export interface IErrorMetadata {
   layer: IErrorLayerTypes;

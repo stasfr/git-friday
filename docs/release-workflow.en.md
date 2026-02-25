@@ -13,13 +13,9 @@ This document describes the process for releasing a new version of the package.
 - When enough changes have accumulated in `dev` for a release, a Pull Request is created from `dev` to `main`.
 - **Before opening the Pull Request**, generate a PR description using Git Friday:
   ```bash
-  friday pr
+  friday run -p pr
   ```
-  When prompted, enter the git log command to compare branches:
-  ```
-  ? Enter your custom git log command: git log main..dev
-  ```
-  This will generate an AI-powered summary of all changes in the PR, which you can use for the PR description.
+  This will use the `pr` profile to generate an AI-powered summary of all changes in the PR, which you can use for the PR description.
 - After review and approval, the Pull Request is merged into `main`. This creates a merge commit that contains all the changes from `dev`.
 
 ## 3. Release
@@ -67,13 +63,9 @@ This document describes the process for releasing a new version of the package.
 5.  **Create a release on GitHub:**
     - First, generate the changelog using Git Friday:
       ```bash
-      friday changelog
+      friday run -p changelog
       ```
-      When prompted, enter the git log command with the previous version tag:
-      ```
-      ? Enter your custom git log command: git log vX.X.X..HEAD
-      ```
-      Replace `vX.X.X` with the previous version tag to get all changes since the last release.
+      This will use the `changelog` profile to generate release notes based on all changes since the last release.
     - Go to the "Releases" section of your repository on GitHub.
     - Click "Draft a new release".
     - Select the newly created tag.

@@ -9,17 +9,17 @@ export class ExtendedError extends Error {
   }
 
   logToConsole() {
-    console.log(`${this.metadata.layer}`);
+    console.log();
+    console.log(this.metadata.layer);
     if (this.metadata.command) {
       console.log('Command:', this.metadata.command);
     }
     if (this.metadata.service) {
       console.log('In Service:', this.metadata.service);
     }
-    console.log(`\n${this.metadata.message}\n`);
+    console.log(`Error:`, this.metadata.message, '\n');
     if (this.metadata.hint) {
-      console.log('Hint:');
-      console.log(this.metadata.hint);
+      console.log('Hint:', this.metadata.hint);
     }
   }
 }

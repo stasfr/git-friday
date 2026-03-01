@@ -5,6 +5,7 @@ import {
   CommandExecutionError,
   ExternalServiceError,
 } from '@/errors/Errors.js';
+import { getErrorMessage, getErrorCode } from '@/errors/errorHelpers.js';
 
 export class GitService {
   private readonly exec: (
@@ -45,8 +46,9 @@ export class GitService {
       const { stdout } = await this.exec(command, { cwd });
 
       return stdout.trim();
-    } catch (error: any) {
-      const errorMessage = error?.message || '';
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      const errorCode = getErrorCode(error);
 
       if (errorMessage.includes('not a git repository')) {
         throw new CommandExecutionError({
@@ -57,7 +59,7 @@ export class GitService {
       }
 
       if (
-        error?.code === 'ENOENT' ||
+        errorCode === 'ENOENT' ||
         errorMessage.includes('command not found')
       ) {
         throw new ExternalServiceError({
@@ -70,7 +72,7 @@ export class GitService {
 
       throw new ExternalServiceError({
         service: 'Git',
-        message: `Failed to execute git command.\nOriginal error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `Failed to execute git command.\nOriginal error: ${errorMessage}`,
         cause: error,
       });
     }

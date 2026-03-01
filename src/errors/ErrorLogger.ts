@@ -1,4 +1,4 @@
-import { AppError } from '@/errors/index.js';
+import { AppError } from '@/errors/AppError.js';
 
 export function formatError(error: unknown) {
   if (error instanceof AppError) {

@@ -1,7 +1,7 @@
 import pkg from '../../package.json' with { type: 'json' };
 
 import { Command } from 'commander';
-import { printError } from '@/errors/index.js';
+import { printError } from '@/errors/ErrorLogger.js';
 
 import { useUpdateCommand } from '@/cli/update/updateCommand.js';
 import { useRunCommand } from '@/cli/run/runCommand.js';

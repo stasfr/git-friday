@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { ConfigError } from '@/errors/Errors.js';
 
 export interface IOsPaths {
   data: string;
@@ -15,21 +15,15 @@ export function getOsPaths() {
   const os = process.platform;
 
   if (os !== 'win32') {
-    throw new ExtendedError({
-      layer: 'ConfigurationError',
+    throw new ConfigError({
       message: 'Unsupported OS',
-      command: null,
-      service: null,
       hint: 'At this point, only Windows is supported',
     });
   }
 
   if (!process.env.LOCALAPPDATA || !process.env.APPDATA) {
-    throw new ExtendedError({
-      layer: 'ConfigurationError',
+    throw new ConfigError({
       message: 'Missing environment variables for Windows',
-      command: null,
-      service: null,
       hint: 'process.env.LOCALAPPDATA or process.env.APPDATA',
     });
   }

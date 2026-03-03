@@ -1,7 +1,7 @@
 import { select } from '@inquirer/prompts';
 
 import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { NotFoundError, CommandExecutionError } from '@/errors/Errors.js';
 
 interface ProfileNameSelectOptions {
   profile: string | undefined;
@@ -16,11 +16,8 @@ export async function profileNameSelect(options: ProfileNameSelectOptions) {
     const profiles = await profileRegistryService.listAllProfiles();
 
     if (profiles.length === 0) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
+      throw new CommandExecutionError({
         message: 'No profiles found',
-        command: options.command,
-        service: null,
         hint: 'Create a profile first using "friday profile create" command',
       });
     }
@@ -34,22 +31,16 @@ export async function profileNameSelect(options: ProfileNameSelectOptions) {
     });
 
     if (typeof profileName !== 'string' || profileName.length === 0) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
+      throw new CommandExecutionError({
         message: 'Invalid profile selection',
-        command: options.command,
-        service: null,
         hint: 'Please select a valid profile from the list',
       });
     }
   } else {
     const profileExists = await profileRegistryService.hasProfile(profileName);
     if (!profileExists) {
-      throw new ExtendedError({
-        layer: 'CommandExecutionError',
+      throw new NotFoundError({
         message: 'Profile does not exist',
-        command: options.command,
-        service: null,
         hint: 'Please create a profile first using "friday profile create" command',
       });
     }

@@ -4,7 +4,7 @@ import { input, confirm } from '@inquirer/prompts';
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 import { sanitizeFilename } from '@/utils/stringUtils.js';
 import { ProfileService } from '@/cli/profile/profileService.js';
-import { ExtendedError } from '@/errors/ExtendedError.js';
+import { CommandExecutionError } from '@/errors/Errors.js';
 import { LlmService } from '@/services/llmService.js';
 import { GitService } from '@/services/gitService.js';
 import { FsService } from '@/services/fsService.js';
@@ -13,11 +13,8 @@ import type { RunCommandOption } from '@/cli/run/runCommand.js';
 
 export async function runAction(options: RunCommandOption) {
   if (options.cliOutput === false && options.fileOutput === false) {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
+    throw new CommandExecutionError({
       message: 'No output option selected',
-      command: 'run',
-      service: null,
       hint: 'Please select at least one output option. Add the -c for console output or -f to save the output to a file.',
     });
   }
@@ -26,11 +23,8 @@ export async function runAction(options: RunCommandOption) {
     typeof options.fileOutput === 'string' &&
     options.fileOutput.trim().length === 0
   ) {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
+    throw new CommandExecutionError({
       message: 'Invalid file output path',
-      command: 'run',
-      service: null,
       hint: 'Please provide a valid file path for the output.',
     });
   }
@@ -78,11 +72,8 @@ export async function runAction(options: RunCommandOption) {
   }
 
   if (customLog === null) {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
+    throw new CommandExecutionError({
       message: 'No custom git log command provided',
-      command: 'run',
-      service: null,
       hint: 'Please enter a valid git log command or configure it in your profile',
     });
   }
@@ -93,11 +84,8 @@ export async function runAction(options: RunCommandOption) {
     .getCommitLog();
 
   if (sourceCommits.length === 0) {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
+    throw new CommandExecutionError({
       message: 'No commits found for the specified filters',
-      command: 'run',
-      service: null,
       hint: 'Check your git log command and try again',
     });
   }
@@ -131,11 +119,8 @@ export async function runAction(options: RunCommandOption) {
   }
 
   if (!llmService.content) {
-    throw new ExtendedError({
-      layer: 'CommandExecutionError',
+    throw new CommandExecutionError({
       message: 'Got empty response from Llm Provider',
-      command: 'run',
-      service: null,
       hint: 'Check LLM provider key and url and try again',
     });
   }

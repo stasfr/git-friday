@@ -1,4 +1,4 @@
-import { exec as syncExec, ExecOptions } from 'child_process';
+import { exec as syncExec } from 'child_process';
 import { promisify } from 'util';
 
 import {
@@ -8,18 +8,9 @@ import {
 import { getErrorMessage, getErrorCode } from '@/errors/errorHelpers.js';
 
 export class GitService {
-  private readonly exec: (
-    command: string,
-    options?: ExecOptions,
-  ) => Promise<{
-    stdout: string;
-    stderr: string;
-  }>;
-
   private commandParts: string[];
 
   constructor() {
-    this.exec = promisify(syncExec);
     this.commandParts = ['git', 'log'];
   }
 
@@ -27,14 +18,14 @@ export class GitService {
     return this.commandParts.join(' ');
   }
 
-  public pretty() {
-    this.commandParts.push('--pretty=format:"- %s%n%b"');
-    return this;
+  private cleanCommand(command: string) {
+    return command.replace(/^git\s+log\s*/i, '');
   }
 
-  public customLog(command: string) {
-    const cleanedCommand = command.replace(/^git\s+log\s*/i, '');
+  public buildCommand(command: string) {
+    const cleanedCommand = this.cleanCommand(command);
     this.commandParts.push(cleanedCommand);
+    this.commandParts.push('--pretty=format:COMMIT_SEPARATOR_%H%n%s%n%b');
     return this;
   }
 
@@ -42,8 +33,9 @@ export class GitService {
     try {
       const command = this.command;
       const cwd = process.cwd();
+      const asyncExec = promisify(syncExec);
 
-      const { stdout } = await this.exec(command, { cwd });
+      const { stdout } = await asyncExec(command, { cwd });
 
       return stdout.trim();
     } catch (error) {
@@ -85,25 +77,14 @@ export class GitService {
       return [];
     }
 
-    const conventionalCommitHeaderRegex =
-      /^- (feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)(\(.*\))?:/gim;
-
-    const matches = [...gitOutput.matchAll(conventionalCommitHeaderRegex)];
-
-    if (matches.length === 0) {
-      return [];
-    }
+    const commitSeparatorRegex = /COMMIT_SEPARATOR_[0-9a-f]{40}/g;
 
     const commits: string[] = [];
 
-    for (let i = 0; i < matches.length; i++) {
-      const currentMatch = matches[i];
-      const startIndex = currentMatch.index;
+    const parts = gitOutput.split(commitSeparatorRegex);
 
-      const nextMatch = matches[i + 1];
-      const endIndex = nextMatch ? nextMatch.index : gitOutput.length;
-
-      const commitMessage = gitOutput.substring(startIndex, endIndex).trim();
+    for (const part of parts) {
+      const commitMessage = part.trim();
 
       if (commitMessage) {
         commits.push(commitMessage);

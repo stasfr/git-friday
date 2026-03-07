@@ -84,10 +84,7 @@ export async function runAction(options: RunCommandOption) {
     });
   }
 
-  const sourceCommits = await gitService
-    .customLog(customLog)
-    .pretty()
-    .getCommitLog();
+  const sourceCommits = await gitService.buildCommand(customLog).getCommitLog();
 
   if (sourceCommits.length === 0) {
     throw new CommandExecutionError({

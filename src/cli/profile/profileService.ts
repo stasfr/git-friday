@@ -272,8 +272,10 @@ export class ProfileService {
   }
 
   public async getProfilePrompts() {
-    const systemPrompt = await this.getProfileSystemPrompt();
-    const userPrompt = await this.getProfileUserPrompt();
+    const [systemPrompt, userPrompt] = await Promise.all([
+      this.getProfileSystemPrompt(),
+      this.getProfileUserPrompt(),
+    ]);
 
     return {
       systemPrompt,

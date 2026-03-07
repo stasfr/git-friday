@@ -91,7 +91,10 @@ export async function runAction(options: RunCommandOption) {
     aiCompletionModel: profileConfig.aiCompletionModel,
     prompts: {
       systemPrompt: profilePrompts.systemPrompt,
-      userPrompt: profilePrompts.userPrompt + '\n' + sourceCommits.join('\n'),
+      userPrompt: profilePrompts.userPrompt,
+    },
+    context: {
+      commits: sourceCommits.join('\n'),
     },
   });
 

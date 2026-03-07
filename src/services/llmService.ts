@@ -6,6 +6,13 @@ import { getErrorMessage, getErrorStatus } from '@/errors/errorHelpers.js';
 interface ILlmServiceOptions {
   aiCompletionModel: string;
   prompts: IPrompts;
+  context: IContext;
+}
+
+interface IContext {
+  commits?: string;
+  diff?: string;
+  another?: string;
 }
 
 interface IPrompts {
@@ -44,15 +51,17 @@ export class LlmService {
   private readonly client: OpenAI;
   private readonly modelName: string;
   private readonly prompts: IPrompts;
+  private readonly context: IContext;
   private _content: string | null;
   private _usage: IUsageTables | null;
 
   public constructor(options: ILlmServiceOptions) {
-    const { aiCompletionModel, prompts } = options;
+    const { aiCompletionModel, prompts, context } = options;
 
     this.client = new OpenAI();
     this.modelName = aiCompletionModel;
     this.prompts = prompts;
+    this.context = context;
     this._content = null;
     this._usage = null;
   }
@@ -104,15 +113,31 @@ export class LlmService {
 
   public async getCompletion() {
     try {
+      const systemPrompt = this.prompts.systemPrompt;
+      let userPrompt = this.prompts.userPrompt;
+      const { commits, diff, another } = this.context;
+
+      if (commits) {
+        userPrompt += `\n\nCommits:\n${commits}`;
+      }
+
+      if (diff) {
+        userPrompt += `\n\nDiff:\n${diff}`;
+      }
+
+      if (another) {
+        userPrompt += `\n\nAnother:\n${another}`;
+      }
+
       const completion = await this.client.chat.completions.create({
         messages: [
           {
             role: 'system',
-            content: this.prompts.systemPrompt,
+            content: systemPrompt,
           },
           {
             role: 'user',
-            content: this.prompts.userPrompt,
+            content: userPrompt,
           },
         ],
         model: this.modelName,

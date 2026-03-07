@@ -2,7 +2,6 @@ import ora from 'ora';
 import { text, confirm, isCancel } from '@clack/prompts';
 
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
-import { sanitizeFilename } from '@/utils/stringUtils.js';
 import { ProfileService } from '@/cli/profile/profileService.js';
 import { CommandExecutionError } from '@/errors/Errors.js';
 import { LlmService } from '@/services/llmService.js';
@@ -19,16 +18,6 @@ export async function runAction(options: RunCommandOption) {
     });
   }
 
-  if (
-    typeof options.fileOutput === 'string' &&
-    options.fileOutput.trim().length === 0
-  ) {
-    throw new CommandExecutionError({
-      message: 'Invalid file output path',
-      hint: 'Please provide a valid file path for the output.',
-    });
-  }
-
   const profileName = await profileNameSelect({
     profile: options.profile,
   });
@@ -40,17 +29,13 @@ export async function runAction(options: RunCommandOption) {
   const profileConfig = await profileService.getValidProfileConfig();
   const profilePrompts = await profileService.getProfilePrompts();
 
-  let fileName = 'llm_response.md';
-  if (options.fileOutput === true || typeof options.fileOutput === 'string') {
-    if (typeof options.fileOutput === 'string') {
-      fileName = `${sanitizeFilename(options.fileOutput.trim())}.md`;
-    }
-
-    const fileExists = await fsService.hasFile(fileName);
+  const outputFileName = 'llm_response.md';
+  if (options.fileOutput === true) {
+    const fileExists = await fsService.hasFile(outputFileName);
 
     if (fileExists) {
       const shouldOverwrite = await confirm({
-        message: `File ${fileName} already exists. Overwrite?`,
+        message: `File ${outputFileName} already exists. Overwrite?`,
         initialValue: false,
       });
 
@@ -128,10 +113,10 @@ export async function runAction(options: RunCommandOption) {
     });
   }
 
-  if (options.fileOutput === true || typeof options.fileOutput === 'string') {
+  if (options.fileOutput === true) {
     const filePath = await fsService.writeFile(
       process.cwd(),
-      fileName,
+      outputFileName,
       llmService.content,
     );
     console.log(`LLM response saved to ${filePath}`);

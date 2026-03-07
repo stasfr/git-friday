@@ -7,7 +7,7 @@ export interface RunCommandOption {
   gitLog: boolean;
   statistics: boolean;
   cliOutput: boolean;
-  fileOutput: boolean | string;
+  fileOutput: boolean;
 }
 
 export function useRunCommand(command: Command) {
@@ -34,7 +34,7 @@ export function useRunCommand(command: Command) {
     )
     .addOption(
       new Option(
-        '-f, --file-output [fileName]',
+        '-f, --file-output',
         'Write llm response in file. Note: The file will be saved in the current directory.',
       ).default(false),
     )

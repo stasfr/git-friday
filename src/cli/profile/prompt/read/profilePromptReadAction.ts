@@ -1,4 +1,4 @@
-import { select } from '@inquirer/prompts';
+import { select, isCancel } from '@clack/prompts';
 
 import { firstLetterUpperCase } from '@/utils/stringUtils.js';
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
@@ -18,13 +18,20 @@ export async function profilePromptReadAction(
   } else if (options.user) {
     promptType = 'user';
   } else {
-    promptType = await select({
+    const selectedPromptType = await select({
       message: 'Which prompt would you like to read?',
-      choices: [
-        { name: 'System Prompt', value: 'system' },
-        { name: 'User Prompt', value: 'user' },
+      options: [
+        { label: 'System Prompt', value: 'system' },
+        { label: 'User Prompt', value: 'user' },
       ],
     });
+
+    if (isCancel(selectedPromptType)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
+    promptType = selectedPromptType;
   }
 
   const profileName = await profileNameSelect({

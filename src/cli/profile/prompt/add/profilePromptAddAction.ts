@@ -1,4 +1,4 @@
-import { select, confirm } from '@inquirer/prompts';
+import { select, confirm, isCancel } from '@clack/prompts';
 
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
@@ -21,13 +21,20 @@ export async function profilePromptAddAction(
   } else if (options.user) {
     promptType = 'user';
   } else {
-    promptType = await select({
+    const selectedPromptType = await select({
       message: 'Which prompt would you like to add?',
-      choices: [
-        { name: 'System Prompt', value: 'system' },
-        { name: 'User Prompt', value: 'user' },
+      options: [
+        { label: 'System Prompt', value: 'system' },
+        { label: 'User Prompt', value: 'user' },
       ],
     });
+
+    if (isCancel(selectedPromptType)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
+    promptType = selectedPromptType;
   }
 
   const profileName = await profileNameSelect({
@@ -47,12 +54,12 @@ export async function profilePromptAddAction(
   if (fileExists) {
     const shouldOverwrite = await confirm({
       message: `The ${promptType} prompt already exists in profile "${profileName}". Do you want to overwrite it?`,
-      default: false,
+      initialValue: false,
     });
 
-    if (!shouldOverwrite) {
-      console.log('Operation cancelled.');
-      return;
+    if (isCancel(shouldOverwrite) || shouldOverwrite === false) {
+      console.log('Operation cancelled');
+      process.exit(0);
     }
   }
 

@@ -1,4 +1,4 @@
-import { select } from '@inquirer/prompts';
+import { select, isCancel } from '@clack/prompts';
 
 import { CommandExecutionError } from '@/errors/Errors.js';
 
@@ -19,20 +19,27 @@ export async function profileConfigKeySelect(
   ] as const satisfies IEditableProfileConfigKeys[];
 
   if (!selectedKey) {
-    selectedKey = await select({
+    const selected = await select({
       message: 'Select a key:',
-      choices: allowedKeys.map((name) => ({
+      options: allowedKeys.map((name) => ({
         name,
         value: name,
       })),
     });
-  }
 
-  if (typeof selectedKey !== 'string' || selectedKey.length === 0) {
-    throw new CommandExecutionError({
-      message: 'Invalid key selection',
-      hint: 'Please select a valid key from the list',
-    });
+    if (isCancel(selected)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
+    if (typeof selected !== 'string' || selected.length === 0) {
+      throw new CommandExecutionError({
+        message: 'Invalid key selection',
+        hint: 'Please select a valid key from the list',
+      });
+    }
+
+    selectedKey = selected;
   }
 
   if (selectedKey !== 'gitLogCommand' && selectedKey !== 'aiCompletionModel') {

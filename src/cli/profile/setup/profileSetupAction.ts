@@ -1,4 +1,4 @@
-import { input, confirm } from '@inquirer/prompts';
+import { text, confirm, isCancel } from '@clack/prompts';
 
 import { aiCompletionModelSelect } from '@/ui/aiCompletionModelSelect.js';
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
@@ -19,19 +19,29 @@ export async function profileSetupAction(options: ProfileSetupCommandOption) {
 
   const setupGitLog = await confirm({
     message: 'Would you like to set a preset git log command?',
-    default: false,
+    initialValue: false,
   });
 
-  if (setupGitLog) {
-    const gitLogCommand = await input({
+  if (isCancel(setupGitLog)) {
+    console.log('Operation cancelled');
+    process.exit(0);
+  }
+
+  if (setupGitLog === true) {
+    const gitLogCommand = await text({
       message: 'Enter custom git log command',
       validate: (input) => {
         if (!input) {
           return 'Please enter a command or cancel';
         }
-        return true;
+        return undefined;
       },
     });
+
+    if (isCancel(gitLogCommand)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
 
     await profileService.setValueToKey('gitLogCommand', gitLogCommand);
   }

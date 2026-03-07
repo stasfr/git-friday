@@ -1,4 +1,4 @@
-import { select } from '@inquirer/prompts';
+import { select, isCancel } from '@clack/prompts';
 
 import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 import { NotFoundError, CommandExecutionError } from '@/errors/Errors.js';
@@ -9,10 +9,10 @@ interface ProfileNameSelectOptions {
 }
 
 export async function profileNameSelect(options: ProfileNameSelectOptions) {
-  let profileName = options.profile;
   const profileRegistryService = new ProfileRegistryService();
+  let profileName: string;
 
-  if (!profileName) {
+  if (!options.profile) {
     const profiles = await profileRegistryService.listAllProfiles();
 
     if (profiles.length === 0) {
@@ -22,28 +22,40 @@ export async function profileNameSelect(options: ProfileNameSelectOptions) {
       });
     }
 
-    profileName = await select({
+    const selectedProfile = await select({
       message: 'Select a profile:',
-      choices: profiles.map((name) => ({
+      options: profiles.map((name) => ({
         name,
         value: name,
       })),
     });
 
-    if (typeof profileName !== 'string' || profileName.length === 0) {
+    if (isCancel(selectedProfile)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
+    if (typeof selectedProfile !== 'string' || selectedProfile.length === 0) {
       throw new CommandExecutionError({
         message: 'Invalid profile selection',
         hint: 'Please select a valid profile from the list',
       });
     }
+
+    profileName = selectedProfile;
   } else {
-    const profileExists = await profileRegistryService.hasProfile(profileName);
+    const profileExists = await profileRegistryService.hasProfile(
+      options.profile,
+    );
+
     if (!profileExists) {
       throw new NotFoundError({
         message: 'Profile does not exist',
         hint: 'Please create a profile first using "friday profile create" command',
       });
     }
+
+    profileName = options.profile;
   }
 
   return profileName;

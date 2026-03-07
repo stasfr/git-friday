@@ -1,4 +1,4 @@
-import { input, confirm, select } from '@inquirer/prompts';
+import { text, confirm, select, isCancel } from '@clack/prompts';
 import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 
 export async function aiCompletionModelSelect() {
@@ -9,27 +9,46 @@ export async function aiCompletionModelSelect() {
   if (otherProfilesModels && otherProfilesModels.length > 0) {
     const selectAiCompletionModel = await confirm({
       message: 'Would you like to choose model from other profiles?',
-      default: true,
+      initialValue: true,
     });
 
+    if (isCancel(selectAiCompletionModel)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
     if (selectAiCompletionModel === true) {
-      return await select({
+      const selectedModel = await select({
         message: 'Which preset AI completion model would you like to use?',
-        choices: otherProfilesModels.map((model) => ({
-          name: model,
+        options: otherProfilesModels.map((model) => ({
+          label: model,
           value: model,
         })),
       });
+
+      if (isCancel(selectedModel)) {
+        console.log('Operation cancelled');
+        process.exit(0);
+      }
+
+      return selectedModel;
     }
   }
 
-  return await input({
+  const modelName = await text({
     message: 'Enter AI completion model',
     validate: (input) => {
       if (!input) {
         return 'Please enter a model';
       }
-      return true;
+      return undefined;
     },
   });
+
+  if (isCancel(modelName)) {
+    console.log('Operation cancelled');
+    process.exit(0);
+  }
+
+  return modelName;
 }

@@ -1,4 +1,4 @@
-import { confirm } from '@inquirer/prompts';
+import { confirm, isCancel } from '@clack/prompts';
 
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 
@@ -14,8 +14,13 @@ export async function profileDeleteAction(options: ProfileDeleteOptions) {
 
   const isConfirmed = await confirm({
     message: `Are you sure you want to delete profile "${profileName}"? This action cannot be undone.`,
-    default: false,
+    initialValue: false,
   });
+
+  if (isCancel(isConfirmed)) {
+    console.log('Operation cancelled');
+    process.exit(0);
+  }
 
   if (!isConfirmed) {
     console.log('Profile deletion cancelled.');

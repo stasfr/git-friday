@@ -33,9 +33,6 @@
     "LICENSE",
     "README.md"
   ],
-  "os": [
-    "win32"
-  ],
   "type": "module",
   "main": "dist/src/main.js",
   "scripts": {

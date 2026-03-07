@@ -78,6 +78,29 @@ export async function runAction(options: RunCommandOption) {
     });
   }
 
+  let diffOutput: string | undefined;
+
+  if (options.diff) {
+    console.log('Enter your custom git diff command:');
+    const diffCommandInput = await text({
+      message: 'git diff',
+    });
+
+    if (isCancel(diffCommandInput)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
+    if (!diffCommandInput || diffCommandInput.trim() === '') {
+      throw new CommandExecutionError({
+        message: 'No git diff command provided',
+        hint: 'Please enter a valid git diff command',
+      });
+    }
+
+    diffOutput = await gitService.buildDiffCommand(diffCommandInput).getDiff();
+  }
+
   const shouldProceed = await confirm({
     message: `Found ${sourceCommits.length} commits matching the specified filters. Send request to LLM?`,
   });
@@ -95,6 +118,7 @@ export async function runAction(options: RunCommandOption) {
     },
     context: {
       commits: sourceCommits.join('\n'),
+      diff: diffOutput,
     },
   });
 

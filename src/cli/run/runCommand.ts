@@ -5,6 +5,7 @@ import { runAction } from '@/cli/run/runAction.js';
 export interface RunCommandOption {
   profile: string | undefined;
   gitLog: boolean;
+  diff: boolean;
   statistics: boolean;
   cliOutput: boolean;
   fileOutput: boolean;
@@ -18,6 +19,12 @@ export function useRunCommand(command: Command) {
       new Option(
         '-g, --git-log',
         'Prompt for custom git log command even if configured in profile',
+      ).default(false),
+    )
+    .addOption(
+      new Option(
+        '-d, --git-diff',
+        'Prompt for custom git diff command to include diff in LLM context',
       ).default(false),
     )
     .addOption(

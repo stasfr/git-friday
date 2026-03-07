@@ -5,7 +5,7 @@ import { runAction } from '@/cli/run/runAction.js';
 export interface RunCommandOption {
   profile: string | undefined;
   gitLog: boolean;
-  diff: boolean;
+  gitDiff: boolean;
   statistics: boolean;
   cliOutput: boolean;
   fileOutput: boolean;

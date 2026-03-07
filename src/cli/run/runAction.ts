@@ -80,7 +80,7 @@ export async function runAction(options: RunCommandOption) {
 
   let diffOutput: string | undefined;
 
-  if (options.diff) {
+  if (options.gitDiff) {
     console.log('Enter your custom git diff command:');
     const diffCommandInput = await text({
       message: 'git diff',

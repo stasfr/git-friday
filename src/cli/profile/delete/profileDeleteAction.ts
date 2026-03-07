@@ -9,7 +9,6 @@ import type { ProfileDeleteOptions } from '@/cli/profile/delete/profileDeleteCom
 export async function profileDeleteAction(options: ProfileDeleteOptions) {
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'profile delete',
   });
 
   const isConfirmed = await confirm({

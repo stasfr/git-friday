@@ -31,7 +31,6 @@ export async function runAction(options: RunCommandOption) {
 
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'run',
   });
 
   const profileService = new ProfileService({ profileName });

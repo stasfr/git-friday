@@ -8,7 +8,6 @@ import type { IEditableProfileConfigKeys } from '@/cli/profile/profileTypes.js';
 interface ProfileConfigSetInputOptions {
   value: string | undefined;
   key: IEditableProfileConfigKeys;
-  command: string;
 }
 
 function validateConfigValue(

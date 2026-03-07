@@ -39,7 +39,6 @@ export async function profilePromptAddAction(
 
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'profile prompt add',
   });
 
   const profileService = new ProfileService({ profileName });

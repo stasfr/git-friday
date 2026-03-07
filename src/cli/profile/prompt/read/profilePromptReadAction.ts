@@ -36,7 +36,6 @@ export async function profilePromptReadAction(
 
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'profile prompt read',
   });
 
   const profileService = new ProfileService({ profileName });

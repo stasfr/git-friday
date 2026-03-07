@@ -6,7 +6,6 @@ import type { IEditableProfileConfigKeys } from '@/cli/profile/profileTypes.js';
 
 interface ProfileConfigKeySelectOptions {
   key: string | undefined;
-  command: string;
 }
 
 export async function profileConfigKeySelect(

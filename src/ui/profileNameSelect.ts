@@ -5,7 +5,6 @@ import { NotFoundError, CommandExecutionError } from '@/errors/Errors.js';
 
 interface ProfileNameSelectOptions {
   profile: string | undefined;
-  command: string;
 }
 
 export async function profileNameSelect(options: ProfileNameSelectOptions) {

@@ -9,12 +9,10 @@ export async function profileConfigGetAction(
 ) {
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'profile config get',
   });
 
   const selectedKey = await profileConfigKeySelect({
     key: options.key,
-    command: 'profile config get',
   });
 
   const profileService = new ProfileService({ profileName });

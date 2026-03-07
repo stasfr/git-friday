@@ -10,18 +10,15 @@ export async function profileConfigSetAction(
 ) {
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'profile config set',
   });
 
   const selectedKey = await profileConfigKeySelect({
     key: options.key,
-    command: 'profile config set',
   });
 
   const value = await profileConfigSetInput({
     value: options.value,
     key: selectedKey,
-    command: 'profile config set',
   });
 
   const profileService = new ProfileService({ profileName });

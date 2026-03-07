@@ -10,7 +10,6 @@ import type { ProfileSetupCommandOption } from '@/cli/profile/setup/profileSetup
 export async function profileSetupAction(options: ProfileSetupCommandOption) {
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'profile setup',
   });
 
   const profileService = new ProfileService({ profileName });

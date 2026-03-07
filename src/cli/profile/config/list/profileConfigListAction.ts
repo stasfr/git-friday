@@ -8,7 +8,6 @@ export async function profileConfigListAction(
 ) {
   const profileName = await profileNameSelect({
     profile: options.profile,
-    command: 'profile config list',
   });
 
   const profileService = new ProfileService({ profileName });

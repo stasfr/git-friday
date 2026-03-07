@@ -1,18 +1,23 @@
-import { input } from '@inquirer/prompts';
+import { text, isCancel } from '@clack/prompts';
 
 import { ProfileService } from '@/cli/profile/profileService.js';
 import { ProfileRegistryService } from '@/cli/profile/ProfileRegistryService.js';
 
 export async function profileCreateAction() {
-  const profileName = await input({
+  const profileName = await text({
     message: 'Enter profile name:',
     validate: (value) => {
       if (!value || value.trim() === '') {
         return 'Profile name is required';
       }
-      return true;
+      return undefined;
     },
   });
+
+  if (isCancel(profileName)) {
+    console.log('Operation cancelled');
+    process.exit(0);
+  }
 
   const profileRegistryService = new ProfileRegistryService();
   const profileExists = await profileRegistryService.hasProfile(profileName);

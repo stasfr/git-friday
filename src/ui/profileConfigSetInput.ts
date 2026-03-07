@@ -1,4 +1,4 @@
-import { input } from '@inquirer/prompts';
+import { text, isCancel } from '@clack/prompts';
 
 import { aiCompletionModelSelect } from '@/ui/aiCompletionModelSelect.js';
 import { CommandExecutionError } from '@/errors/Errors.js';
@@ -11,7 +11,14 @@ interface ProfileConfigSetInputOptions {
   command: string;
 }
 
-function validateConfigValue(key: IEditableProfileConfigKeys, value: string) {
+function validateConfigValue(
+  key: IEditableProfileConfigKeys,
+  value: string | undefined,
+) {
+  if (value === undefined) {
+    return 'Value cannot be empty';
+  }
+
   if (key === 'gitLogCommand') {
     if (
       typeof value !== 'string' ||
@@ -32,7 +39,7 @@ function validateConfigValue(key: IEditableProfileConfigKeys, value: string) {
     }
   }
 
-  return true;
+  return undefined;
 }
 
 export async function profileConfigSetInput(
@@ -43,7 +50,7 @@ export async function profileConfigSetInput(
   if (newValue !== undefined) {
     const validationResult = validateConfigValue(options.key, newValue);
 
-    if (validationResult !== true) {
+    if (validationResult !== undefined) {
       throw new CommandExecutionError({
         message: `Invalid ${options.key} value`,
         hint: validationResult,
@@ -53,10 +60,17 @@ export async function profileConfigSetInput(
     if (options.key === 'aiCompletionModel') {
       newValue = await aiCompletionModelSelect();
     } else {
-      newValue = await input({
+      const inputValue = await text({
         message: `Enter value for ${options.key}:`,
         validate: (val) => validateConfigValue(options.key, val),
       });
+
+      if (isCancel(inputValue)) {
+        console.log('Operation cancelled');
+        process.exit(0);
+      }
+
+      newValue = inputValue;
     }
   }
 

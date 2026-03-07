@@ -1,5 +1,5 @@
 import ora from 'ora';
-import { input, confirm } from '@inquirer/prompts';
+import { text, confirm, isCancel } from '@clack/prompts';
 
 import { profileNameSelect } from '@/ui/profileNameSelect.js';
 import { sanitizeFilename } from '@/utils/stringUtils.js';
@@ -52,12 +52,12 @@ export async function runAction(options: RunCommandOption) {
     if (fileExists) {
       const shouldOverwrite = await confirm({
         message: `File ${fileName} already exists. Overwrite?`,
-        default: false,
+        initialValue: false,
       });
 
-      if (!shouldOverwrite) {
-        console.log('Command cancelled');
-        return;
+      if (isCancel(shouldOverwrite) || shouldOverwrite === false) {
+        console.log('Operation cancelled');
+        process.exit(0);
       }
     }
   }
@@ -66,9 +66,16 @@ export async function runAction(options: RunCommandOption) {
 
   if (options.gitLog || customLog === null) {
     console.log('Enter your custom git log command:');
-    customLog = await input({
+    const customLogInput = await text({
       message: 'git log',
     });
+
+    if (isCancel(customLogInput)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
+    customLog = customLogInput;
   }
 
   if (customLog === null) {
@@ -89,7 +96,6 @@ export async function runAction(options: RunCommandOption) {
       hint: 'Check your git log command and try again',
     });
   }
-  console.log(`\nCommits count: ${sourceCommits.length}\n`);
 
   const shouldProceed = await confirm({
     message: `Found ${sourceCommits.length} commits matching the specified filters. Send request to LLM?`,
@@ -108,6 +114,7 @@ export async function runAction(options: RunCommandOption) {
     },
   });
 
+  console.log();
   const spinner = ora();
   try {
     spinner.start('Generating llm response...');

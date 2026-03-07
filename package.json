@@ -54,7 +54,7 @@
     "release:patch": "commit-and-tag-version --release-as patch"
   },
   "dependencies": {
-    "@inquirer/prompts": "^8.3.0",
+    "@clack/prompts": "^1.1.0",
     "boxen": "^8.0.1",
     "commander": "^14.0.3",
     "commit-and-tag-version": "^12.6.1",

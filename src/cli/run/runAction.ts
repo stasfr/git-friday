@@ -97,9 +97,9 @@ export async function runAction(options: RunCommandOption) {
     message: `Found ${sourceCommits.length} commits matching the specified filters. Send request to LLM?`,
   });
 
-  if (!shouldProceed) {
+  if (isCancel(shouldProceed) || !shouldProceed) {
     console.log('Command cancelled');
-    return;
+    process.exit(0);
   }
 
   const llmService = new LlmService({

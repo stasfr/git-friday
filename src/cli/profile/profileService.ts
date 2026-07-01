@@ -156,6 +156,21 @@ export class ProfileService {
     }
   }
 
+  public async initPrompts() {
+    try {
+      await Promise.all([
+        this.fsService.writeFile(this.profilePath, 'system-prompt.md', ''),
+        this.fsService.writeFile(this.profilePath, 'user-prompt.md', ''),
+      ]);
+    } catch (error) {
+      throw new ExternalServiceError({
+        service: SERVICE_NAME,
+        message: `Failed to initialize profile prompts: ${getErrorMessage(error)}`,
+        cause: error,
+      });
+    }
+  }
+
   private async readProfileConfig() {
     const profileConfigPath = path.join(this.profilePath, 'config.json');
     try {

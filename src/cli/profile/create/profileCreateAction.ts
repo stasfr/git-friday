@@ -30,6 +30,7 @@ export async function profileCreateAction() {
   const profileService = new ProfileService({ profileName });
   await profileRegistryService.createProfileDir(profileName);
   await profileService.initConfig();
+  await profileService.initPrompts();
 
   console.log(`Profile "${profileName}" created successfully.`);
   console.log('Now you can run "friday profile setup" to configure profile');

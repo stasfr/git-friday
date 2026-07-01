@@ -138,6 +138,7 @@ export class ProfileService {
     const emptyConfig = {
       name: this.profileName,
       gitLogCommand: null,
+      gitDiffCommand: null,
       aiCompletionModel: null,
     } satisfies IEmptyProfileConfig;
 

@@ -68,6 +68,7 @@ friday profile config set
 Available configuration keys include:
 
 - `gitLogCommand`: The git log command to use for fetching commits.
+- `gitDiffCommand`: The git diff command to optionally include a diff in the LLM context.
 - `aiCompletionModel`: The AI model identifier for processing.
 
 ### 4. Add Prompts

@@ -45,6 +45,35 @@ export async function profileSetupAction(options: ProfileSetupCommandOption) {
     await profileService.setValueToKey('gitLogCommand', gitLogCommand);
   }
 
+  const setupGitDiff = await confirm({
+    message: 'Would you like to set a preset git diff command?',
+    initialValue: false,
+  });
+
+  if (isCancel(setupGitDiff)) {
+    console.log('Operation cancelled');
+    process.exit(0);
+  }
+
+  if (setupGitDiff === true) {
+    const gitDiffCommand = await text({
+      message: 'Enter custom git diff command',
+      validate: (input) => {
+        if (!input) {
+          return 'Please enter a command or cancel';
+        }
+        return undefined;
+      },
+    });
+
+    if (isCancel(gitDiffCommand)) {
+      console.log('Operation cancelled');
+      process.exit(0);
+    }
+
+    await profileService.setValueToKey('gitDiffCommand', gitDiffCommand);
+  }
+
   const aiCompletionModel = await aiCompletionModelSelect();
 
   await profileService.setValueToKey('aiCompletionModel', aiCompletionModel);

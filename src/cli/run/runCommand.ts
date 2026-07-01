@@ -24,7 +24,7 @@ export function useRunCommand(command: Command) {
     .addOption(
       new Option(
         '-d, --git-diff',
-        'Prompt for custom git diff command to include diff in LLM context',
+        'Prompt for custom git diff command even if configured in profile',
       ).default(false),
     )
     .addOption(

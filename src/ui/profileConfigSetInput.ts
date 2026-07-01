@@ -28,6 +28,16 @@ function validateConfigValue(
     }
   }
 
+  if (key === 'gitDiffCommand') {
+    if (
+      typeof value !== 'string' ||
+      value.trim() === '' ||
+      isNaN(Number(value)) === false
+    ) {
+      return 'Command must be a valid string';
+    }
+  }
+
   if (key === 'aiCompletionModel') {
     if (
       typeof value !== 'string' ||

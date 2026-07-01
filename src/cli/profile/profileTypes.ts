@@ -3,18 +3,21 @@ import * as v from 'valibot';
 export const rawProfileConfigSchema = v.object({
   name: v.string(),
   gitLogCommand: v.nullable(v.string()),
+  gitDiffCommand: v.nullable(v.string()),
   aiCompletionModel: v.nullable(v.string()),
 });
 
 export const validProfileConfigSchema = v.object({
   name: v.string(),
   gitLogCommand: v.nullable(v.string()),
+  gitDiffCommand: v.nullable(v.string()),
   aiCompletionModel: v.string(),
 });
 
 export interface IEmptyProfileConfig {
   name: string;
   gitLogCommand: null;
+  gitDiffCommand: null;
   aiCompletionModel: null;
 }
 

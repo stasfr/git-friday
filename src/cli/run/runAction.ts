@@ -80,6 +80,8 @@ export async function runAction(options: RunCommandOption) {
 
   let diffOutput: string | undefined;
 
+  let customDiff = profileConfig.gitDiffCommand;
+
   if (options.gitDiff) {
     console.log('Enter your custom git diff command:');
     const diffCommandInput = await text({
@@ -98,7 +100,11 @@ export async function runAction(options: RunCommandOption) {
       });
     }
 
-    diffOutput = await gitService.buildDiffCommand(diffCommandInput).getDiff();
+    customDiff = diffCommandInput;
+  }
+
+  if (customDiff !== null && customDiff.trim() !== '') {
+    diffOutput = await gitService.buildDiffCommand(customDiff).getDiff();
   }
 
   const shouldProceed = await confirm({

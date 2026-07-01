@@ -14,6 +14,7 @@ export async function profileConfigKeySelect(
   let selectedKey = options.key;
   const allowedKeys = [
     'gitLogCommand',
+    'gitDiffCommand',
     'aiCompletionModel',
   ] as const satisfies IEditableProfileConfigKeys[];
 
@@ -41,10 +42,14 @@ export async function profileConfigKeySelect(
     selectedKey = selected;
   }
 
-  if (selectedKey !== 'gitLogCommand' && selectedKey !== 'aiCompletionModel') {
+  if (
+    selectedKey !== 'gitLogCommand' &&
+    selectedKey !== 'gitDiffCommand' &&
+    selectedKey !== 'aiCompletionModel'
+  ) {
     throw new CommandExecutionError({
       message: 'Invalid config key',
-      hint: 'Provide valid config key. Supported keys: gitLogCommand, aiCompletionModel',
+      hint: 'Provide valid config key. Supported keys: gitLogCommand, gitDiffCommand, aiCompletionModel',
     });
   }
 

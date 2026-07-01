@@ -17,6 +17,7 @@ export function useProfileConfigSetCommand(profileConfigCommand: Command) {
     .addOption(
       new Option('-k, --key <key>', 'Configuration key to set').choices([
         'gitLogCommand',
+        'gitDiffCommand',
         'aiCompletionModel',
       ]),
     )

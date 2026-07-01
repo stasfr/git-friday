@@ -14,12 +14,16 @@ export const validProfileConfigSchema = v.object({
   aiCompletionModel: v.string(),
 });
 
-export interface IEmptyProfileConfig {
-  name: string;
-  gitLogCommand: null;
-  gitDiffCommand: null;
-  aiCompletionModel: null;
-}
+export const emptyProfileConfigSchema = v.object({
+  name: v.string(),
+  gitLogCommand: v.null(),
+  gitDiffCommand: v.null(),
+  aiCompletionModel: v.null(),
+});
+
+export type IEmptyProfileConfig = v.InferOutput<
+  typeof emptyProfileConfigSchema
+>;
 
 export type IRawProfileConfig = v.InferOutput<typeof rawProfileConfigSchema>;
 

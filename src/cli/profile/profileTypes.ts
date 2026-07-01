@@ -1,23 +1,31 @@
+import * as v from 'valibot';
+
+export const rawProfileConfigSchema = v.object({
+  name: v.string(),
+  gitLogCommand: v.nullable(v.string()),
+  aiCompletionModel: v.nullable(v.string()),
+});
+
+export const validProfileConfigSchema = v.object({
+  name: v.string(),
+  gitLogCommand: v.nullable(v.string()),
+  aiCompletionModel: v.string(),
+});
+
 export interface IEmptyProfileConfig {
   name: string;
   gitLogCommand: null;
   aiCompletionModel: null;
 }
 
-export interface IRawProfileConfig {
-  name: string;
-  gitLogCommand: string | null;
-  aiCompletionModel: string | null;
-}
+export type IRawProfileConfig = v.InferOutput<typeof rawProfileConfigSchema>;
 
 export type IRawProfileConfigKeys = keyof IRawProfileConfig;
 export type IEditableProfileConfigKeys = Exclude<IRawProfileConfigKeys, 'name'>;
 
-export interface IValidProfileConfig {
-  name: string;
-  gitLogCommand: string | null;
-  aiCompletionModel: string;
-}
+export type IValidProfileConfig = v.InferOutput<
+  typeof validProfileConfigSchema
+>;
 
 export interface IProfilePrompts {
   systemPrompt: string;
